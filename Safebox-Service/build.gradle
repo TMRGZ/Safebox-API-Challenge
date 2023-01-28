@@ -1,2 +1,18 @@
+import org.openapitools.generator.gradle.plugin.tasks.GenerateTask
+
 group 'com.rviewer.skeletons'
 version '1.0.0'
+
+tasks.register('buildServiceServer', GenerateTask) {
+    generatorName = "spring"
+    inputSpec = "$rootDir/api/safebox-service.spec.yml".toString()
+    apiPackage = "com.rviewer.skeletons.infrastructure.controller"
+    modelPackage = "com.rviewer.skeletons.infrastructure.controller.model"
+    outputDir = "$buildDir/generated/sources/serviceserver".toString()
+    configOptions = [
+            interfaceOnly: "true",
+            performBeanValidation: "true"
+    ]
+}
+
+tasks.build.dependsOn('buildServiceServer')
