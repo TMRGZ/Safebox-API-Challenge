@@ -4,10 +4,10 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class RviewerSkeletonApplication {
+public class SafeboxAuthApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(RviewerSkeletonApplication.class, args);
+		SpringApplication.run(SafeboxAuthApplication.class, args);
 	}
 
 }

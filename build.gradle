@@ -9,52 +9,66 @@ group = 'com.rviewer.skeletons'
 version = '1.0.0'
 sourceCompatibility = '17'
 
-configurations {
-	compileOnly {
-		extendsFrom annotationProcessor
-	}
+allprojects {
+    apply plugin: 'java'
+
+    repositories {
+        mavenCentral()
+        maven { url 'https://repo.spring.io/milestone' }
+    }
 }
 
-repositories {
-	mavenCentral()
-	maven { url 'https://repo.spring.io/milestone' }
+subprojects {
+    apply plugin: 'org.springframework.boot'
+    apply plugin: 'io.spring.dependency-management'
+    apply plugin: 'jacoco'
+
+    dependencies {
+        implementation 'org.springframework.boot:spring-boot-starter-web'
+        implementation 'org.springframework.boot:spring-boot-starter-jdbc'
+        compileOnly 'org.projectlombok:lombok'
+        developmentOnly 'org.springframework.boot:spring-boot-devtools'
+        testImplementation 'com.h2database:h2:2.1.212'
+        runtimeOnly 'org.postgresql:postgresql'
+        annotationProcessor 'org.projectlombok:lombok'
+        testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    }
+
+    tasks.named('test') {
+        useJUnitPlatform()
+    }
+
+    test {
+        testLogging {
+            events "PASSED", "SKIPPED", "FAILED"
+        }
+        ignoreFailures = true
+        finalizedBy jacocoTestReport
+    }
+
+    jacoco {
+        toolVersion = "0.8.8"
+        reportsDirectory = file("$buildDir/reports/jacoco")
+    }
+
+    jacocoTestReport {
+        dependsOn test
+        reports {
+            xml.required = true
+            html.required = true
+            csv.required = false
+        }
+    }
+
+    configurations {
+        compileOnly {
+            extendsFrom annotationProcessor
+        }
+    }
 }
 
-dependencies {
-	implementation 'org.springframework.boot:spring-boot-starter-web'
-	implementation 'org.springframework.boot:spring-boot-starter-jdbc'
-	compileOnly 'org.projectlombok:lombok'
-	developmentOnly 'org.springframework.boot:spring-boot-devtools'
-	testImplementation 'com.h2database:h2:2.1.212'
-	runtimeOnly 'org.postgresql:postgresql'
-	annotationProcessor 'org.projectlombok:lombok'
-	testImplementation 'org.springframework.boot:spring-boot-starter-test'
-}
-
-tasks.named('test') {
-	useJUnitPlatform()
-}
-
-test {
-	testLogging {
-		events "PASSED", "SKIPPED", "FAILED"
-	}
-	ignoreFailures = true
-	finalizedBy jacocoTestReport
-}
-
-jacoco {
-	toolVersion = "0.8.8"
-	reportsDirectory = file("$buildDir/reports/jacoco")
-}
-
-jacocoTestReport {
-	dependsOn test
-	reports {
-		xml.required = 	true
-		html.required = true
-		csv.required = 	false
-	}
+bootJar {
+    enabled = false
 }
 
 /*
@@ -64,32 +78,33 @@ jacocoTestReport {
 */
 import org.gradle.api.tasks.testing.logging.TestExceptionFormat
 import org.gradle.api.tasks.testing.logging.TestLogEvent
+
 tasks.withType(Test) {
-	testLogging {
-		events TestLogEvent.FAILED,
-				TestLogEvent.PASSED
+    testLogging {
+        events TestLogEvent.FAILED,
+                TestLogEvent.PASSED
 
-		exceptionFormat TestExceptionFormat.FULL
-		showExceptions true
-		showCauses true
-		showStackTraces true
+        exceptionFormat TestExceptionFormat.FULL
+        showExceptions true
+        showCauses true
+        showStackTraces true
 
-		debug {
-			events 	TestLogEvent.FAILED,
-					TestLogEvent.PASSED
+        debug {
+            events TestLogEvent.FAILED,
+                    TestLogEvent.PASSED
 
-			exceptionFormat TestExceptionFormat.FULL
-		}
-		info.events = debug.events
-		info.exceptionFormat = debug.exceptionFormat
+            exceptionFormat TestExceptionFormat.FULL
+        }
+        info.events = debug.events
+        info.exceptionFormat = debug.exceptionFormat
 
-		afterSuite { desc, result ->
-			if (!desc.parent) {
-				def output = "Results: ${result.resultType} (${result.testCount} tests, ${result.successfulTestCount} passed, ${result.failedTestCount} failed, ${result.skippedTestCount} skipped)"
-				def startItem = '|  ', endItem = '  |'
-				def repeatLength = startItem.length() + output.length() + endItem.length()
-				println('\n' + ('-' * repeatLength) + '\n' + startItem + output + endItem + '\n' + ('-' * repeatLength))
-			}
-		}
-	}
+        afterSuite { desc, result ->
+            if (!desc.parent) {
+                def output = "Results: ${result.resultType} (${result.testCount} tests, ${result.successfulTestCount} passed, ${result.failedTestCount} failed, ${result.skippedTestCount} skipped)"
+                def startItem = '|  ', endItem = '  |'
+                def repeatLength = startItem.length() + output.length() + endItem.length()
+                println('\n' + ('-' * repeatLength) + '\n' + startItem + output + endItem + '\n' + ('-' * repeatLength))
+            }
+        }
+    }
 }
