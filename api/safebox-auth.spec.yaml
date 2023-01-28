@@ -1,0 +1,96 @@
+openapi: 3.0.0
+
+info:
+  description: |
+    SafeIsh Auth API - The most secure safebox key holder
+  version: 1.0.0
+  title: SafeIsh Auth API
+
+paths:
+  /safebox-auth:
+    post:
+      summary: Creates a new safebox
+      description: |
+        Creates a new safebox based on a non-empty name and a password.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  description: Safebox Name
+                  type: string
+                password:
+                  description: Safebox Password
+                  type: string
+              required:
+                - name
+                - password
+              example:
+                name: Secure safebox 01
+                password: extremelySecurePassword
+      responses:
+        '200':
+          description: Safebox correctly created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    description: Safebox id
+                    type: string
+                required:
+                  - id
+                example:
+                  id: f626c808-648c-41fe-865d-c6062f3e0899
+        '409':
+          description: Safebox already exists
+        '422':
+          description: Malformed expected data
+        '500':
+          description: Unexpected API error
+  /safebox-auth/{id}/key:
+    get:
+      summary: Get a safebox key
+      description: |
+        Gets a safebox key retrieved by the given ID and with the specified user & password.
+      security:
+        - basicPassword: [ ]
+      parameters:
+        - in: path
+          name: id
+          description: Safebox id
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Safebox correctly opened
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  token:
+                    description: Token for future actions over an opening safebox
+                    type: string
+                required:
+                  - id
+                example:
+                  token: RkbfZSW5MmcK3b7kcgg
+        '404':
+          description: Requested safebox does not exist
+        '422':
+          description: Malformed expected data
+        '423':
+          description: Requested safebox is locked
+        '500':
+          description: Unexpected API error
+components:
+  securitySchemes:
+    basicPassword:
+      type: http
+      scheme: basic

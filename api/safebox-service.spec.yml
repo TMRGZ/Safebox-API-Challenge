@@ -1,0 +1,104 @@
+openapi: 3.0.0
+
+info:
+  description: |
+    SafeIsh Service API - The most secure safebox
+  version: 1.0.0
+  title: SafeIsh Service API
+
+paths:
+  /safebox-service/{id}/items:
+    get:
+      summary: Retrieves the content of a safebox
+      description:
+        Retrieves the currently stored contents in the safebox identified by the given ID and with the given opening token.
+      security:
+        - bearerToken: [ ]
+      parameters:
+        - in: path
+          name: id
+          description: Safebox Id
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Safebox contents correctly retrieved
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  items:
+                    description: Safebox items
+                    type: array
+                    items:
+                      type: string
+                required:
+                  - items
+                example:
+                  items:
+                    - Safebox content 03
+                    - Safebox content 02
+                    - Safebox content 01
+        '401':
+          description: Specified token does not match
+        '404':
+          description: Requested safebox does not exist
+        '422':
+          description: Malformed expected data
+        '423':
+          description: Requested safebox is locked
+        '500':
+          description: Unexpected API error
+    put:
+      summary: Add an items to a Safebox
+      description: |
+        Inserts new contents in the safebox identified by the given ID and with the given opening token.
+      security:
+        - bearerToken: [ ]
+      parameters:
+        - in: path
+          name: id
+          description: Safebox id
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                items:
+                  description: Safebox items
+                  type: array
+                  items:
+                    type: string
+              required:
+                - items
+              example:
+                items:
+                  - Safebox content 03
+                  - Safebox content 02
+                  - Safebox content 01
+                  - New safebox content
+      responses:
+        '200':
+          description: Content correctly added to the safebox
+        '401':
+          description: Specified token does not match
+        '404':
+          description: Requested safebox does not exist
+        '422':
+          description: Malformed expected data
+        '423':
+          description: Requested safebox is locked
+        '500':
+          description: Unexpected API error
+components:
+  securitySchemes:
+    bearerToken:
+      type: http
+      scheme: bearer
