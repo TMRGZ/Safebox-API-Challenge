@@ -49,29 +49,6 @@ paths:
           description: Malformed expected data
         '500':
           description: Unexpected API error
-
-  /safebox/{id}/lock:
-    patch:
-      summary: Locks the safebox
-      description:
-        Locks the safebox by the given ID
-      security:
-        - bearerToken: [ ]
-      parameters:
-        - in: path
-          name: id
-          description: Safebox Id
-          required: true
-          schema:
-            type: string
-      responses:
-        '204':
-          description: Safebox locked successfully
-        '409':
-          description: Safebox already locked
-        '500':
-          description: Unexpected API error
-
   /safebox/{id}/items:
     get:
       summary: Retrieves the content of a safebox
@@ -116,8 +93,6 @@ paths:
           description: Requested safebox is locked
         '500':
           description: Unexpected API error
-
-
     put:
       summary: Add an items to a Safebox
       description: |
