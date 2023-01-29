@@ -5,7 +5,7 @@ version '1.0.0'
 
 tasks.register('buildServiceServer', GenerateTask) {
     generatorName = "spring"
-    inputSpec = "$rootDir/api/safebox-service.spec.yml".toString()
+    inputSpec = "$rootDir/api/safebox-service.spec.yaml"
     apiPackage = "com.rviewer.skeletons.infrastructure.controller"
     modelPackage = "com.rviewer.skeletons.application.model"
     outputDir = "$buildDir/generated/sources".toString()
@@ -15,4 +15,4 @@ tasks.register('buildServiceServer', GenerateTask) {
     ]
 }
 
-tasks.build.dependsOn('buildServiceServer')
+tasks.compileJava.dependsOn(buildServiceServer)
