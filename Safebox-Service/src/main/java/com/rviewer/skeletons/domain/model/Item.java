@@ -1,13 +1,17 @@
 package com.rviewer.skeletons.domain.model;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
+
+import java.util.UUID;
 
 @Getter
 @Setter
+@NoArgsConstructor
 public class Item {
 
-    private Long id;
+    private UUID id;
 
     private String detail;
 
