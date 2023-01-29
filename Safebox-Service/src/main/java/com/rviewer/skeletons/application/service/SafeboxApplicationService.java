@@ -1,5 +1,6 @@
 package com.rviewer.skeletons.application.service;
 
+import com.rviewer.skeletons.application.model.SafeboxIdItemsGet200Response;
 import com.rviewer.skeletons.application.model.SafeboxPost200Response;
 import org.springframework.http.ResponseEntity;
 
@@ -9,8 +10,8 @@ public interface SafeboxApplicationService {
 
     ResponseEntity<SafeboxPost200Response> createSafebox(String owner);
 
-    ResponseEntity<Void> addItemsToSafebox(Long safeboxId, List<String> itemList);
+    ResponseEntity<Void> addItemsToSafebox(String safeboxId, List<String> itemList);
 
-    ResponseEntity<Void> lockSafebox(Long id);
+    ResponseEntity<SafeboxIdItemsGet200Response> getSafeboxItems(String safeboxId);
 
 }

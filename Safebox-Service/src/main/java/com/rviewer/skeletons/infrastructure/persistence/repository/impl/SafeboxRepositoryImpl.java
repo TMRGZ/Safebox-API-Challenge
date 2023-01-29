@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.Optional;
+import java.util.UUID;
 
 @Component
 public class SafeboxRepositoryImpl implements SafeboxRepository {
@@ -23,8 +24,8 @@ public class SafeboxRepositoryImpl implements SafeboxRepository {
     private SafeboxDaoMapper safeboxDaoMapper;
 
     @Override
-    public Optional<Safebox> findById(Long id) {
-        return safeboxRepository.findById(id).map(safeboxDao -> safeboxDaoMapper.map(safeboxDao));
+    public Optional<Safebox> findById(String id) {
+        return safeboxRepository.findById(UUID.fromString(id)).map(safeboxDao -> safeboxDaoMapper.map(safeboxDao));
     }
 
     @Override

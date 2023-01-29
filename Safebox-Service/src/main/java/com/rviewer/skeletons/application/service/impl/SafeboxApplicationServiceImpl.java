@@ -1,5 +1,6 @@
 package com.rviewer.skeletons.application.service.impl;
 
+import com.rviewer.skeletons.application.model.SafeboxIdItemsGet200Response;
 import com.rviewer.skeletons.application.model.SafeboxPost200Response;
 import com.rviewer.skeletons.application.service.SafeboxApplicationService;
 import com.rviewer.skeletons.domain.model.Item;
@@ -27,7 +28,7 @@ public class SafeboxApplicationServiceImpl implements SafeboxApplicationService 
 
     @Override
     @Transactional
-    public ResponseEntity<Void> addItemsToSafebox(Long safeboxId, List<String> itemDetailList) {
+    public ResponseEntity<Void> addItemsToSafebox(String safeboxId, List<String> itemDetailList) {
         List<Item> itemList = itemDetailList.stream()
                 .map(Item::new)
                 .collect(Collectors.toList());
@@ -37,9 +38,9 @@ public class SafeboxApplicationServiceImpl implements SafeboxApplicationService 
     }
 
     @Override
-    @Transactional
-    public ResponseEntity<Void> lockSafebox(Long id) {
-        safeboxService.lockSafebox(id);
-        return ResponseEntity.ok().build();
+    public ResponseEntity<SafeboxIdItemsGet200Response> getSafeboxItems(String safeboxId) {
+        List<Item> itemList = safeboxService.getSafeboxItems(safeboxId);
+        List<String> itemDetails = itemList.stream().map(Item::getDetail).collect(Collectors.toList());
+        return ResponseEntity.ok().body(new SafeboxIdItemsGet200Response().items(itemDetails));
     }
 }

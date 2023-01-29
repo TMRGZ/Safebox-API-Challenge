@@ -7,10 +7,10 @@ import java.util.List;
 
 public interface SafeboxService {
 
-    Safebox createSafebox(String owner);
+    Safebox createSafebox(String key);
 
-    void addItemsToSafebox(Long safeboxId, List<Item> itemList);
+    void addItemsToSafebox(String safeboxId, List<Item> itemList);
 
-    void lockSafebox(Long id);
+    List<Item> getSafeboxItems(String safeboxId);
 
 }

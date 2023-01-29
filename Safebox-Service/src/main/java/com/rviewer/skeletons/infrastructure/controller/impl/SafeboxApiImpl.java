@@ -18,17 +18,12 @@ public class SafeboxApiImpl implements SafeboxApi {
 
     @Override
     public ResponseEntity<SafeboxIdItemsGet200Response> safeboxIdItemsGet(String id) {
-        return SafeboxApi.super.safeboxIdItemsGet(id);
+        return safeboxApplicationService.getSafeboxItems(id);
     }
 
     @Override
     public ResponseEntity<Void> safeboxIdItemsPut(String id, SafeboxIdItemsGetRequest safeboxIdItemsGetRequest) {
-        return safeboxApplicationService.addItemsToSafebox(Long.parseLong(id), safeboxIdItemsGetRequest.getItems());
-    }
-
-    @Override
-    public ResponseEntity<Void> safeboxIdLockPatch(String id) {
-        return safeboxApplicationService.lockSafebox(Long.parseLong(id));
+        return safeboxApplicationService.addItemsToSafebox(id, safeboxIdItemsGetRequest.getItems());
     }
 
     @Override

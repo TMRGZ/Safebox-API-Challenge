@@ -6,7 +6,7 @@ import java.util.Optional;
 
 public interface SafeboxRepository {
 
-    Optional<Safebox> findById(Long id);
+    Optional<Safebox> findById(String id);
 
     Optional<Safebox> findByOwner(String owner);
 
