@@ -3,11 +3,9 @@ package com.rviewer.skeletons.infrastructure.persistence.dao;
 import lombok.Getter;
 import lombok.Setter;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.OneToMany;
+import javax.persistence.*;
 import java.util.List;
+import java.util.UUID;
 
 @Getter
 @Setter
@@ -15,15 +13,14 @@ import java.util.List;
 public class SafeboxDao {
     @Id
     @Column(name = "ID")
-    private Long id;
+    @GeneratedValue
+    private UUID id;
 
     @Column(name = "OWNER", unique = true, nullable = false)
     private String owner;
 
-    @Column(name = "LOCKED", nullable = false)
-    private Boolean locked;
-
-    @OneToMany
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "SAFEBOX_ID")
     private List<ItemDao> itemList;
 
 
