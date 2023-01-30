@@ -1,11 +1,13 @@
 package com.rviewer.skeletons.application.service.impl;
 
-import com.rviewer.skeletons.application.model.SafeboxIdItemsGet200Response;
-import com.rviewer.skeletons.application.model.SafeboxPost200Response;
+import com.rviewer.skeletons.application.model.ItemListDto;
+import com.rviewer.skeletons.application.model.SafeboxDto;
 import com.rviewer.skeletons.application.service.SafeboxApplicationService;
 import com.rviewer.skeletons.domain.model.Item;
+import com.rviewer.skeletons.domain.model.Safebox;
 import com.rviewer.skeletons.domain.service.SafeboxService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,9 +23,10 @@ public class SafeboxApplicationServiceImpl implements SafeboxApplicationService 
 
     @Override
     @Transactional
-    public ResponseEntity<SafeboxPost200Response> createSafebox(String owner) {
-        safeboxService.createSafebox(owner);
-        return ResponseEntity.ok().build();
+    public ResponseEntity<SafeboxDto> createSafebox(String owner) {
+        Safebox newSafebox = safeboxService.createSafebox(owner);
+        SafeboxDto safeboxDto = new SafeboxDto().id(newSafebox.getId().toString());
+        return new ResponseEntity<>(safeboxDto, HttpStatus.CREATED);
     }
 
     @Override
@@ -38,9 +41,9 @@ public class SafeboxApplicationServiceImpl implements SafeboxApplicationService 
     }
 
     @Override
-    public ResponseEntity<SafeboxIdItemsGet200Response> getSafeboxItems(String safeboxId) {
+    public ResponseEntity<ItemListDto> getSafeboxItems(String safeboxId) {
         List<Item> itemList = safeboxService.getSafeboxItems(safeboxId);
         List<String> itemDetails = itemList.stream().map(Item::getDetail).collect(Collectors.toList());
-        return ResponseEntity.ok().body(new SafeboxIdItemsGet200Response().items(itemDetails));
+        return ResponseEntity.ok().body(new ItemListDto().items(itemDetails));
     }
 }

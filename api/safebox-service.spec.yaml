@@ -19,30 +19,14 @@ paths:
         content:
           application/json:
             schema:
-              type: object
-              properties:
-                owner:
-                  description: Safebox Owner
-                  type: string
-              required:
-                - owner
-              example:
-                owner: Myself
+              $ref: '#/components/schemas/CreateSafeboxRequest'
       responses:
-        '200':
+        '201':
           description: Safebox correctly created
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  id:
-                    description: Safebox id
-                    type: string
-                required:
-                  - id
-                example:
-                  id: f626c808-648c-41fe-865d-c6062f3e0899
+                $ref: '#/components/schemas/Safebox'
         '409':
           description: Safebox already exists
         '422':
@@ -69,28 +53,11 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  items:
-                    description: Safebox items
-                    type: array
-                    items:
-                      type: string
-                required:
-                  - items
-                example:
-                  items:
-                    - Safebox content 03
-                    - Safebox content 02
-                    - Safebox content 01
-        '401':
-          description: Specified token does not match
+                $ref: '#/components/schemas/ItemList'
         '404':
           description: Requested safebox does not exist
         '422':
           description: Malformed expected data
-        '423':
-          description: Requested safebox is locked
         '500':
           description: Unexpected API error
     put:
@@ -111,26 +78,10 @@ paths:
         content:
           application/json:
             schema:
-              type: object
-              properties:
-                items:
-                  description: Safebox items
-                  type: array
-                  items:
-                    type: string
-              required:
-                - items
-              example:
-                items:
-                  - Safebox content 03
-                  - Safebox content 02
-                  - Safebox content 01
-                  - New safebox content
+              $ref: '#/components/schemas/ItemList'
       responses:
         '200':
           description: Content correctly added to the safebox
-        '401':
-          description: Specified token does not match
         '404':
           description: Requested safebox does not exist
         '422':
@@ -140,6 +91,45 @@ paths:
         '500':
           description: Unexpected API error
 components:
+  schemas:
+    Safebox:
+      description: 'Safebox'
+      type: object
+      properties:
+        id:
+          description: Safebox id
+          type: string
+      required:
+        - id
+      example:
+        id: f626c808-648c-41fe-865d-c6062f3e0899
+    ItemList:
+      description: Safebox items
+      type: object
+      properties:
+        items:
+          description: Safebox items
+          type: array
+          items:
+            type: string
+      required:
+        - items
+      example:
+        items:
+          - Safebox content 03
+          - Safebox content 02
+          - Safebox content 01
+    CreateSafeboxRequest:
+      type: object
+      properties:
+        owner:
+          description: Safebox Owner
+          type: string
+      required:
+        - owner
+      example:
+        owner: Myself
+
   securitySchemes:
     bearerToken:
       type: http
