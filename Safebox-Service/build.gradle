@@ -9,9 +9,11 @@ tasks.register('buildServiceServer', GenerateTask) {
     apiPackage = "com.rviewer.skeletons.infrastructure.controller"
     modelPackage = "com.rviewer.skeletons.application.model"
     outputDir = "$buildDir/generated/sources".toString()
+    modelNameSuffix = "Dto"
     configOptions = [
             interfaceOnly: "true",
-            performBeanValidation: "true"
+            performBeanValidation: "true",
+
     ]
 }
 
