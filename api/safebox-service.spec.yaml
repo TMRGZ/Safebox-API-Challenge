@@ -86,8 +86,6 @@ paths:
           description: Requested safebox does not exist
         '422':
           description: Malformed expected data
-        '423':
-          description: Requested safebox is locked
         '500':
           description: Unexpected API error
 components:
