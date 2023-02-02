@@ -31,7 +31,7 @@ class SafeboxApplicationServiceUnitTest {
     @Test
     void createSafeboxUnitTest() {
         Safebox safebox = new Safebox();
-        safebox.setId(UUID.randomUUID());
+        safebox.setId(UUID.randomUUID().toString());
 
         Mockito.when(safeboxService.createSafebox(Mockito.anyString())).thenReturn(safebox);
 

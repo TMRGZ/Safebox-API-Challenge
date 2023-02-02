@@ -2,10 +2,10 @@ package com.rviewer.skeletons.infrastructure.persistence.dao;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import java.util.List;
-import java.util.UUID;
 
 @Getter
 @Setter
@@ -13,8 +13,9 @@ import java.util.UUID;
 public class SafeboxDao {
     @Id
     @Column(name = "ID")
-    @GeneratedValue
-    private UUID id;
+    @GeneratedValue(generator = "system-uuid")
+    @GenericGenerator(name = "system-uuid", strategy = "uuid")
+    private String id;
 
     @Column(name = "OWNER", unique = true, nullable = false)
     private String owner;

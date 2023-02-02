@@ -4,13 +4,12 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.util.List;
-import java.util.UUID;
 
 @Getter
 @Setter
 public class Safebox {
 
-    private UUID id;
+    private String id;
 
     private String owner;
 

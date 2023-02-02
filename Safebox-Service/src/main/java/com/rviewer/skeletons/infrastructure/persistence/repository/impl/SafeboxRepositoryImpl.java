@@ -25,7 +25,7 @@ public class SafeboxRepositoryImpl implements SafeboxRepository {
 
     @Override
     public Optional<Safebox> findById(String id) {
-        return safeboxRepository.findById(UUID.fromString(id)).map(safeboxDao -> safeboxDaoMapper.map(safeboxDao));
+        return safeboxRepository.findById(id).map(safeboxDao -> safeboxDaoMapper.map(safeboxDao));
     }
 
     @Override
