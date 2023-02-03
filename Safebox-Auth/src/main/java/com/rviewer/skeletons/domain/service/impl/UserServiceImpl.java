@@ -6,6 +6,7 @@ import com.rviewer.skeletons.domain.model.event.EventTypeEnum;
 import com.rviewer.skeletons.domain.model.user.User;
 import com.rviewer.skeletons.domain.model.user.UserHistory;
 import com.rviewer.skeletons.domain.repository.UserRepository;
+import com.rviewer.skeletons.domain.service.PasswordService;
 import com.rviewer.skeletons.domain.service.TokenService;
 import com.rviewer.skeletons.domain.service.UserService;
 import lombok.AllArgsConstructor;
@@ -18,6 +19,8 @@ import java.util.Date;
 public class UserServiceImpl implements UserService {
 
     private TokenService tokenService;
+
+    private PasswordService passwordService;
 
     private UserRepository userRepository;
 
@@ -32,7 +35,7 @@ public class UserServiceImpl implements UserService {
         UserHistory userHistory = new UserHistory();
 
         user.setUsername(username);
-        user.setPassword(password);
+        user.setPassword(passwordService.encodePassword(password));
         user.setUserHistory(Collections.singletonList(userHistory));
 
         userHistory.setEventDate(new Date());
@@ -61,7 +64,7 @@ public class UserServiceImpl implements UserService {
         newHistory.setCurrentTries(lastHistory.getCurrentTries());
 
         boolean isLocked = BooleanUtils.isTrue(lastHistory.getLocked());
-        boolean badPassword = !userToLogin.getPassword().equals(password);
+        boolean badPassword = passwordService.checkPassword(userToLogin.getPassword(), password);
         if (isLocked || badPassword) {
             newHistory.setEventResultEnum(EventResultEnum.FAILED);
             newHistory.setCurrentTries(newHistory.getCurrentTries() + 1);
