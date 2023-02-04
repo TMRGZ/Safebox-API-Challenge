@@ -77,6 +77,11 @@ public class UserServiceImpl implements UserService {
 
         if (isLocked) throw new UserIsLockedException();
         if (badPassword) throw new BadPasswordException();
-        return tokenService.generateToken(userToLogin);
+    }
+
+    @Override
+    public String generateUserToken(String userId) {
+        safeboxUserRepository.findById(userId).orElseThrow(UserDoesNotExistException::new);
+        return tokenService.generateToken(userId);
     }
 }

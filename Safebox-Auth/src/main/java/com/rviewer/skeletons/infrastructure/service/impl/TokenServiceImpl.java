@@ -1,6 +1,5 @@
 package com.rviewer.skeletons.infrastructure.service.impl;
 
-import com.rviewer.skeletons.domain.model.user.User;
 import com.rviewer.skeletons.domain.service.TokenService;
 import com.rviewer.skeletons.infrastructure.config.AppConfig;
 import io.jsonwebtoken.JwtException;
@@ -23,8 +22,8 @@ public class TokenServiceImpl implements TokenService {
     private AppConfig appConfig;
 
     @Override
-    public String generateToken(User user) {
-        return createToken(new HashMap<>(), user.getUsername());
+    public String generateToken(String userId) {
+        return createToken(new HashMap<>(), userId);
     }
 
     @Override

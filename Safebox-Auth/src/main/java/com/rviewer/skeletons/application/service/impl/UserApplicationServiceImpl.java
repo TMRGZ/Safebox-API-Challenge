@@ -1,10 +1,10 @@
 package com.rviewer.skeletons.application.service.impl;
 
-import com.rviewer.skeletons.application.model.SafeboxAuthIdKeyGet200ResponseDto;
-import com.rviewer.skeletons.application.model.SafeboxAuthPost200ResponseDto;
-import com.rviewer.skeletons.application.model.SafeboxAuthPostRequestDto;
+import com.rviewer.skeletons.application.model.LoginResponseDto;
+import com.rviewer.skeletons.application.model.RegisteredUserDto;
+import com.rviewer.skeletons.application.model.UserDto;
 import com.rviewer.skeletons.application.service.UserApplicationService;
-import com.rviewer.skeletons.domain.model.user.User;
+import com.rviewer.skeletons.domain.model.user.SafeboxUser;
 import com.rviewer.skeletons.domain.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -19,17 +19,15 @@ public class UserApplicationServiceImpl implements UserApplicationService {
 
     @Override
     @Transactional
-    public ResponseEntity<SafeboxAuthPost200ResponseDto> createUser(SafeboxAuthPostRequestDto request) {
-        User newUser = userService.createUser(request.getName(), request.getPassword());
-
-        return ResponseEntity.ok(new SafeboxAuthPost200ResponseDto().id(newUser.getId()));
+    public ResponseEntity<RegisteredUserDto> createUser(UserDto request) {
+        SafeboxUser newSafeboxUser = userService.createUser(request.getUsername(), request.getPassword());
+        return ResponseEntity.ok(new RegisteredUserDto().id(newSafeboxUser.getId()));
     }
 
     @Override
     @Transactional
-    public ResponseEntity<SafeboxAuthIdKeyGet200ResponseDto> loginUser() {
-        String token = userService.loginUser("", "");
-
-        return ResponseEntity.ok(new SafeboxAuthIdKeyGet200ResponseDto().token(token));
+    public ResponseEntity<LoginResponseDto> loginUser(String userId) {
+        String token = userService.generateUserToken(userId);
+        return ResponseEntity.ok(new LoginResponseDto().token(token));
     }
 }

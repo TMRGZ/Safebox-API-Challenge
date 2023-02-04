@@ -1,14 +1,14 @@
 package com.rviewer.skeletons.application.service;
 
-import com.rviewer.skeletons.application.model.SafeboxAuthIdKeyGet200ResponseDto;
-import com.rviewer.skeletons.application.model.SafeboxAuthPost200ResponseDto;
-import com.rviewer.skeletons.application.model.SafeboxAuthPostRequestDto;
+import com.rviewer.skeletons.application.model.LoginResponseDto;
+import com.rviewer.skeletons.application.model.RegisteredUserDto;
+import com.rviewer.skeletons.application.model.UserDto;
 import org.springframework.http.ResponseEntity;
 
 public interface UserApplicationService {
 
-    ResponseEntity<SafeboxAuthPost200ResponseDto> createUser(SafeboxAuthPostRequestDto request);
+    ResponseEntity<RegisteredUserDto> createUser(UserDto request);
 
-    ResponseEntity<SafeboxAuthIdKeyGet200ResponseDto> loginUser();
+    ResponseEntity<LoginResponseDto> loginUser(String userId);
 
 }

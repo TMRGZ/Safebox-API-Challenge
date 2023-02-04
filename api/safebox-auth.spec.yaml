@@ -7,54 +7,34 @@ info:
   title: SafeIsh Auth API
 
 paths:
-  /safebox-auth:
+  /safebox-auth/user:
     post:
-      summary: Creates a new safebox
+      summary: Registers a new user
       description: |
-        Creates a new safebox based on a non-empty name and a password.
+        Creates a new user based on a non-empty name and a password.
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              type: object
-              properties:
-                name:
-                  description: Safebox Name
-                  type: string
-                password:
-                  description: Safebox Password
-                  type: string
-              required:
-                - name
-                - password
-              example:
-                name: Secure safebox 01
-                password: extremelySecurePassword
+              $ref: '#/components/schemas/User'
       responses:
-        '200':
-          description: Safebox correctly created
+        '201':
+          description: User registered
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  id:
-                    description: Safebox id
-                    type: string
-                required:
-                  - id
-                example:
-                  id: f626c808-648c-41fe-865d-c6062f3e0899
+                $ref: '#/components/schemas/RegisteredUser'
         '409':
-          description: Safebox already exists
+          description: Username already registered
         '422':
           description: Malformed expected data
         '500':
           description: Unexpected API error
-  /safebox-auth/{id}/key:
-    get:
-      summary: Get a safebox key
+
+  /safebox-auth/{id}/login:
+    post:
+      summary: Login the user
       description: |
         Gets a safebox key retrieved by the given ID and with the specified user & password.
       security:
@@ -62,34 +42,65 @@ paths:
       parameters:
         - in: path
           name: id
-          description: Safebox id
+          description: User id
           required: true
           schema:
             type: string
       responses:
         '200':
-          description: Safebox correctly opened
+          description: User correctly logged in
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  token:
-                    description: Token for future actions over an opening safebox
-                    type: string
-                required:
-                  - id
-                example:
-                  token: RkbfZSW5MmcK3b7kcgg
+                $ref: '#/components/schemas/LoginResponse'
         '404':
-          description: Requested safebox does not exist
+          description: User id not found
         '422':
-          description: Malformed expected data
+          description: Username or password are wrong
         '423':
-          description: Requested safebox is locked
+          description: User is locked
         '500':
           description: Unexpected API error
 components:
+  schemas:
+    User:
+      description: 'User'
+      type: object
+      properties:
+        username:
+          description: Username of the user
+          type: string
+        password:
+          description: Desired user password
+          type: string
+      required:
+        - username
+        - password
+      example:
+        username: Secure user 01
+        password: extremelySecurePassword
+    RegisteredUser:
+      description: Response for user registration
+      type: object
+      properties:
+        id:
+          description: Generated ID for the user
+          type: string
+      required:
+        - id
+      example:
+        id: f626c808-648c-41fe-865d-c6062f3e0899
+    LoginResponse:
+      description: Response for login operation
+      type: object
+      properties:
+        token:
+          description: Token for future actions over a login
+          type: string
+      required:
+        - token
+      example:
+        token: RkbfZSW5MmcK3b7kcgg
   securitySchemes:
     basicPassword:
       type: http
