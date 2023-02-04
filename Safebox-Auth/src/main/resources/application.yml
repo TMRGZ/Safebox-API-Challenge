@@ -12,3 +12,5 @@ spring:
 
 appconfig:
   maxTries: 3
+  tokenSecret: THIS_IS_JUST_A_SECRET_TO_GENERATE_A_JWT
+  tokenExpirationMinutes: 3

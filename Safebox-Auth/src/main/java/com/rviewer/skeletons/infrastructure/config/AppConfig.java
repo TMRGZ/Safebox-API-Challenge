@@ -16,4 +16,10 @@ public class AppConfig {
     @NotNull
     private Long maxTries;
 
+    @NotNull
+    private String tokenSecret;
+
+    @NotNull
+    private Integer tokenExpirationMinutes;
+
 }
