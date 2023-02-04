@@ -1,6 +1,7 @@
 package com.rviewer.skeletons.infrastructure.manager.impl;
 
 import com.rviewer.skeletons.domain.exception.BadPasswordException;
+import com.rviewer.skeletons.domain.exception.UserDoesNotExistException;
 import com.rviewer.skeletons.domain.exception.UserIsLockedException;
 import com.rviewer.skeletons.domain.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +12,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 @Component
 public class SafeboxAuthenticationManager implements AuthenticationManager {
@@ -19,6 +21,7 @@ public class SafeboxAuthenticationManager implements AuthenticationManager {
     private UserService userService;
 
     @Override
+    @Transactional
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
         String name = authentication.getName();
         String password = authentication.getCredentials().toString();
@@ -28,7 +31,7 @@ public class SafeboxAuthenticationManager implements AuthenticationManager {
 
         } catch (UserIsLockedException lockedException){
             throw new LockedException("The account is locked");
-        } catch (BadPasswordException passwordException) {
+        } catch (BadPasswordException | UserDoesNotExistException authException) {
             throw new BadCredentialsException("Username or password wrong");
         }
 
