@@ -2,6 +2,7 @@ package com.rviewer.skeletons.infrastructure.persistence.dao;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import java.util.List;
@@ -12,6 +13,8 @@ import java.util.List;
 public class UserDao {
     @Id
     @Column(name = "ID")
+    @GeneratedValue(generator = "system-uuid")
+    @GenericGenerator(name = "system-uuid", strategy = "uuid")
     private String id;
 
     @Column(name = "USERNAME", nullable = false, unique = true, updatable = false)
