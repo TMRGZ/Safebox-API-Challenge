@@ -9,7 +9,7 @@ import java.util.Date;
 
 @Getter
 @Setter
-public class UserHistory {
+public class SafeboxUserHistory {
 
     private String id;
 

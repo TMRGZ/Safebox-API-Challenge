@@ -1,7 +1,7 @@
 package com.rviewer.skeletons.infrastructure.persistence.repository.impl;
 
-import com.rviewer.skeletons.domain.model.user.User;
-import com.rviewer.skeletons.domain.repository.UserRepository;
+import com.rviewer.skeletons.domain.model.user.SafeboxUser;
+import com.rviewer.skeletons.domain.repository.SafeboxUserRepository;
 import com.rviewer.skeletons.infrastructure.mapper.dao.UserDaoMapper;
 import com.rviewer.skeletons.infrastructure.mapper.domain.UserMapper;
 import com.rviewer.skeletons.infrastructure.persistence.repository.JpaUserRepository;
@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 import java.util.Optional;
 
 @Component
-public class UserRepositoryImpl implements UserRepository {
+public class SafeboxUserRepositoryImpl implements SafeboxUserRepository {
 
     @Autowired
     private JpaUserRepository userRepository;
@@ -23,17 +23,17 @@ public class UserRepositoryImpl implements UserRepository {
     private UserMapper userMapper;
 
     @Override
-    public Optional<User> findById(String id) {
+    public Optional<SafeboxUser> findById(String id) {
         return userRepository.findById(id).map(userDao -> userDaoMapper.map(userDao));
     }
 
     @Override
-    public Optional<User> findByUsername(String username) {
+    public Optional<SafeboxUser> findByUsername(String username) {
         return userRepository.findByUsername(username).map(userDao -> userDaoMapper.map(userDao));
     }
 
     @Override
-    public User save(User user) {
-        return userDaoMapper.map(userRepository.save(userMapper.map(user)));
+    public SafeboxUser save(SafeboxUser safeboxUser) {
+        return userDaoMapper.map(userRepository.save(userMapper.map(safeboxUser)));
     }
 }

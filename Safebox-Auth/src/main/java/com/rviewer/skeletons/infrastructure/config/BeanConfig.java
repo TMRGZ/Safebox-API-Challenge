@@ -1,6 +1,6 @@
 package com.rviewer.skeletons.infrastructure.config;
 
-import com.rviewer.skeletons.domain.repository.UserRepository;
+import com.rviewer.skeletons.domain.repository.SafeboxUserRepository;
 import com.rviewer.skeletons.domain.service.PasswordService;
 import com.rviewer.skeletons.domain.service.TokenService;
 import com.rviewer.skeletons.domain.service.UserService;
@@ -12,8 +12,7 @@ import org.springframework.context.annotation.Configuration;
 public class BeanConfig {
 
     @Bean
-    public UserService userService(TokenService tokenService, PasswordService passwordService, UserRepository userRepository) {
+    public UserService userService(TokenService tokenService, PasswordService passwordService, SafeboxUserRepository userRepository) {
         return new UserServiceImpl(tokenService, passwordService, userRepository);
     }
-
 }

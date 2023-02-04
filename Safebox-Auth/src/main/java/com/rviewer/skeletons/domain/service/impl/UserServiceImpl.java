@@ -3,9 +3,9 @@ package com.rviewer.skeletons.domain.service.impl;
 import com.rviewer.skeletons.domain.exception.*;
 import com.rviewer.skeletons.domain.model.event.EventResultEnum;
 import com.rviewer.skeletons.domain.model.event.EventTypeEnum;
-import com.rviewer.skeletons.domain.model.user.User;
-import com.rviewer.skeletons.domain.model.user.UserHistory;
-import com.rviewer.skeletons.domain.repository.UserRepository;
+import com.rviewer.skeletons.domain.model.user.SafeboxUser;
+import com.rviewer.skeletons.domain.model.user.SafeboxUserHistory;
+import com.rviewer.skeletons.domain.repository.SafeboxUserRepository;
 import com.rviewer.skeletons.domain.service.PasswordService;
 import com.rviewer.skeletons.domain.service.TokenService;
 import com.rviewer.skeletons.domain.service.UserService;
@@ -22,40 +22,40 @@ public class UserServiceImpl implements UserService {
 
     private PasswordService passwordService;
 
-    private UserRepository userRepository;
+    private SafeboxUserRepository safeboxUserRepository;
 
 
     @Override
-    public User createUser(String username, String password) {
-        userRepository.findByUsername(username).ifPresent(user -> {
+    public SafeboxUser createUser(String username, String password) {
+        safeboxUserRepository.findByUsername(username).ifPresent(user -> {
             throw new UserAlreadyRegisteredException();
         });
 
-        User user = new User();
-        UserHistory userHistory = new UserHistory();
+        SafeboxUser safeboxUser = new SafeboxUser();
+        SafeboxUserHistory safeboxUserHistory = new SafeboxUserHistory();
 
-        user.setUsername(username);
-        user.setPassword(passwordService.encodePassword(password));
-        user.setUserHistory(Collections.singletonList(userHistory));
+        safeboxUser.setUsername(username);
+        safeboxUser.setPassword(passwordService.encodePassword(password));
+        safeboxUser.setSafeboxUserHistory(Collections.singletonList(safeboxUserHistory));
 
-        userHistory.setEventDate(new Date());
-        userHistory.setEventTypeEnum(EventTypeEnum.CREATION);
-        userHistory.setEventResultEnum(EventResultEnum.SUCCESSFUL);
-        userHistory.setLocked(false);
-        userHistory.setCurrentTries(0L);
+        safeboxUserHistory.setEventDate(new Date());
+        safeboxUserHistory.setEventTypeEnum(EventTypeEnum.CREATION);
+        safeboxUserHistory.setEventResultEnum(EventResultEnum.SUCCESSFUL);
+        safeboxUserHistory.setLocked(false);
+        safeboxUserHistory.setCurrentTries(0L);
 
-        return userRepository.save(user);
+        return safeboxUserRepository.save(safeboxUser);
     }
 
     @Override
-    public String loginUser(String username, String password) {
-        User userToLogin = userRepository.findByUsername(username)
+    public void loginUser(String username, String password) {
+        SafeboxUser safeboxUserToLogin = safeboxUserRepository.findByUsername(username)
                 .orElseThrow(UserDoesNotExistException::new);
-        UserHistory lastHistory = userToLogin.getUserHistory().stream()
+        SafeboxUserHistory lastHistory = safeboxUserToLogin.getSafeboxUserHistory().stream()
                 .findFirst().orElseThrow(SafeboxAuthException::new);
 
-        UserHistory newHistory = new UserHistory();
-        userToLogin.getUserHistory().add(newHistory);
+        SafeboxUserHistory newHistory = new SafeboxUserHistory();
+        safeboxUserToLogin.getSafeboxUserHistory().add(newHistory);
 
         newHistory.setEventDate(new Date());
         newHistory.setEventTypeEnum(EventTypeEnum.LOGIN);
@@ -64,7 +64,7 @@ public class UserServiceImpl implements UserService {
         newHistory.setCurrentTries(lastHistory.getCurrentTries());
 
         boolean isLocked = BooleanUtils.isTrue(lastHistory.getLocked());
-        boolean badPassword = passwordService.checkPassword(userToLogin.getPassword(), password);
+        boolean badPassword = passwordService.checkPassword(safeboxUserToLogin.getPassword(), password);
         if (isLocked || badPassword) {
             newHistory.setEventResultEnum(EventResultEnum.FAILED);
             newHistory.setCurrentTries(newHistory.getCurrentTries() + 1);
@@ -73,7 +73,7 @@ public class UserServiceImpl implements UserService {
             newHistory.setCurrentTries(0L);
         }
 
-        userToLogin = userRepository.save(userToLogin);
+        safeboxUserRepository.save(safeboxUserToLogin);
 
         if (isLocked) throw new UserIsLockedException();
         if (badPassword) throw new BadPasswordException();

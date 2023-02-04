@@ -1,7 +1,7 @@
 package com.rviewer.skeletons.infrastructure.mapper.domain;
 
-import com.rviewer.skeletons.domain.model.user.User;
-import com.rviewer.skeletons.domain.model.user.UserHistory;
+import com.rviewer.skeletons.domain.model.user.SafeboxUser;
+import com.rviewer.skeletons.domain.model.user.SafeboxUserHistory;
 import com.rviewer.skeletons.infrastructure.persistence.dao.UserDao;
 import com.rviewer.skeletons.infrastructure.persistence.dao.UserHistoryDao;
 import org.modelmapper.Conditions;
@@ -26,18 +26,18 @@ public class UserMapper {
 
     @PostConstruct
     public void setup() {
-        TypeMap<User, UserDao> propertyMapper = modelMapper.createTypeMap(User.class, UserDao.class);
-        Converter<List<UserHistory>, List<UserHistoryDao>> domainToDao = domain -> userHistoryMapper.map(domain.getSource());
+        TypeMap<SafeboxUser, UserDao> propertyMapper = modelMapper.createTypeMap(SafeboxUser.class, UserDao.class);
+        Converter<List<SafeboxUserHistory>, List<UserHistoryDao>> domainToDao = domain -> userHistoryMapper.map(domain.getSource());
         propertyMapper.addMappings(
-                mapper -> mapper.when(Conditions.isNotNull()).using(domainToDao).map(User::getUserHistory, UserDao::setUserHistory)
+                mapper -> mapper.when(Conditions.isNotNull()).using(domainToDao).map(SafeboxUser::getSafeboxUserHistory, UserDao::setUserHistory)
         );
     }
 
-    public UserDao map(User user) {
-        return modelMapper.map(user, UserDao.class);
+    public UserDao map(SafeboxUser safeboxUser) {
+        return modelMapper.map(safeboxUser, UserDao.class);
     }
 
-    public List<UserDao> map(List<User> userList) {
-        return userList.stream().map(this::map).collect(Collectors.toList());
+    public List<UserDao> map(List<SafeboxUser> safeboxUserList) {
+        return safeboxUserList.stream().map(this::map).collect(Collectors.toList());
     }
 }

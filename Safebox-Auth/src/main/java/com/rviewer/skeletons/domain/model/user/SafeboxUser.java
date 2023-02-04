@@ -7,7 +7,7 @@ import java.util.List;
 
 @Getter
 @Setter
-public class User {
+public class SafeboxUser {
 
     private String id;
 
@@ -15,6 +15,6 @@ public class User {
 
     private String password;
 
-    private List<UserHistory> userHistory;
+    private List<SafeboxUserHistory> safeboxUserHistory;
 
 }
