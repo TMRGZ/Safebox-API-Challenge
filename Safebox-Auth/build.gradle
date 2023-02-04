@@ -9,7 +9,7 @@ tasks.register('buildAuthServer', GenerateTask) {
     apiPackage = "com.rviewer.skeletons.infrastructure.controller"
     modelPackage = "com.rviewer.skeletons.application.model"
     modelNameSuffix = "Dto"
-    outputDir = "$buildDir/generated/sources/authserver".toString()
+    outputDir = "$buildDir/generated/sources".toString()
     configOptions = [
             interfaceOnly: "true",
             performBeanValidation: "true"
