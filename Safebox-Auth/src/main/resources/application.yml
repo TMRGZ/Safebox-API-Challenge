@@ -9,3 +9,6 @@ spring:
     username: rv_user
     password: rv_password
     url: jdbc:postgresql://postgres-skeleton-db:5432/postgres_rv_database
+
+appconfig:
+  maxTries: 3
