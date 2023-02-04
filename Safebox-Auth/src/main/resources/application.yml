@@ -1,0 +1,11 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: Safebox Auth
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    username: rv_user
+    password: rv_password
+    url: jdbc:postgresql://postgres-skeleton-db:5432/postgres_rv_database
