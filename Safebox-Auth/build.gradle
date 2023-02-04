@@ -3,6 +3,10 @@ import org.openapitools.generator.gradle.plugin.tasks.GenerateTask
 group 'com.rviewer.skeletons'
 version '1.0.0'
 
+dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter-security'
+}
+
 tasks.register('buildAuthServer', GenerateTask) {
     generatorName = "spring"
     inputSpec = "$rootDir/api/safebox-auth.spec.yaml"
