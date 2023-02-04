@@ -9,7 +9,7 @@ import java.util.List;
 
 @Getter
 @Setter
-@Entity(name = "USER")
+@Entity(name = "SAFEBOX_USER")
 public class UserDao {
     @Id
     @Column(name = "ID")

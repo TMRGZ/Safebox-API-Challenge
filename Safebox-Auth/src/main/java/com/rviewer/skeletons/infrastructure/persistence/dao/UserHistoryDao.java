@@ -11,7 +11,7 @@ import java.util.Date;
 
 @Getter
 @Setter
-@Entity(name = "USER_HISTORY")
+@Entity(name = "SAFEBOX_USER_HISTORY")
 public class UserHistoryDao {
 
     @Id
