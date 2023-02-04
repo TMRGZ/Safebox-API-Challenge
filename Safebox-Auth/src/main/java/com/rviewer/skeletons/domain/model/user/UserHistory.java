@@ -23,6 +23,4 @@ public class UserHistory {
 
     private Long currentTries;
 
-    private String userId;
-
 }
