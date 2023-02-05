@@ -35,7 +35,7 @@ public class TokenServiceImpl implements TokenService {
                     .setSigningKey(appConfig.getTokenSecret().getBytes())
                     .build();
 
-            jwtParser.parseClaimsJwt(token);
+            jwtParser.parseClaimsJws(token);
 
         } catch (JwtException e) {
             valid = false;
