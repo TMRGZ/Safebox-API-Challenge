@@ -13,6 +13,7 @@ import lombok.AllArgsConstructor;
 import org.apache.commons.lang3.BooleanUtils;
 
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 
 @AllArgsConstructor
@@ -52,7 +53,8 @@ public class UserServiceImpl implements UserService {
         SafeboxUser safeboxUserToLogin = safeboxUserRepository.findByUsername(username)
                 .orElseThrow(UserDoesNotExistException::new);
         SafeboxUserHistory lastHistory = safeboxUserToLogin.getSafeboxUserHistory().stream()
-                .findFirst().orElseThrow(SafeboxAuthException::new);
+                .max(Comparator.comparing(SafeboxUserHistory::getEventDate))
+                .orElseThrow(SafeboxAuthException::new);
 
         SafeboxUserHistory newHistory = new SafeboxUserHistory();
         safeboxUserToLogin.getSafeboxUserHistory().add(newHistory);
@@ -64,7 +66,7 @@ public class UserServiceImpl implements UserService {
         newHistory.setCurrentTries(lastHistory.getCurrentTries());
 
         boolean isLocked = BooleanUtils.isTrue(lastHistory.getLocked());
-        boolean badPassword = passwordService.checkPassword(safeboxUserToLogin.getPassword(), password);
+        boolean badPassword = !passwordService.checkPassword(safeboxUserToLogin.getPassword(), password);
         if (isLocked || badPassword) {
             newHistory.setEventResultEnum(EventResultEnum.FAILED);
             newHistory.setCurrentTries(newHistory.getCurrentTries() + 1);
