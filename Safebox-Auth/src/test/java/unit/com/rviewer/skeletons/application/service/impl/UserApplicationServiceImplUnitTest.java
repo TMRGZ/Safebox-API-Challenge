@@ -38,7 +38,7 @@ class UserApplicationServiceImplUnitTest {
         Assertions.assertNotNull(response.getBody());
         Assertions.assertNotNull(response.getBody().getId());
         Assertions.assertNotNull(response.getStatusCode());
-        Assertions.assertEquals(HttpStatus.OK, response.getStatusCode());
+        Assertions.assertEquals(HttpStatus.CREATED, response.getStatusCode());
         Mockito.verify(userService).createUser(userDto.getUsername(), userDto.getPassword());
     }
 
