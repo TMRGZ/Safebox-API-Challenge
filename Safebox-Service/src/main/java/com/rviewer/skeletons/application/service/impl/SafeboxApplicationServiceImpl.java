@@ -72,7 +72,7 @@ public class SafeboxApplicationServiceImpl implements SafeboxApplicationService 
 
         try {
             List<Item> itemList = safeboxService.getSafeboxItems(safeboxId);
-            List<String> itemDetails = itemList.stream().map(Item::getDetail).collect(Collectors.toList());
+            List<String> itemDetails = itemList.stream().map(Item::getDetail).toList();
             response = ResponseEntity.ok().body(new ItemListDto().items(itemDetails));
 
         } catch (SafeboxDoesNotExistException e) {

@@ -15,6 +15,7 @@ import org.apache.commons.lang3.BooleanUtils;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.Optional;
 
 @AllArgsConstructor
 public class UserServiceImpl implements UserService {
@@ -83,7 +84,12 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public String generateUserToken(String userId) {
-        safeboxUserRepository.findById(userId).orElseThrow(UserDoesNotExistException::new);
+        Optional<SafeboxUser> user = safeboxUserRepository.findById(userId);
+
+        if (user.isEmpty()) {
+            throw new UserDoesNotExistException();
+        }
+
         return tokenService.generateToken(userId);
     }
 }

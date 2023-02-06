@@ -16,6 +16,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 
 @ExtendWith(MockitoExtension.class)
@@ -63,9 +64,10 @@ class SafeboxServiceImplUnitTest {
     @Test
     void addItemsToSafebox_safeboxDoesNotExist_UnitTest() {
         Mockito.when(safeboxRepository.findById(Mockito.anyString())).thenReturn(Optional.empty());
+        List<Item> itemList = Collections.singletonList(new Item("TEST"));
 
         Assertions.assertThrows(SafeboxDoesNotExistException.class,
-                () -> safeboxService.addItemsToSafebox("TEST", Collections.singletonList(new Item("TEST"))));
+                () -> safeboxService.addItemsToSafebox("TEST", itemList));
 
         Mockito.verify(safeboxRepository).findById(Mockito.anyString());
         Mockito.verify(safeboxRepository, Mockito.never()).save(Mockito.any());

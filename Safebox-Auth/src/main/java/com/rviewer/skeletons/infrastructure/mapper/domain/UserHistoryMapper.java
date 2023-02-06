@@ -7,7 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Component
 public class UserHistoryMapper {
@@ -20,6 +19,6 @@ public class UserHistoryMapper {
     }
 
     public List<UserHistoryDao> map(List<SafeboxUserHistory> safeboxUserHistoryList) {
-        return safeboxUserHistoryList.stream().map(this::map).collect(Collectors.toList());
+        return safeboxUserHistoryList.stream().map(this::map).toList();
     }
 }

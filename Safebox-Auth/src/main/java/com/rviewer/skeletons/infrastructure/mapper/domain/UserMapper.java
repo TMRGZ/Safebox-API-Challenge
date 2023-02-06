@@ -13,7 +13,6 @@ import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Component
 public class UserMapper {
@@ -38,6 +37,6 @@ public class UserMapper {
     }
 
     public List<UserDao> map(List<SafeboxUser> safeboxUserList) {
-        return safeboxUserList.stream().map(this::map).collect(Collectors.toList());
+        return safeboxUserList.stream().map(this::map).toList();
     }
 }
