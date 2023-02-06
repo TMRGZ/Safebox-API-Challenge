@@ -11,7 +11,7 @@ tasks.register('buildServiceServer', GenerateTask) {
     outputDir = "$buildDir/generated/sources".toString()
     modelNameSuffix = "Dto"
     configOptions = [
-            interfaceOnly: "true",
+            interfaceOnly        : "true",
             performBeanValidation: "true",
 
     ]

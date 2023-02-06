@@ -13,7 +13,8 @@ issues.
 The CEO of Security-ish, who does not have technical background, has paid for an external consultant to develop the
 new release of the product.
 
-These guys have created an [API definition](api/open-api.spec.yaml) (with OpenAPI) with the main endpoints of it, but once
+These guys have created an [API definition](api/open-api.spec.yaml) (with OpenAPI) with the main endpoints of it, but
+once
 they start coding they broke their collaboration. So the CEO is looking for someone who could help her to create the
 next version of that API.
 

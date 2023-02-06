@@ -32,18 +32,14 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 class SafeboxAuthApiImplIntegrationTest {
 
+    private static final String LOGIN_URL = "/safebox-auth/{id}/login";
+    private static final String REGISTER_URL = "/safebox-auth/user";
     @Autowired
     private MockMvc mockMvc;
-
     @Autowired
     private ObjectMapper objectMapper;
-
     @Autowired
     private JpaUserRepository userRepository;
-
-    private static final String LOGIN_URL = "/safebox-auth/{id}/login";
-
-    private static final String REGISTER_URL = "/safebox-auth/user";
 
     @Test
     void safeboxAuthUserPostIntegrationTest() throws Exception {

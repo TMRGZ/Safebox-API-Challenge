@@ -19,7 +19,7 @@ tasks.register('buildAuthServer', GenerateTask) {
     modelNameSuffix = "Dto"
     outputDir = "$buildDir/generated/sources".toString()
     configOptions = [
-            interfaceOnly: "true",
+            interfaceOnly        : "true",
             performBeanValidation: "true"
     ]
 }

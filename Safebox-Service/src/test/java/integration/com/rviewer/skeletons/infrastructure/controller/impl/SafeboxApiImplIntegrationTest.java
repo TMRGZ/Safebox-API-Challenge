@@ -29,18 +29,14 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 class SafeboxApiImplIntegrationTest {
 
+    private static final String SAFEBOX_URL = "/safebox";
+    private static final String SAFEBOX_ITEMS_URL = "/safebox/{id}/items";
     @Autowired
     private MockMvc mockMvc;
-
     @Autowired
     private ObjectMapper objectMapper;
-
     @Autowired
     private SafeboxRepository safeboxRepository;
-
-    private static final String SAFEBOX_URL = "/safebox";
-
-    private static final String SAFEBOX_ITEMS_URL = "/safebox/{id}/items";
 
     @Test
     void safeboxPostIntegrationTest() throws Exception {
