@@ -14,6 +14,8 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+
 @Component
 public class SafeboxAuthenticationManager implements AuthenticationManager {
 
@@ -21,7 +23,7 @@ public class SafeboxAuthenticationManager implements AuthenticationManager {
     private UserService userService;
 
     @Override
-    @Transactional
+    @Transactional(noRollbackFor = AuthenticationException.class)
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
         String name = authentication.getName();
         String password = authentication.getCredentials().toString();
@@ -29,12 +31,12 @@ public class SafeboxAuthenticationManager implements AuthenticationManager {
         try {
             userService.loginUser(name, password);
 
-        } catch (UserIsLockedException lockedException){
+        } catch (UserIsLockedException lockedException) {
             throw new LockedException("The account is locked");
         } catch (BadPasswordException | UserDoesNotExistException authException) {
             throw new BadCredentialsException("Username or password wrong");
         }
 
-        return new UsernamePasswordAuthenticationToken(authentication.getPrincipal(), authentication.getCredentials());
+        return new UsernamePasswordAuthenticationToken(authentication.getPrincipal(), authentication.getCredentials(), new ArrayList<>());
     }
 }
