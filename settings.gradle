@@ -1,4 +1,5 @@
 rootProject.name = 'Safebox-System'
 include 'Safebox-Auth'
 include 'Safebox-Service'
+include 'Safebox-Main'
 
