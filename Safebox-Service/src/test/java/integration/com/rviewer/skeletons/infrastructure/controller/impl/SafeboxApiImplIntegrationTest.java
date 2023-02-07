@@ -13,9 +13,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.DynamicPropertyRegistry;
+import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.web.util.UriComponentsBuilder;
+import org.testcontainers.containers.RabbitMQContainer;
+import org.testcontainers.junit.jupiter.Container;
+import org.testcontainers.junit.jupiter.Testcontainers;
 
 import java.net.URI;
 import java.util.Collections;
@@ -27,14 +32,29 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest(classes = SafeboxServiceApplication.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureMockMvc
+@Testcontainers
 class SafeboxApiImplIntegrationTest {
 
+    @Container
+    private static RabbitMQContainer rabbitMQContainer = new RabbitMQContainer("rabbitmq:3-management")
+            .withQueue("SAFEBOX_CREATED_USER.QUEUE.TEST");
+
+    @DynamicPropertySource
+    static void configure(DynamicPropertyRegistry registry) {
+        registry.add("spring.rabbitmq.host", rabbitMQContainer::getHost);
+        registry.add("spring.rabbitmq.port", rabbitMQContainer::getAmqpPort);
+    }
+
     private static final String SAFEBOX_URL = "/safebox";
+
     private static final String SAFEBOX_ITEMS_URL = "/safebox/{id}/items";
+
     @Autowired
     private MockMvc mockMvc;
+
     @Autowired
     private ObjectMapper objectMapper;
+
     @Autowired
     private SafeboxRepository safeboxRepository;
 
@@ -116,7 +136,6 @@ class SafeboxApiImplIntegrationTest {
         URI uri = UriComponentsBuilder.fromUriString(SAFEBOX_ITEMS_URL).build(id);
         mockMvc.perform(get(uri)).andExpect(status().isNotFound());
     }
-
 
     @Test
     void safeboxIdItemsPutIntegrationTest() throws Exception {
