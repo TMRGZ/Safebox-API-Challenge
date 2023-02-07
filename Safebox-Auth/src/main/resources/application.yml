@@ -8,9 +8,20 @@ spring:
     driver-class-name: org.postgresql.Driver
     username: rv_user
     password: rv_password
-    url: jdbc:postgresql://postgres-skeleton-db:5432/postgres_rv_database
+    url: jdbc:postgresql://localhost:54321/postgres_rv_database
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: test
+    password: test
 
 appconfig:
   maxTries: 3
   tokenSecret: THIS_IS_JUST_A_SECRET_TO_GENERATE_A_JWT
   tokenExpirationMinutes: 3
+
+safebox-service-messaging-config:
+  exchange: SAFEBOX_CREATED_USER.EXCHANGE
+  queue:  SAFEBOX_CREATED_USER.EXCHANGE.QUEUE
+  routing-key: SAFEBOX_CREATED_USER.EXCHANGE.ROUTINGKEY
+
