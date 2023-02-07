@@ -10,6 +10,16 @@ spring:
     password: rv_password
     driver-class-name: org.postgresql.Driver
     url: jdbc:postgresql://localhost:54320/postgres_rv_database
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: test
+    password: test
   jpa:
     hibernate:
       ddl-auto: update
+
+created-user-queue-config:
+  exchange: SAFEBOX_CREATED_USER.EXCHANGE
+  queue: SAFEBOX_CREATED_USER.QUEUE
+  routing-key: SAFEBOX_CREATED_USER.ROUTINGKEY

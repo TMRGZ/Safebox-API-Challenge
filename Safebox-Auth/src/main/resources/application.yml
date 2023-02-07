@@ -22,6 +22,6 @@ appconfig:
 
 safebox-service-messaging-config:
   exchange: SAFEBOX_CREATED_USER.EXCHANGE
-  queue:  SAFEBOX_CREATED_USER.EXCHANGE.QUEUE
-  routing-key: SAFEBOX_CREATED_USER.EXCHANGE.ROUTINGKEY
+  queue:  SAFEBOX_CREATED_USER.QUEUE
+  routing-key: SAFEBOX_CREATED_USER.ROUTINGKEY
 
