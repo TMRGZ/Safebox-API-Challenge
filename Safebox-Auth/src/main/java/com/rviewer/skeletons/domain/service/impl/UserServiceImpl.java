@@ -7,6 +7,7 @@ import com.rviewer.skeletons.domain.model.user.SafeboxUser;
 import com.rviewer.skeletons.domain.model.user.SafeboxUserHistory;
 import com.rviewer.skeletons.domain.repository.SafeboxUserRepository;
 import com.rviewer.skeletons.domain.service.PasswordService;
+import com.rviewer.skeletons.domain.sender.SafeboxServiceSender;
 import com.rviewer.skeletons.domain.service.TokenService;
 import com.rviewer.skeletons.domain.service.UserService;
 import lombok.AllArgsConstructor;
@@ -25,6 +26,8 @@ public class UserServiceImpl implements UserService {
     private PasswordService passwordService;
 
     private SafeboxUserRepository safeboxUserRepository;
+
+    private SafeboxServiceSender safeboxServiceSender;
 
 
     @Override
@@ -46,7 +49,10 @@ public class UserServiceImpl implements UserService {
         safeboxUserHistory.setLocked(false);
         safeboxUserHistory.setCurrentTries(0L);
 
-        return safeboxUserRepository.save(safeboxUser);
+        SafeboxUser savedUser = safeboxUserRepository.save(safeboxUser);
+        safeboxServiceSender.send(savedUser.getId());
+
+        return savedUser;
     }
 
     @Override
