@@ -6,6 +6,7 @@ import com.rviewer.skeletons.domain.model.event.EventTypeEnum;
 import com.rviewer.skeletons.domain.model.user.SafeboxUser;
 import com.rviewer.skeletons.domain.model.user.SafeboxUserHistory;
 import com.rviewer.skeletons.domain.repository.SafeboxUserRepository;
+import com.rviewer.skeletons.domain.sender.SafeboxServiceSender;
 import com.rviewer.skeletons.domain.service.PasswordService;
 import com.rviewer.skeletons.domain.service.TokenService;
 import com.rviewer.skeletons.domain.service.impl.UserServiceImpl;
@@ -38,6 +39,9 @@ class UserServiceImplUnitTest {
     @Mock
     private SafeboxUserRepository safeboxUserRepository;
 
+    @Mock
+    private SafeboxServiceSender safeboxServiceSender;
+
     @Test
     void createUserUnitTest() {
         String username = "TEST";
@@ -68,6 +72,7 @@ class UserServiceImplUnitTest {
         Mockito.verify(safeboxUserRepository).findByUsername(username);
         Mockito.verify(passwordService).encodePassword(password);
         Mockito.verify(safeboxUserRepository).save(Mockito.any());
+        Mockito.verify(safeboxServiceSender).send(Mockito.any());
     }
 
     @Test
