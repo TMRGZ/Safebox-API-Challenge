@@ -1,0 +1,15 @@
+server:
+  port: 8081
+
+spring:
+  application:
+    name: Safebox Service
+
+  datasource:
+    username: rv_user
+    password: rv_password
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:54320/postgres_rv_database
+  jpa:
+    hibernate:
+      ddl-auto: update
