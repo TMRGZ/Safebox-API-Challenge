@@ -1,0 +1,6 @@
+server:
+  port: 8080
+
+endpoints:
+  safebox-auth: test
+  safebox-service: test
