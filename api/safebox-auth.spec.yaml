@@ -9,6 +9,9 @@ info:
 paths:
   /safebox-auth/user:
     post:
+      tags:
+        - User
+      operationId: post-user
       summary: Registers a new user
       description: |
         Creates a new user based on a non-empty name and a password.
@@ -34,6 +37,9 @@ paths:
 
   /safebox-auth/{id}/login:
     post:
+      tags:
+        - Login
+      operationId: login-user
       summary: Login the user
       description: |
         Gets a safebox key retrieved by the given ID and with the specified user & password.
