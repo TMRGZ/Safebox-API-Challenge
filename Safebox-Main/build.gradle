@@ -3,17 +3,52 @@ import org.openapitools.generator.gradle.plugin.tasks.GenerateTask
 group 'com.rviewer.skeletons'
 version '1.0.0'
 
-tasks.register('buildMainServer', GenerateTask) {
-	generatorName = "spring"
-	inputSpec = "$rootDir/api/open-api.spec.yaml"
-	apiPackage = "com.rviewer.skeletons.infrastructure.controller"
-	modelPackage = "com.rviewer.skeletons.application.model"
-	outputDir = "$buildDir/generated/sources".toString()
-	modelNameSuffix = "Dto"
-	configOptions = [
-			interfaceOnly        : "true",
-			performBeanValidation: "true",
-	]
+
+dependencies {
+    implementation 'io.swagger:swagger-annotations:1.6.8'
+    implementation 'com.google.code.findbugs:jsr305:3.0.2'
+    testImplementation 'org.springframework.cloud:spring-cloud-contract-wiremock:3.1.5'
 }
 
-tasks.compileJava.dependsOn(buildMainServer)
+tasks.register('buildMainServer', GenerateTask) {
+    generatorName = "spring"
+    inputSpec = "$rootDir/api/open-api.spec.yaml"
+    apiPackage = "com.rviewer.skeletons.infrastructure.controller"
+    modelPackage = "com.rviewer.skeletons.application.model"
+    outputDir = "$buildDir/generated/sources".toString()
+    modelNameSuffix = "Dto"
+    configOptions = [
+            interfaceOnly        : "true",
+            performBeanValidation: "true",
+    ]
+}
+
+tasks.register('buildAuthClient', GenerateTask) {
+    generatorName = "java"
+    library = "resttemplate"
+    inputSpec = "$rootDir/api/safebox-auth.spec.yaml"
+    apiPackage = "com.rviewer.skeletons.infrastructure.rest.safebox.auth"
+    modelPackage = "com.rviewer.skeletons.application.model.safebox.auth"
+    outputDir = "$buildDir/generated/sources".toString()
+    modelNameSuffix = "Dto"
+    configOptions = [
+            generateApiDocumentation: "false",
+            generateApiTests        : "false"
+    ]
+}
+
+tasks.register('buildServiceClient', GenerateTask) {
+    generatorName = "java"
+    library = "resttemplate"
+    inputSpec = "$rootDir/api/safebox-service.spec.yaml"
+    apiPackage = "com.rviewer.skeletons.infrastructure.rest.safebox.service"
+    modelPackage = "com.rviewer.skeletons.application.model.safebox.service"
+    outputDir = "$buildDir/generated/sources".toString()
+    modelNameSuffix = "Dto"
+    configOptions = [
+            generateApiDocumentation: "false",
+            generateApiTests        : "false"
+    ]
+}
+
+tasks.compileJava.dependsOn(buildMainServer, buildAuthClient, buildServiceClient)
