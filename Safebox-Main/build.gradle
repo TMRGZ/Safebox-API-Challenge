@@ -28,6 +28,7 @@ tasks.register('buildAuthClient', GenerateTask) {
     library = "resttemplate"
     inputSpec = "$rootDir/api/safebox-auth.spec.yaml"
     apiPackage = "com.rviewer.skeletons.infrastructure.rest.safebox.auth"
+    invokerPackage = "com.rviewer.skeletons.infrastructure.rest.safebox.auth.invoker"
     modelPackage = "com.rviewer.skeletons.application.model.safebox.auth"
     outputDir = "$buildDir/generated/sources".toString()
     modelNameSuffix = "Dto"
@@ -42,6 +43,7 @@ tasks.register('buildServiceClient', GenerateTask) {
     library = "resttemplate"
     inputSpec = "$rootDir/api/safebox-service.spec.yaml"
     apiPackage = "com.rviewer.skeletons.infrastructure.rest.safebox.service"
+    invokerPackage = "com.rviewer.skeletons.infrastructure.rest.safebox.service.invoker"
     modelPackage = "com.rviewer.skeletons.application.model.safebox.service"
     outputDir = "$buildDir/generated/sources".toString()
     modelNameSuffix = "Dto"

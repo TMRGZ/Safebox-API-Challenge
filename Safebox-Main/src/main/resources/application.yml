@@ -2,5 +2,7 @@ server:
   port: 8080
 
 endpoints:
-  safebox-auth: test
-  safebox-service: test
+  safebox-auth:
+    url: http://localhost:8081
+  safebox-service:
+    url: test

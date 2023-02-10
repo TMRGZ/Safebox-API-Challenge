@@ -1,9 +1,8 @@
-package com.rviewer.skeletons.infrastructure.config;
+package com.rviewer.skeletons.infrastructure.config.endpoint;
 
-import com.rviewer.skeletons.infrastructure.rest.safebox.ApiClient;
 import com.rviewer.skeletons.infrastructure.rest.safebox.auth.LoginApi;
 import com.rviewer.skeletons.infrastructure.rest.safebox.auth.UserApi;
-import com.rviewer.skeletons.infrastructure.rest.safebox.service.SafeboxServiceApi;
+import com.rviewer.skeletons.infrastructure.rest.safebox.auth.invoker.ApiClient;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -15,30 +14,23 @@ import javax.validation.constraints.NotNull;
 @Getter
 @Setter
 @Configuration
-@ConfigurationProperties(prefix = "endpoints")
-public class EndpointsConfig {
+@ConfigurationProperties(prefix = "endpoints.safebox-auth")
+public class AuthEndpointConfig {
 
     @NotNull
-    private String safeboxAuth;
-
-    @NotNull
-    private String safeboxService;
+    private String url;
 
     @Bean
     public LoginApi loginApi(ApiClient apiClient) {
-        apiClient.setBasePath(safeboxAuth);
+        apiClient.setBasePath(url);
         return new LoginApi(apiClient);
     }
 
     @Bean
     public UserApi userApi(ApiClient apiClient) {
-        apiClient.setBasePath(safeboxAuth);
+        apiClient.setBasePath(url);
         return new UserApi(apiClient);
     }
 
-    @Bean
-    public SafeboxServiceApi safeboxServiceApi(ApiClient apiClient) {
-        apiClient.setBasePath(safeboxService);
-        return new SafeboxServiceApi(apiClient);
-    }
+
 }
