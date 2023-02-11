@@ -1,6 +1,6 @@
 package unit.com.rviewer.skeletons.infrastructure.service.impl;
 
-import com.rviewer.skeletons.application.model.safebox.auth.LoginResponseDto;
+import com.rviewer.skeletons.application.model.safebox.auth.AuthLoginResponseDto;
 import com.rviewer.skeletons.infrastructure.rest.safebox.auth.LoginApi;
 import com.rviewer.skeletons.infrastructure.rest.safebox.auth.invoker.ApiClient;
 import com.rviewer.skeletons.infrastructure.service.impl.LoginServiceImpl;
@@ -31,10 +31,10 @@ class LoginServiceImplUnitTest {
         String username = "TEST";
         String password = "TEST";
         String token = "TOKEN";
-        Mockito.when(loginApi.loginUser("")).thenReturn(new LoginResponseDto().token(token));
+        Mockito.when(loginApi.loginUser()).thenReturn(new AuthLoginResponseDto().token(token));
 
         loginService.loginUser(username, password);
 
-        Mockito.verify(loginApi).loginUser("");
+        Mockito.verify(loginApi).loginUser();
     }
 }

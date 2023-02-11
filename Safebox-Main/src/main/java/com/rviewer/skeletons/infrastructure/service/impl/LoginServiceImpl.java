@@ -1,6 +1,6 @@
 package com.rviewer.skeletons.infrastructure.service.impl;
 
-import com.rviewer.skeletons.application.model.safebox.auth.LoginResponseDto;
+import com.rviewer.skeletons.application.model.safebox.auth.AuthLoginResponseDto;
 import com.rviewer.skeletons.domain.service.LoginService;
 import com.rviewer.skeletons.infrastructure.rest.safebox.auth.LoginApi;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +17,7 @@ public class LoginServiceImpl implements LoginService {
         loginApi.getApiClient().setUsername(username);
         loginApi.getApiClient().setPassword(password);
 
-        LoginResponseDto loginResponseDto = loginApi.loginUser("");
+        AuthLoginResponseDto loginResponseDto = loginApi.loginUser();
 
         return loginResponseDto.getToken();
     }

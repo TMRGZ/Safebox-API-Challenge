@@ -7,8 +7,8 @@ import com.rviewer.skeletons.application.model.CreateSafeboxRequestDto;
 import com.rviewer.skeletons.application.model.CreatedSafeboxDto;
 import com.rviewer.skeletons.application.model.ItemListDto;
 import com.rviewer.skeletons.application.model.SafeboxKeyDto;
-import com.rviewer.skeletons.application.model.safebox.auth.LoginResponseDto;
-import com.rviewer.skeletons.application.model.safebox.auth.RegisteredUserDto;
+import com.rviewer.skeletons.application.model.safebox.auth.AuthLoginResponseDto;
+import com.rviewer.skeletons.application.model.safebox.auth.AuthRegisteredUserDto;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -59,7 +59,7 @@ class SafeboxApiImplIntegrationTest {
         createSafeboxRequestDto.setName("TEST-USER");
         createSafeboxRequestDto.setPassword("TEST-PASSWORD");
 
-        RegisteredUserDto registeredUserDto = new RegisteredUserDto();
+        AuthRegisteredUserDto registeredUserDto = new AuthRegisteredUserDto();
         registeredUserDto.setId("TEST-ID");
 
         URI safeboxAuthUserUri = URI.create(SAFEBOX_AUTH_POST_USER_URL);
@@ -134,7 +134,7 @@ class SafeboxApiImplIntegrationTest {
         String password = "TEST-PASSWORD";
         String token = "TOKEN";
 
-        LoginResponseDto loginResponseDto = new LoginResponseDto();
+        AuthLoginResponseDto loginResponseDto = new AuthLoginResponseDto();
         loginResponseDto.setToken(token);
 
         URI safeboxAuthLoginUri = URI.create(SAFEBOX_AUTH_LOGIN_URL);

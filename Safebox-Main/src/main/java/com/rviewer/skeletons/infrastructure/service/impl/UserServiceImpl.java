@@ -1,7 +1,7 @@
 package com.rviewer.skeletons.infrastructure.service.impl;
 
-import com.rviewer.skeletons.application.model.safebox.auth.RegisteredUserDto;
-import com.rviewer.skeletons.application.model.safebox.auth.UserDto;
+import com.rviewer.skeletons.application.model.safebox.auth.AuthRegisteredUserDto;
+import com.rviewer.skeletons.application.model.safebox.auth.AuthUserDto;
 import com.rviewer.skeletons.domain.service.UserService;
 import com.rviewer.skeletons.infrastructure.rest.safebox.auth.UserApi;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,7 +15,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public String createUser(String username, String password) {
-        RegisteredUserDto registeredUserDto = userApi.postUser(new UserDto().username(username).password(password));
+        AuthRegisteredUserDto registeredUserDto = userApi.postUser(new AuthUserDto().username(username).password(password));
         return registeredUserDto.getId();
     }
 }

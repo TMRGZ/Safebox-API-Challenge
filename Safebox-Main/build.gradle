@@ -32,6 +32,7 @@ tasks.register('buildAuthClient', GenerateTask) {
     modelPackage = "com.rviewer.skeletons.application.model.safebox.auth"
     outputDir = "$buildDir/generated/sources".toString()
     modelNameSuffix = "Dto"
+    modelNamePrefix = "Auth"
     configOptions = [
             generateApiDocumentation: "false",
             generateApiTests        : "false"
@@ -47,6 +48,7 @@ tasks.register('buildServiceClient', GenerateTask) {
     modelPackage = "com.rviewer.skeletons.application.model.safebox.service"
     outputDir = "$buildDir/generated/sources".toString()
     modelNameSuffix = "Dto"
+    modelNamePrefix = "Holder"
     configOptions = [
             generateApiDocumentation: "false",
             generateApiTests        : "false"

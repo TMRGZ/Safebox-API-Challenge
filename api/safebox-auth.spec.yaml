@@ -7,7 +7,7 @@ info:
   title: SafeIsh Auth API
 
 paths:
-  /safebox-auth/user:
+  /user:
     post:
       tags:
         - User
@@ -35,7 +35,7 @@ paths:
         '500':
           description: Unexpected API error
 
-  /safebox-auth/{id}/login:
+  /login:
     post:
       tags:
         - Login
@@ -45,13 +45,6 @@ paths:
         Gets a safebox key retrieved by the given ID and with the specified user & password.
       security:
         - basicPassword: [ ]
-      parameters:
-        - in: path
-          name: id
-          description: User id
-          required: true
-          schema:
-            type: string
       responses:
         '200':
           description: User correctly logged in

@@ -15,8 +15,6 @@ paths:
       summary: Creates a new safebox
       description: |
         Creates a new safebox based on a non-empty name and a password.
-      security:
-        - bearerToken: [ ]
       requestBody:
         required: true
         content:
@@ -36,6 +34,32 @@ paths:
           description: Malformed expected data
         '500':
           description: Unexpected API error
+  /safebox/{id}:
+    post:
+      tags:
+        - Safebox Service
+      operationId: get-safebox
+      summary: Gets a safebox
+      description: |
+        Gets a safebox for a given ID
+      parameters:
+        - in: path
+          name: id
+          description: Safebox Id
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Safebox correctly retrieved
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Safebox'
+        '404':
+          description: Safebox does not exist
+        '500':
+          description: Unexpected API error
   /safebox/{id}/items:
     get:
       tags:
@@ -44,8 +68,6 @@ paths:
       summary: Retrieves the content of a safebox
       description:
         Retrieves the currently stored contents in the safebox identified by the given ID and with the given opening token.
-      security:
-        - bearerToken: [ ]
       parameters:
         - in: path
           name: id
@@ -73,8 +95,6 @@ paths:
       summary: Add an items to a Safebox
       description: |
         Inserts new contents in the safebox identified by the given ID and with the given opening token.
-      security:
-        - bearerToken: [ ]
       parameters:
         - in: path
           name: id
@@ -136,8 +156,3 @@ components:
         - owner
       example:
         owner: Myself
-
-  securitySchemes:
-    bearerToken:
-      type: http
-      scheme: bearer
