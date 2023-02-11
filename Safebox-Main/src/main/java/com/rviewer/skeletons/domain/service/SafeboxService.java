@@ -1,7 +1,7 @@
 package com.rviewer.skeletons.domain.service;
 
 import com.rviewer.skeletons.domain.model.Item;
-import com.rviewer.skeletons.domain.model.Safebox;
+import com.rviewer.skeletons.domain.model.User;
 
 import java.util.List;
 
@@ -9,7 +9,7 @@ public interface SafeboxService {
 
     String openSafebox(String id);
 
-    String createSafebox(Safebox safebox);
+    String createSafebox(User user);
 
     List<Item> getSafeboxItems(String id);
 

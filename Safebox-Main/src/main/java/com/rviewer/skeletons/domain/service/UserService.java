@@ -2,5 +2,5 @@ package com.rviewer.skeletons.domain.service;
 
 public interface UserService {
 
-    void createUser();
+    String createUser(String username, String password);
 }

@@ -9,43 +9,25 @@ info:
 paths:
   /safebox:
     post:
+      operationId: post-safebox
       summary: Creates a new safebox
       description: |
         Creates a new safebox based on a non-empty name and a password.
+      tags:
+        - Safebox Controller
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              type: object
-              properties:
-                name:
-                  description: Safebox Name
-                  type: string
-                password:
-                  description: Safebox Password
-                  type: string
-              required:
-                - name
-                - password
-              example:
-                name: Secure safebox 01
-                password: extremelySecurePassword
+              $ref: '#/components/schemas/CreateSafeboxRequest'
       responses:
-        '200':
+        '201':
           description: Safebox correctly created
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  id:
-                    description: Safebox id
-                    type: string
-                required:
-                  - id
-                example:
-                  id: f626c808-648c-41fe-865d-c6062f3e0899
+                $ref: '#/components/schemas/CreatedSafebox'
         '409':
           description: Safebox already exists
         '422':
@@ -55,9 +37,12 @@ paths:
 
   /safebox/{id}/open:
     get:
+      operationId: open-safebox
       summary: Open a safebox
       description: |
         Opens the safebox identified by the given ID and with the specified user & password.
+      tags:
+        - Safebox Controller
       security:
         - basicPassword: [ ]
       parameters:
@@ -73,15 +58,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  token:
-                    description: Token for future actions over an opening safebox
-                    type: string
-                required:
-                  - id
-                example:
-                  token: RkbfZSW5MmcK3b7kcgg
+                $ref: '#/components/schemas/SafeboxKey'
         '404':
           description: Requested safebox does not exist
         '422':
@@ -91,12 +68,14 @@ paths:
         '500':
           description: Unexpected API error
 
-
   /safebox/{id}/items:
     get:
+      operationId: get-safebox-items
       summary: Retrieves the content of a safebox
       description:
         Retrieves the currently stored contents in the safebox identified by the given ID and with the given opening token.
+      tags:
+        - Safebox Controller
       security:
         - bearerToken: [ ]
       parameters:
@@ -112,20 +91,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  items:
-                    description: Safebox items
-                    type: array
-                    items:
-                      type: string
-                required:
-                  - items
-                example:
-                  items:
-                    - Safebox content 03
-                    - Safebox content 02
-                    - Safebox content 01
+                $ref: '#/components/schemas/ItemList'
         '401':
           description: Specified token does not match
         '404':
@@ -138,9 +104,12 @@ paths:
           description: Unexpected API error
 
     put:
+      operationId: put-safebox-items
       summary: Add an items to a Safebox
       description: |
         Inserts new contents in the safebox identified by the given ID and with the given opening token.
+      tags:
+        - Safebox Controller
       security:
         - bearerToken: [ ]
       parameters:
@@ -155,21 +124,7 @@ paths:
         content:
           application/json:
             schema:
-              type: object
-              properties:
-                items:
-                  description: Safebox items
-                  type: array
-                  items:
-                    type: string
-              required:
-                - items
-              example:
-                items:
-                  - Safebox content 03
-                  - Safebox content 02
-                  - Safebox content 01
-                  - New safebox content
+              $ref: '#/components/schemas/ItemList'
       responses:
         '200':
           description: Content correctly added to the safebox
@@ -186,6 +141,62 @@ paths:
 
 
 components:
+  schemas:
+    CreateSafeboxRequest:
+      description: 'Request for safebox creation'
+      type: object
+      properties:
+        name:
+          description: Safebox Name
+          type: string
+        password:
+          description: Safebox Password
+          type: string
+      required:
+        - name
+        - password
+      example:
+        name: Secure safebox 01
+        password: extremelySecurePassword
+    CreatedSafebox:
+      description: Response for user registration
+      type: object
+      properties:
+        id:
+          description: Safebox id
+          type: string
+      required:
+        - id
+      example:
+        id: f626c808-648c-41fe-865d-c6062f3e0899
+    SafeboxKey:
+      description: Response for login operation
+      type: object
+      properties:
+        token:
+          description: Token for future actions over an opening safebox
+          type: string
+      required:
+        - token
+      example:
+        token: RkbfZSW5MmcK3b7kcgg
+    ItemList:
+      description: Safebox items
+      type: object
+      properties:
+        items:
+          description: Safebox items
+          type: array
+          items:
+            type: string
+      required:
+        - items
+      example:
+        items:
+          - Safebox content 03
+          - Safebox content 02
+          - Safebox content 01
+          - New safebox content
   securitySchemes:
     bearerToken:
       type: http

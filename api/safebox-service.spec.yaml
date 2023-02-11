@@ -9,6 +9,9 @@ info:
 paths:
   /safebox:
     post:
+      tags:
+        - Safebox Service
+      operationId: post-safebox
       summary: Creates a new safebox
       description: |
         Creates a new safebox based on a non-empty name and a password.
@@ -35,6 +38,9 @@ paths:
           description: Unexpected API error
   /safebox/{id}/items:
     get:
+      tags:
+        - Safebox Service
+      operationId: get-safebox-items
       summary: Retrieves the content of a safebox
       description:
         Retrieves the currently stored contents in the safebox identified by the given ID and with the given opening token.
@@ -61,6 +67,9 @@ paths:
         '500':
           description: Unexpected API error
     put:
+      tags:
+        - Safebox Service
+      operationId: put-safebox-items
       summary: Add an items to a Safebox
       description: |
         Inserts new contents in the safebox identified by the given ID and with the given opening token.

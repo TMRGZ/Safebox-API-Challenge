@@ -1,7 +1,7 @@
 package com.rviewer.skeletons.domain.service.impl;
 
 import com.rviewer.skeletons.domain.model.Item;
-import com.rviewer.skeletons.domain.model.Safebox;
+import com.rviewer.skeletons.domain.model.User;
 import com.rviewer.skeletons.domain.service.SafeboxService;
 import com.rviewer.skeletons.domain.service.SafeboxServiceService;
 import com.rviewer.skeletons.domain.service.TokenService;
@@ -23,14 +23,12 @@ public class SafeboxServiceImpl implements SafeboxService {
     @Override
     public String openSafebox(String id) {
         safeboxServiceService.getSafebox(id);
-        tokenService.retrieveCurrenUserToken();
-        return null;
+        return tokenService.retrieveCurrenUserToken();
     }
 
     @Override
-    public String createSafebox(Safebox safebox) {
-        userService.createUser();
-        return null;
+    public String createSafebox(User user) {
+        return userService.createUser(user.getUsername(), user.getPassword());
     }
 
     @Override
