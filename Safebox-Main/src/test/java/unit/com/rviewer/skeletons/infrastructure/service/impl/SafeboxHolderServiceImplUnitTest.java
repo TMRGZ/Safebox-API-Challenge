@@ -2,7 +2,7 @@ package unit.com.rviewer.skeletons.infrastructure.service.impl;
 
 import com.rviewer.skeletons.domain.model.Item;
 import com.rviewer.skeletons.infrastructure.rest.safebox.service.SafeboxServiceApi;
-import com.rviewer.skeletons.infrastructure.service.impl.SafeboxServiceServiceImpl;
+import com.rviewer.skeletons.infrastructure.service.impl.SafeboxHolderServiceImpl;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -13,10 +13,10 @@ import java.util.Collections;
 import java.util.List;
 
 @ExtendWith(MockitoExtension.class)
-class SafeboxServiceServiceImplUnitTest {
+class SafeboxHolderServiceImplUnitTest {
 
     @InjectMocks
-    private SafeboxServiceServiceImpl safeboxServiceService;
+    private SafeboxHolderServiceImpl safeboxServiceService;
 
     @Mock
     private SafeboxServiceApi safeboxServiceApi;

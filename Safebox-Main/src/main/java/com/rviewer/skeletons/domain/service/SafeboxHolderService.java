@@ -4,7 +4,7 @@ import com.rviewer.skeletons.domain.model.Item;
 
 import java.util.List;
 
-public interface SafeboxServiceService {
+public interface SafeboxHolderService {
 
     void getSafebox(String id);
 

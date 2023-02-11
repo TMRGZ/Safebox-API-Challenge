@@ -2,7 +2,7 @@ package unit.com.rviewer.skeletons.domain.service.impl;
 
 import com.rviewer.skeletons.domain.model.Item;
 import com.rviewer.skeletons.domain.model.User;
-import com.rviewer.skeletons.domain.service.SafeboxServiceService;
+import com.rviewer.skeletons.domain.service.SafeboxHolderService;
 import com.rviewer.skeletons.domain.service.TokenService;
 import com.rviewer.skeletons.domain.service.UserService;
 import com.rviewer.skeletons.domain.service.impl.SafeboxServiceImpl;
@@ -26,7 +26,7 @@ class SafeboxServiceImplUnitTest {
     private UserService userService;
 
     @Mock
-    private SafeboxServiceService safeboxServiceService;
+    private SafeboxHolderService safeboxHolderService;
 
     @Mock
     private TokenService tokenService;
@@ -37,7 +37,7 @@ class SafeboxServiceImplUnitTest {
 
         safeboxService.openSafebox(id);
 
-        Mockito.verify(safeboxServiceService).getSafebox(id);
+        Mockito.verify(safeboxHolderService).getSafebox(id);
         Mockito.verify(tokenService).retrieveCurrenUserToken();
     }
 
@@ -58,7 +58,7 @@ class SafeboxServiceImplUnitTest {
 
         safeboxService.getSafeboxItems(id);
 
-        Mockito.verify(safeboxServiceService).getSafeboxItems(id);
+        Mockito.verify(safeboxHolderService).getSafeboxItems(id);
     }
 
     @Test
@@ -68,6 +68,6 @@ class SafeboxServiceImplUnitTest {
 
         safeboxService.addItemsToSafebox(safeboxId, itemList);
 
-        Mockito.verify(safeboxServiceService).putSafeboxItems(safeboxId, itemList);
+        Mockito.verify(safeboxHolderService).putSafeboxItems(safeboxId, itemList);
     }
 }

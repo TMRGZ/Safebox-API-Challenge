@@ -3,7 +3,7 @@ package com.rviewer.skeletons.domain.service.impl;
 import com.rviewer.skeletons.domain.model.Item;
 import com.rviewer.skeletons.domain.model.User;
 import com.rviewer.skeletons.domain.service.SafeboxService;
-import com.rviewer.skeletons.domain.service.SafeboxServiceService;
+import com.rviewer.skeletons.domain.service.SafeboxHolderService;
 import com.rviewer.skeletons.domain.service.TokenService;
 import com.rviewer.skeletons.domain.service.UserService;
 import lombok.AllArgsConstructor;
@@ -15,14 +15,14 @@ public class SafeboxServiceImpl implements SafeboxService {
 
     private UserService userService;
 
-    private SafeboxServiceService safeboxServiceService;
+    private SafeboxHolderService safeboxHolderService;
 
     private TokenService tokenService;
 
 
     @Override
     public String openSafebox(String id) {
-        safeboxServiceService.getSafebox(id);
+        safeboxHolderService.getSafebox(id);
         return tokenService.retrieveCurrenUserToken();
     }
 
@@ -33,12 +33,12 @@ public class SafeboxServiceImpl implements SafeboxService {
 
     @Override
     public List<Item> getSafeboxItems(String id) {
-        safeboxServiceService.getSafeboxItems(id);
+        safeboxHolderService.getSafeboxItems(id);
         return null;
     }
 
     @Override
     public void addItemsToSafebox(String safeboxId, List<Item> itemList) {
-        safeboxServiceService.putSafeboxItems(safeboxId, itemList);
+        safeboxHolderService.putSafeboxItems(safeboxId, itemList);
     }
 }

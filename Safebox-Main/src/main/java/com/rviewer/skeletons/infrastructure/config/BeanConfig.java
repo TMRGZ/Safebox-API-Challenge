@@ -1,7 +1,7 @@
 package com.rviewer.skeletons.infrastructure.config;
 
 import com.rviewer.skeletons.domain.service.SafeboxService;
-import com.rviewer.skeletons.domain.service.SafeboxServiceService;
+import com.rviewer.skeletons.domain.service.SafeboxHolderService;
 import com.rviewer.skeletons.domain.service.TokenService;
 import com.rviewer.skeletons.domain.service.UserService;
 import com.rviewer.skeletons.domain.service.impl.SafeboxServiceImpl;
@@ -14,9 +14,9 @@ public class BeanConfig {
 
 
     @Bean
-    public SafeboxService safeboxService(UserService userService, SafeboxServiceService safeboxServiceService,
+    public SafeboxService safeboxService(UserService userService, SafeboxHolderService safeboxHolderService,
                                          TokenService tokenService) {
-        return new SafeboxServiceImpl(userService, safeboxServiceService, tokenService);
+        return new SafeboxServiceImpl(userService, safeboxHolderService, tokenService);
     }
 
     @Bean

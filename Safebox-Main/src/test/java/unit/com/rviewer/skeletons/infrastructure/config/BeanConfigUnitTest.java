@@ -1,7 +1,7 @@
 package unit.com.rviewer.skeletons.infrastructure.config;
 
 import com.rviewer.skeletons.domain.service.SafeboxService;
-import com.rviewer.skeletons.domain.service.SafeboxServiceService;
+import com.rviewer.skeletons.domain.service.SafeboxHolderService;
 import com.rviewer.skeletons.domain.service.TokenService;
 import com.rviewer.skeletons.domain.service.UserService;
 import com.rviewer.skeletons.infrastructure.config.BeanConfig;
@@ -21,10 +21,10 @@ class BeanConfigUnitTest {
     @Test
     void safeboxServiceUnitTest() {
         UserService userService = Mockito.mock(UserService.class);
-        SafeboxServiceService safeboxServiceService = Mockito.mock(SafeboxServiceService.class);
+        SafeboxHolderService safeboxHolderService = Mockito.mock(SafeboxHolderService.class);
         TokenService tokenService = Mockito.mock(TokenService.class);
 
-        SafeboxService safeboxService = beanConfig.safeboxService(userService, safeboxServiceService, tokenService);
+        SafeboxService safeboxService = beanConfig.safeboxService(userService, safeboxHolderService, tokenService);
 
         Assertions.assertNotNull(safeboxService);
     }
