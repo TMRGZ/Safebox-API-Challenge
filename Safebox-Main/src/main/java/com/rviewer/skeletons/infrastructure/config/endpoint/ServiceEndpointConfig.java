@@ -1,7 +1,7 @@
 package com.rviewer.skeletons.infrastructure.config.endpoint;
 
-import com.rviewer.skeletons.infrastructure.rest.safebox.service.invoker.ApiClient;
-import com.rviewer.skeletons.infrastructure.rest.safebox.service.SafeboxServiceApi;
+import com.rviewer.skeletons.infrastructure.rest.safebox.holder.invoker.ApiClient;
+import com.rviewer.skeletons.infrastructure.rest.safebox.holder.SafeboxHolderApi;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -20,8 +20,8 @@ public class ServiceEndpointConfig {
     private String url;
 
     @Bean
-    public SafeboxServiceApi safeboxServiceApi(ApiClient apiClient) {
+    public SafeboxHolderApi safeboxHolderApi(ApiClient apiClient) {
         apiClient.setBasePath(url);
-        return new SafeboxServiceApi(apiClient);
+        return new SafeboxHolderApi(apiClient);
     }
 }

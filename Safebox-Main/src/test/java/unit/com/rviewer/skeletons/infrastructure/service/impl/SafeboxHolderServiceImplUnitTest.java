@@ -1,7 +1,7 @@
 package unit.com.rviewer.skeletons.infrastructure.service.impl;
 
 import com.rviewer.skeletons.domain.model.Item;
-import com.rviewer.skeletons.infrastructure.rest.safebox.service.SafeboxServiceApi;
+import com.rviewer.skeletons.infrastructure.rest.safebox.holder.SafeboxHolderApi;
 import com.rviewer.skeletons.infrastructure.service.impl.SafeboxHolderServiceImpl;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -16,16 +16,16 @@ import java.util.List;
 class SafeboxHolderServiceImplUnitTest {
 
     @InjectMocks
-    private SafeboxHolderServiceImpl safeboxServiceService;
+    private SafeboxHolderServiceImpl safeboxHolderService;
 
     @Mock
-    private SafeboxServiceApi safeboxServiceApi;
+    private SafeboxHolderApi safeboxHolderApi;
 
     @Test
     void getSafeboxUnitTest() {
         String id = "TEST";
 
-        safeboxServiceService.getSafebox(id);
+        safeboxHolderService.getSafebox(id);
 
     }
 
@@ -33,7 +33,7 @@ class SafeboxHolderServiceImplUnitTest {
     void getSafeboxItemsUnitTest() {
         String id = "TEST";
 
-        safeboxServiceService.getSafeboxItems(id);
+        safeboxHolderService.getSafeboxItems(id);
 
     }
 
@@ -42,6 +42,6 @@ class SafeboxHolderServiceImplUnitTest {
         String id = "TEST";
         List<Item> itemList = Collections.singletonList(new Item("ITEM"));
 
-        safeboxServiceService.putSafeboxItems(id, itemList);
+        safeboxHolderService.putSafeboxItems(id, itemList);
     }
 }

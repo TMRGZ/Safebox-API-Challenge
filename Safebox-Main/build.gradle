@@ -39,13 +39,13 @@ tasks.register('buildAuthClient', GenerateTask) {
     ]
 }
 
-tasks.register('buildServiceClient', GenerateTask) {
+tasks.register('buildHolderClient', GenerateTask) {
     generatorName = "java"
     library = "resttemplate"
-    inputSpec = "$rootDir/api/safebox-service.spec.yaml"
-    apiPackage = "com.rviewer.skeletons.infrastructure.rest.safebox.service"
-    invokerPackage = "com.rviewer.skeletons.infrastructure.rest.safebox.service.invoker"
-    modelPackage = "com.rviewer.skeletons.application.model.safebox.service"
+    inputSpec = "$rootDir/api/safebox-holder.spec.yaml"
+    apiPackage = "com.rviewer.skeletons.infrastructure.rest.safebox.holder"
+    invokerPackage = "com.rviewer.skeletons.infrastructure.rest.safebox.holder.invoker"
+    modelPackage = "com.rviewer.skeletons.application.model.safebox.holder"
     outputDir = "$buildDir/generated/sources".toString()
     modelNameSuffix = "Dto"
     modelNamePrefix = "Holder"
@@ -55,4 +55,4 @@ tasks.register('buildServiceClient', GenerateTask) {
     ]
 }
 
-tasks.compileJava.dependsOn(buildMainServer, buildAuthClient, buildServiceClient)
+tasks.compileJava.dependsOn(buildMainServer, buildAuthClient, buildHolderClient)

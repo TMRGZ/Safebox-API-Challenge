@@ -2,15 +2,15 @@ openapi: 3.0.0
 
 info:
   description: |
-    SafeIsh Service API - The most secure safebox
+    SafeIsh Holder API - The most secure safebox
   version: 1.0.0
-  title: SafeIsh Service API
+  title: SafeIsh Holder API
 
 paths:
   /safebox:
     post:
       tags:
-        - Safebox Service
+        - Safebox Holder
       operationId: post-safebox
       summary: Creates a new safebox
       description: |
@@ -37,7 +37,7 @@ paths:
   /safebox/{id}:
     post:
       tags:
-        - Safebox Service
+        - Safebox Holder
       operationId: get-safebox
       summary: Gets a safebox
       description: |
@@ -63,7 +63,7 @@ paths:
   /safebox/{id}/items:
     get:
       tags:
-        - Safebox Service
+        - Safebox Holder
       operationId: get-safebox-items
       summary: Retrieves the content of a safebox
       description:
@@ -90,7 +90,7 @@ paths:
           description: Unexpected API error
     put:
       tags:
-        - Safebox Service
+        - Safebox Holder
       operationId: put-safebox-items
       summary: Add an items to a Safebox
       description: |
