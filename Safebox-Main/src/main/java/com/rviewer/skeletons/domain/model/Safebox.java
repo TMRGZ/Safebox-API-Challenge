@@ -6,4 +6,7 @@ import lombok.Setter;
 @Getter
 @Setter
 public class Safebox {
+
+    private String id;
+
 }
