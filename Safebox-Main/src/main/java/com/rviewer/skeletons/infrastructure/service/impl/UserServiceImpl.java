@@ -1,9 +1,10 @@
 package com.rviewer.skeletons.infrastructure.service.impl;
 
-import com.rviewer.skeletons.application.model.safebox.auth.AuthRegisteredUserDto;
-import com.rviewer.skeletons.application.model.safebox.auth.AuthUserDto;
+
 import com.rviewer.skeletons.domain.service.UserService;
 import com.rviewer.skeletons.infrastructure.rest.safebox.auth.UserApi;
+import com.rviewer.skeletons.infrastructure.rest.safebox.auth.model.AuthRegisteredUserDto;
+import com.rviewer.skeletons.infrastructure.rest.safebox.auth.model.AuthUserDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

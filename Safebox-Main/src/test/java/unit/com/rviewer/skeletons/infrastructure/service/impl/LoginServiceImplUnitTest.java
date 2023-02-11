@@ -1,8 +1,8 @@
 package unit.com.rviewer.skeletons.infrastructure.service.impl;
 
-import com.rviewer.skeletons.application.model.safebox.auth.AuthLoginResponseDto;
 import com.rviewer.skeletons.infrastructure.rest.safebox.auth.LoginApi;
 import com.rviewer.skeletons.infrastructure.rest.safebox.auth.invoker.ApiClient;
+import com.rviewer.skeletons.infrastructure.rest.safebox.auth.model.AuthLoginResponseDto;
 import com.rviewer.skeletons.infrastructure.service.impl.LoginServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
