@@ -5,6 +5,10 @@ import com.rviewer.skeletons.application.model.CreatedSafeboxDto;
 import com.rviewer.skeletons.application.model.ItemListDto;
 import com.rviewer.skeletons.application.model.SafeboxKeyDto;
 import com.rviewer.skeletons.application.service.SafeboxApplicationService;
+import com.rviewer.skeletons.domain.exception.ExternalServiceException;
+import com.rviewer.skeletons.domain.exception.SafeboxAlreadyExistsException;
+import com.rviewer.skeletons.domain.exception.SafeboxDoesNotExistException;
+import com.rviewer.skeletons.domain.exception.SafeboxMainException;
 import com.rviewer.skeletons.domain.model.Item;
 import com.rviewer.skeletons.domain.model.User;
 import com.rviewer.skeletons.domain.service.SafeboxService;
@@ -26,10 +30,21 @@ public class SafeboxApplicationServiceImpl implements SafeboxApplicationService 
         User user = new User();
         user.setUsername(createSafeboxRequestDto.getName());
         user.setPassword(createSafeboxRequestDto.getPassword());
+        ResponseEntity<CreatedSafeboxDto> response;
 
-        String safeboxId = safeboxService.createSafebox(user);
+        try {
+            String safeboxId = safeboxService.createSafebox(user);
+            response = ResponseEntity.status(HttpStatus.CREATED).body(new CreatedSafeboxDto().id(safeboxId));
 
-        return new ResponseEntity<>(new CreatedSafeboxDto().id(safeboxId), HttpStatus.CREATED);
+        } catch (SafeboxAlreadyExistsException e) {
+            response = ResponseEntity.status(HttpStatus.CONFLICT).build();
+        } catch (ExternalServiceException e) {
+            response = ResponseEntity.status(HttpStatus.BAD_GATEWAY).build();
+        } catch (SafeboxMainException e) {
+            response = ResponseEntity.internalServerError().build();
+        }
+
+        return response;
     }
 
     @Override
@@ -40,15 +55,41 @@ public class SafeboxApplicationServiceImpl implements SafeboxApplicationService 
 
     @Override
     public ResponseEntity<ItemListDto> getSafeboxItems(String id) {
-        List<Item> itemList = safeboxService.getSafeboxItems(id);
-        List<String> itemDetailList = itemList.stream().map(Item::getDetail).toList();
-        return ResponseEntity.ok(new ItemListDto().items(itemDetailList));
+        ResponseEntity<ItemListDto> response;
+
+        try {
+            List<Item> itemList = safeboxService.getSafeboxItems(id);
+            List<String> itemDetailList = itemList.stream().map(Item::getDetail).toList();
+            response = ResponseEntity.ok(new ItemListDto().items(itemDetailList));
+
+        } catch (SafeboxDoesNotExistException e) {
+            response = ResponseEntity.notFound().build();
+        } catch (ExternalServiceException e) {
+            response = ResponseEntity.status(HttpStatus.BAD_GATEWAY).build();
+        } catch (SafeboxMainException e) {
+            response = ResponseEntity.internalServerError().build();
+        }
+
+        return response;
     }
 
     @Override
     public ResponseEntity<Void> addItemsToSafebox(String id, ItemListDto itemListDto) {
         List<Item> itemList = itemListDto.getItems().stream().map(Item::new).toList();
-        safeboxService.addItemsToSafebox(id, itemList);
-        return ResponseEntity.ok().build();
+        ResponseEntity<Void> response;
+
+        try {
+            safeboxService.addItemsToSafebox(id, itemList);
+            response = ResponseEntity.ok().build();
+
+        } catch (SafeboxDoesNotExistException e) {
+            response = ResponseEntity.notFound().build();
+        } catch (ExternalServiceException e) {
+            response = ResponseEntity.status(HttpStatus.BAD_GATEWAY).build();
+        } catch (SafeboxMainException e) {
+            response = ResponseEntity.internalServerError().build();
+        }
+
+        return response;
     }
 }
