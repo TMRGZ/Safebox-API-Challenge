@@ -23,7 +23,7 @@ class LoginServiceImplUnitTest {
 
     @BeforeEach
     void setup() {
-        loginApi.setApiClient(Mockito.mock(ApiClient.class));
+        Mockito.when(loginApi.getApiClient()).thenReturn(Mockito.mock(ApiClient.class));
     }
 
     @Test

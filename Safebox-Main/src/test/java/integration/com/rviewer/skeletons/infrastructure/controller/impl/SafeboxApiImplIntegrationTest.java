@@ -49,9 +49,9 @@ class SafeboxApiImplIntegrationTest {
 
     private static final String SAFEBOX_ITEMS_URL = SAFEBOX_BASE_URL + "/{id}/items";
 
-    private static final String SAFEBOX_AUTH_POST_USER_URL = "/safebox-auth/user";
+    private static final String SAFEBOX_AUTH_POST_USER_URL = "/user";
 
-    private static final String SAFEBOX_AUTH_LOGIN_URL = "/safebox-auth/login";
+    private static final String SAFEBOX_AUTH_LOGIN_URL = "/login";
 
     @Test
     void postSafeboxIntegrationTest() throws Exception {
