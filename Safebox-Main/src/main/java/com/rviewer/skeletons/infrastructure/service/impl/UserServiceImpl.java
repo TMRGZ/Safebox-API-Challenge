@@ -4,8 +4,11 @@ package com.rviewer.skeletons.infrastructure.service.impl;
 import com.rviewer.skeletons.domain.exception.ExternalServiceException;
 import com.rviewer.skeletons.domain.exception.SafeboxAlreadyExistsException;
 import com.rviewer.skeletons.domain.exception.SafeboxMainException;
+import com.rviewer.skeletons.domain.exception.UserDoesNotExistException;
+import com.rviewer.skeletons.domain.model.User;
 import com.rviewer.skeletons.domain.service.UserService;
 import com.rviewer.skeletons.infrastructure.rest.safebox.auth.UserApi;
+import com.rviewer.skeletons.infrastructure.rest.safebox.auth.model.AuthCreateUserDto;
 import com.rviewer.skeletons.infrastructure.rest.safebox.auth.model.AuthRegisteredUserDto;
 import com.rviewer.skeletons.infrastructure.rest.safebox.auth.model.AuthUserDto;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +28,7 @@ public class UserServiceImpl implements UserService {
         AuthRegisteredUserDto registeredUserDto;
 
         try {
-            registeredUserDto = userApi.postUser(new AuthUserDto().username(username).password(password));
+            registeredUserDto = userApi.postUser(new AuthCreateUserDto().username(username).password(password));
         } catch (HttpClientErrorException e) {
             if (e.getStatusCode() == HttpStatus.CONFLICT) {
                 throw new SafeboxAlreadyExistsException();
@@ -37,5 +40,28 @@ public class UserServiceImpl implements UserService {
         }
 
         return registeredUserDto.getId();
+    }
+
+    @Override
+    public User getUser(String token) {
+        User user;
+
+        try {
+            userApi.getApiClient().setBearerToken(token);
+            AuthUserDto userDto = userApi.getUser();
+            user = new User();
+            user.setUsername(userDto.getUsername());
+
+        } catch (HttpClientErrorException e) {
+            if (e.getStatusCode() == HttpStatus.NOT_FOUND) {
+                throw new UserDoesNotExistException();
+            }
+            throw new SafeboxMainException();
+
+        } catch (HttpServerErrorException e) {
+            throw new ExternalServiceException();
+        }
+
+        return user;
     }
 }

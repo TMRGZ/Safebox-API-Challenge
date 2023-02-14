@@ -8,6 +8,29 @@ info:
 
 paths:
   /user:
+    get:
+      tags:
+        - User
+      operationId: get-user
+      summary: Gets an user
+      description: |
+        Gets an user using a token
+      security:
+        - bearerToken: [ ]
+      responses:
+        '200':
+          description: User retrieved
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '404':
+          description: User not found
+        '422':
+          description: Malformed expected data
+        '500':
+          description: Unexpected API error
+
     post:
       tags:
         - User
@@ -20,7 +43,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/User'
+              $ref: '#/components/schemas/CreateUser'
       responses:
         '201':
           description: User registered
@@ -69,6 +92,17 @@ components:
         username:
           description: Username of the user
           type: string
+      required:
+        - username
+      example:
+        username: Secure user 01
+    CreateUser:
+      description: 'Create user request'
+      type: object
+      properties:
+        username:
+          description: Username of the user
+          type: string
         password:
           description: Desired user password
           type: string
@@ -101,6 +135,9 @@ components:
       example:
         token: RkbfZSW5MmcK3b7kcgg
   securitySchemes:
+    bearerToken:
+      type: http
+      scheme: bearer
     basicPassword:
       type: http
       scheme: basic

@@ -17,12 +17,12 @@ public class SafeboxAuthApiImpl implements SafeboxAuthApi {
 
 
     @Override
-    public ResponseEntity<LoginResponseDto> safeboxAuthIdLoginPost(String id) {
+    public ResponseEntity<LoginResponseDto> loginUser(String id) {
         return userApplicationService.loginUser(id);
     }
 
     @Override
-    public ResponseEntity<RegisteredUserDto> safeboxAuthUserPost(UserDto userDto) {
+    public ResponseEntity<RegisteredUserDto> postUser(UserDto userDto) {
         return userApplicationService.createUser(userDto);
     }
 }
