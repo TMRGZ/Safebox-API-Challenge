@@ -33,8 +33,7 @@ public class SafeboxServiceImpl implements SafeboxService {
 
     @Override
     public List<Item> getSafeboxItems(String id) {
-        safeboxHolderService.getSafeboxItems(id);
-        return null;
+        return safeboxHolderService.getSafeboxItems(id);
     }
 
     @Override
