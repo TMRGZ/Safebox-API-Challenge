@@ -9,6 +9,8 @@ import com.rviewer.skeletons.application.model.ItemListDto;
 import com.rviewer.skeletons.application.model.SafeboxKeyDto;
 import com.rviewer.skeletons.infrastructure.rest.safebox.auth.model.AuthLoginResponseDto;
 import com.rviewer.skeletons.infrastructure.rest.safebox.auth.model.AuthRegisteredUserDto;
+import com.rviewer.skeletons.infrastructure.rest.safebox.holder.model.HolderItemListDto;
+import com.rviewer.skeletons.infrastructure.rest.safebox.holder.model.HolderSafeboxDto;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,9 +28,8 @@ import java.net.URI;
 import java.util.Collections;
 import java.util.List;
 
-import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.httpBasic;
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.jwt;
+import static com.github.tomakehurst.wiremock.client.WireMock.*;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -44,6 +45,8 @@ class SafeboxApiImplIntegrationTest {
     private ObjectMapper objectMapper;
 
     private static final String SAFEBOX_BASE_URL = "/safebox";
+
+    private static final String SPECIFIC_SAFEBOX_URL = SAFEBOX_BASE_URL + "/{id}";
 
     private static final String OPEN_SAFEBOX_URL = SAFEBOX_BASE_URL + "/{id}/open";
 
@@ -137,11 +140,22 @@ class SafeboxApiImplIntegrationTest {
         AuthLoginResponseDto loginResponseDto = new AuthLoginResponseDto();
         loginResponseDto.setToken(token);
 
+        HolderSafeboxDto safeboxDto = new HolderSafeboxDto();
+        safeboxDto.setId(id);
+
         URI safeboxAuthLoginUri = URI.create(SAFEBOX_AUTH_LOGIN_URL);
         WireMock.stubFor(WireMock.post(WireMock.urlEqualTo(safeboxAuthLoginUri.getPath()))
                 .willReturn(aResponse()
                         .withHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                         .withBody(objectMapper.writeValueAsString(loginResponseDto))
+                )
+        );
+
+        URI safeboxHolderGetUri = UriComponentsBuilder.fromUriString(SPECIFIC_SAFEBOX_URL).build(id);
+        WireMock.stubFor(WireMock.get(WireMock.urlEqualTo(safeboxHolderGetUri.getPath()))
+                .willReturn(aResponse()
+                        .withHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                        .withBody(objectMapper.writeValueAsString(safeboxDto))
                 )
         );
 
@@ -194,8 +208,19 @@ class SafeboxApiImplIntegrationTest {
     void getSafeboxItemsIntegrationTest() throws Exception {
         String id = "TEST-ID";
 
+        HolderItemListDto itemListDto = new HolderItemListDto();
+        itemListDto.setItems(Collections.singletonList("ITEM"));
+
+        URI safeboxHolderGetUri = UriComponentsBuilder.fromUriString(SAFEBOX_ITEMS_URL).build(id);
+        WireMock.stubFor(WireMock.get(WireMock.urlEqualTo(safeboxHolderGetUri.getPath()))
+                .willReturn(aResponse()
+                        .withHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                        .withBody(objectMapper.writeValueAsString(itemListDto))
+                )
+        );
+
         URI baseSafeboxUri = UriComponentsBuilder.fromUriString(SAFEBOX_ITEMS_URL).build(id);
-        MvcResult result = mockMvc.perform(get(baseSafeboxUri).with(jwt())
+        MvcResult result = mockMvc.perform(get(baseSafeboxUri).with(opaqueToken())
                 .contentType(MediaType.APPLICATION_JSON)
         ).andExpect(status().isOk()).andReturn();
 
@@ -224,6 +249,14 @@ class SafeboxApiImplIntegrationTest {
         List<String> itemList = Collections.singletonList("ITEM");
         ItemListDto itemListDto = new ItemListDto();
         itemListDto.setItems(itemList);
+
+        URI safeboxHolderPutUri = UriComponentsBuilder.fromUriString(SAFEBOX_ITEMS_URL).build(id);
+        WireMock.stubFor(WireMock.put(WireMock.urlEqualTo(safeboxHolderPutUri.getPath()))
+                        .withRequestBody(equalToJson(objectMapper.writeValueAsString(itemListDto)))
+                .willReturn(aResponse()
+                        .withHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                )
+        );
 
         URI baseSafeboxUri = UriComponentsBuilder.fromUriString(SAFEBOX_ITEMS_URL).build(id);
         mockMvc.perform(put(baseSafeboxUri).with(jwt())
