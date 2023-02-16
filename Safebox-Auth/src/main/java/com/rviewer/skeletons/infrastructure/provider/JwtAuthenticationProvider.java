@@ -21,7 +21,7 @@ public class JwtAuthenticationProvider implements AuthenticationProvider {
 
         String username = tokenService.decode(jwt);
 
-        bearerTokenAuthenticationToken.setAuthenticated(true);
+        bearerTokenAuthenticationToken.setAuthenticated(username != null);
         bearerTokenAuthenticationToken.setDetails(username);
 
         return bearerTokenAuthenticationToken;
