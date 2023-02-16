@@ -2,7 +2,6 @@ package unit.com.rviewer.skeletons.infrastructure.controller.impl;
 
 import com.rviewer.skeletons.application.model.UserDto;
 import com.rviewer.skeletons.application.service.UserApplicationService;
-import com.rviewer.skeletons.infrastructure.controller.impl.SafeboxAuthApiImpl;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;

@@ -8,29 +8,6 @@ info:
 
 paths:
   /user:
-    get:
-      tags:
-        - User
-      operationId: get-user
-      summary: Gets an user
-      description: |
-        Gets an user using a token
-      security:
-        - bearerToken: [ ]
-      responses:
-        '200':
-          description: User retrieved
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/User'
-        '404':
-          description: User not found
-        '422':
-          description: Malformed expected data
-        '500':
-          description: Unexpected API error
-
     post:
       tags:
         - User
@@ -75,6 +52,32 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/LoginResponse'
+        '404':
+          description: User id not found
+        '422':
+          description: Username or password are wrong
+        '423':
+          description: User is locked
+        '500':
+          description: Unexpected API error
+
+  /token/decode:
+    get:
+      tags:
+        - Token
+      operationId: decode-token
+      summary: Decode a token
+      description: |
+        Get the username encoded in the token
+      security:
+        - bearerToken: [ ]
+      responses:
+        '200':
+          description: Token decoded successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
         '404':
           description: User id not found
         '422':

@@ -2,8 +2,10 @@ package com.rviewer.skeletons.domain.service;
 
 public interface TokenService {
 
-    String generateToken(String userId);
+    String generate();
 
-    boolean validateToken(String token);
+    String decode(String token);
+
+    String getDecodedUsername();
 
 }

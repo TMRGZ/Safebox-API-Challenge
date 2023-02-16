@@ -6,8 +6,4 @@ public interface UserService {
 
     SafeboxUser createUser(String username, String password);
 
-    void loginUser(String username, String password);
-
-    String generateUserToken(String userId);
-
 }

@@ -25,7 +25,7 @@ class TokenServiceImplUnitTest {
         Mockito.when(appConfig.getTokenExpirationMinutes()).thenReturn(10);
         Mockito.when(appConfig.getTokenSecret()).thenReturn("SECRET_SECRET_SECRET_SECRET_SECRET");
 
-        String generateToken = tokenService.generateToken(userId);
+        String generateToken = tokenService.generate(userId);
 
         Mockito.verify(appConfig).getTokenExpirationMinutes();
         Mockito.verify(appConfig).getTokenSecret();
@@ -37,9 +37,9 @@ class TokenServiceImplUnitTest {
     void validateTokenUnitTest() {
         Mockito.when(appConfig.getTokenExpirationMinutes()).thenReturn(10);
         Mockito.when(appConfig.getTokenSecret()).thenReturn("SECRET_SECRET_SECRET_SECRET_SECRET");
-        String token = tokenService.generateToken("TEST");
+        String token = tokenService.generate("TEST");
 
-        boolean valid = tokenService.validateToken(token);
+        boolean valid = tokenService.decode(token);
 
         Mockito.verify(appConfig, Mockito.atLeastOnce()).getTokenSecret();
         Assertions.assertTrue(valid);
@@ -50,7 +50,7 @@ class TokenServiceImplUnitTest {
         String token = "BAD_TOKEN";
         Mockito.when(appConfig.getTokenSecret()).thenReturn("SECRET");
 
-        boolean valid = tokenService.validateToken(token);
+        boolean valid = tokenService.decode(token);
 
         Mockito.verify(appConfig).getTokenSecret();
         Assertions.assertFalse(valid);

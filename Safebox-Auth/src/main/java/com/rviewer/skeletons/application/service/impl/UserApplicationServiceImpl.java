@@ -1,11 +1,9 @@
 package com.rviewer.skeletons.application.service.impl;
 
-import com.rviewer.skeletons.application.model.LoginResponseDto;
+import com.rviewer.skeletons.application.model.CreateUserDto;
 import com.rviewer.skeletons.application.model.RegisteredUserDto;
-import com.rviewer.skeletons.application.model.UserDto;
 import com.rviewer.skeletons.application.service.UserApplicationService;
 import com.rviewer.skeletons.domain.exception.UserAlreadyRegisteredException;
-import com.rviewer.skeletons.domain.exception.UserDoesNotExistException;
 import com.rviewer.skeletons.domain.model.user.SafeboxUser;
 import com.rviewer.skeletons.domain.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +20,7 @@ public class UserApplicationServiceImpl implements UserApplicationService {
 
     @Override
     @Transactional
-    public ResponseEntity<RegisteredUserDto> createUser(UserDto request) {
+    public ResponseEntity<RegisteredUserDto> createUser(CreateUserDto request) {
         ResponseEntity<RegisteredUserDto> response;
 
         try {
@@ -31,22 +29,6 @@ public class UserApplicationServiceImpl implements UserApplicationService {
 
         } catch (UserAlreadyRegisteredException e) {
             response = new ResponseEntity<>(HttpStatus.CONFLICT);
-        }
-
-        return response;
-    }
-
-    @Override
-    @Transactional
-    public ResponseEntity<LoginResponseDto> loginUser(String userId) {
-        ResponseEntity<LoginResponseDto> response;
-
-        try {
-            String token = userService.generateUserToken(userId);
-            response = ResponseEntity.ok(new LoginResponseDto().token(token));
-
-        } catch (UserDoesNotExistException e) {
-            response = ResponseEntity.notFound().build();
         }
 
         return response;

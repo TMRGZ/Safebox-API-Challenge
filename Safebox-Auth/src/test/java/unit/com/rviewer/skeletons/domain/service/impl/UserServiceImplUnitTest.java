@@ -303,7 +303,7 @@ class UserServiceImplUnitTest {
         userService.generateUserToken(userId);
 
         Mockito.verify(safeboxUserRepository).findById(userId);
-        Mockito.verify(tokenService).generateToken(userId);
+        Mockito.verify(tokenService).generate(userId);
     }
 
     @Test
@@ -314,6 +314,6 @@ class UserServiceImplUnitTest {
         Assertions.assertThrows(UserDoesNotExistException.class, () -> userService.generateUserToken(userId));
 
         Mockito.verify(safeboxUserRepository).findById(userId);
-        Mockito.verify(tokenService, Mockito.never()).generateToken(userId);
+        Mockito.verify(tokenService, Mockito.never()).generate(userId);
     }
 }

@@ -2,12 +2,12 @@ package com.rviewer.skeletons.infrastructure.service.impl;
 
 import com.rviewer.skeletons.domain.service.TokenService;
 import com.rviewer.skeletons.infrastructure.config.AppConfig;
-import io.jsonwebtoken.JwtException;
-import io.jsonwebtoken.JwtParser;
-import io.jsonwebtoken.Jwts;
+import com.rviewer.skeletons.infrastructure.utils.AuthenticationUtils;
+import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import org.apache.commons.lang3.time.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -22,26 +22,32 @@ public class TokenServiceImpl implements TokenService {
     private AppConfig appConfig;
 
     @Override
-    public String generateToken(String userId) {
-        return createToken(new HashMap<>(), userId);
+    public String generate() {
+        return createToken(new HashMap<>(), AuthenticationUtils.getLoggedInUsername());
     }
 
     @Override
-    public boolean validateToken(String token) {
-        boolean valid = true;
+    public String decode(String token) {
+        String subject;
 
         try {
             JwtParser jwtParser = Jwts.parserBuilder()
                     .setSigningKey(appConfig.getTokenSecret().getBytes())
                     .build();
 
-            jwtParser.parseClaimsJws(token);
+            Claims claimsJws = jwtParser.parseClaimsJws(token).getBody();
+            subject = claimsJws.getSubject();
 
         } catch (JwtException e) {
-            valid = false;
+            subject = null;
         }
 
-        return valid;
+        return subject;
+    }
+
+    @Override
+    public String getDecodedUsername() {
+        return AuthenticationUtils.getTokenUsername();
     }
 
     private String createToken(Map<String, Objects> claims, String subject) {
