@@ -1,11 +1,11 @@
-package com.rviewer.skeletons.infrastructure.manager.impl;
+package com.rviewer.skeletons.infrastructure.provider;
 
 import com.rviewer.skeletons.domain.exception.BadPasswordException;
 import com.rviewer.skeletons.domain.exception.UserDoesNotExistException;
 import com.rviewer.skeletons.domain.exception.UserIsLockedException;
-import com.rviewer.skeletons.domain.service.UserService;
+import com.rviewer.skeletons.domain.service.LoginService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.LockedException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -17,10 +17,9 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 
 @Component
-public class SafeboxAuthenticationManager implements AuthenticationManager {
-
+public class BasicAuthenticationProvider implements AuthenticationProvider {
     @Autowired
-    private UserService userService;
+    private LoginService loginService;
 
     @Override
     @Transactional(noRollbackFor = AuthenticationException.class)
@@ -29,7 +28,7 @@ public class SafeboxAuthenticationManager implements AuthenticationManager {
         String password = authentication.getCredentials().toString();
 
         try {
-            userService.loginUser(name, password);
+            loginService.loginUser(name, password);
 
         } catch (UserIsLockedException lockedException) {
             throw new LockedException("The account is locked");
@@ -38,5 +37,10 @@ public class SafeboxAuthenticationManager implements AuthenticationManager {
         }
 
         return new UsernamePasswordAuthenticationToken(authentication.getPrincipal(), authentication.getCredentials(), new ArrayList<>());
+    }
+
+    @Override
+    public boolean supports(Class<?> authentication) {
+        return authentication.equals(UsernamePasswordAuthenticationToken.class);
     }
 }
