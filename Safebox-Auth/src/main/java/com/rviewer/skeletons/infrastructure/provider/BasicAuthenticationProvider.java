@@ -11,6 +11,7 @@ import org.springframework.security.authentication.LockedException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -29,14 +30,15 @@ public class BasicAuthenticationProvider implements AuthenticationProvider {
 
         try {
             loginService.loginUser(name, password);
+            authentication = new UsernamePasswordAuthenticationToken(authentication.getPrincipal(), authentication.getCredentials(), new ArrayList<>());
 
         } catch (UserIsLockedException lockedException) {
             throw new LockedException("The account is locked");
         } catch (BadPasswordException | UserDoesNotExistException authException) {
-            throw new BadCredentialsException("Username or password wrong");
+            authentication.setAuthenticated(false);
         }
 
-        return new UsernamePasswordAuthenticationToken(authentication.getPrincipal(), authentication.getCredentials(), new ArrayList<>());
+        return authentication;
     }
 
     @Override

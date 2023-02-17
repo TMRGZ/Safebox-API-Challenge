@@ -9,7 +9,7 @@ class AppConfigUnitTest {
     @Test
     void creationUnitTest() {
         AppConfig appConfig = new AppConfig();
-        appConfig.setMaxTries(0L);
+        appConfig.setMaxTries(0);
         appConfig.setTokenSecret("TEST");
         appConfig.setTokenExpirationMinutes(0);
 

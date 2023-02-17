@@ -3,7 +3,7 @@ package unit.com.rviewer.skeletons.infrastructure.config;
 import com.rviewer.skeletons.domain.repository.SafeboxUserRepository;
 import com.rviewer.skeletons.domain.sender.SafeboxServiceSender;
 import com.rviewer.skeletons.domain.service.PasswordService;
-import com.rviewer.skeletons.domain.service.TokenService;
+import com.rviewer.skeletons.infrastructure.config.AppConfig;
 import com.rviewer.skeletons.infrastructure.config.BeanConfig;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -20,11 +20,20 @@ class BeanConfigUnitTest {
 
     @Test
     void userServiceUnitTest() {
-        TokenService tokenService = Mockito.mock(TokenService.class);
         PasswordService passwordService = Mockito.mock(PasswordService.class);
         SafeboxUserRepository userRepository = Mockito.mock(SafeboxUserRepository.class);
         SafeboxServiceSender safeboxServiceSender = Mockito.mock(SafeboxServiceSender.class);
 
-        Assertions.assertNotNull(beanConfig.userService(tokenService, passwordService, userRepository, safeboxServiceSender));
+        Assertions.assertNotNull(beanConfig.userService(passwordService, userRepository, safeboxServiceSender));
+    }
+
+    @Test
+    void loginServiceUnitTest() {
+        PasswordService passwordService = Mockito.mock(PasswordService.class);
+        SafeboxUserRepository userRepository = Mockito.mock(SafeboxUserRepository.class);
+        AppConfig appConfig = Mockito.mock(AppConfig.class);
+        Mockito.when(appConfig.getMaxTries()).thenReturn(0);
+
+        Assertions.assertNotNull(beanConfig.loginService(passwordService, userRepository, appConfig));
     }
 }

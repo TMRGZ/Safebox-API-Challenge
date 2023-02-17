@@ -3,11 +3,13 @@ package com.rviewer.skeletons.infrastructure.service.impl;
 import com.rviewer.skeletons.domain.service.TokenService;
 import com.rviewer.skeletons.infrastructure.config.AppConfig;
 import com.rviewer.skeletons.infrastructure.utils.AuthenticationUtils;
-import io.jsonwebtoken.*;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.JwtException;
+import io.jsonwebtoken.JwtParser;
+import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import org.apache.commons.lang3.time.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -23,7 +25,11 @@ public class TokenServiceImpl implements TokenService {
 
     @Override
     public String generate() {
-        return createToken(new HashMap<>(), AuthenticationUtils.getLoggedInUsername());
+        return generate(AuthenticationUtils.getLoggedInUsername());
+    }
+
+    private String generate(String username) {
+        return createToken(new HashMap<>(), username);
     }
 
     @Override

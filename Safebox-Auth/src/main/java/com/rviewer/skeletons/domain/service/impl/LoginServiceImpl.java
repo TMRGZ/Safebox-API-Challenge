@@ -26,6 +26,8 @@ public class LoginServiceImpl implements LoginService {
 
     private SafeboxUserRepository safeboxUserRepository;
 
+    private final int maxTries;
+
     @Override
     public void loginUser(String username, String password) {
         SafeboxUser safeboxUserToLogin = safeboxUserRepository.findByUsername(username)
@@ -48,7 +50,7 @@ public class LoginServiceImpl implements LoginService {
         if (isLocked || badPassword) {
             newHistory.setEventResultEnum(EventResultEnum.FAILED);
             newHistory.setCurrentTries(newHistory.getCurrentTries() + 1);
-            newHistory.setLocked(newHistory.getCurrentTries() >= 3);
+            newHistory.setLocked(newHistory.getCurrentTries() >= maxTries);
         } else {
             newHistory.setCurrentTries(0L);
         }

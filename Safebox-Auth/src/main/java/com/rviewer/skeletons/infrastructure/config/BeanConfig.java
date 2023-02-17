@@ -20,7 +20,7 @@ public class BeanConfig {
     }
 
     @Bean
-    public LoginService loginService(PasswordService passwordService, SafeboxUserRepository safeboxUserRepository) {
-        return new LoginServiceImpl(passwordService, safeboxUserRepository);
+    public LoginService loginService(PasswordService passwordService, SafeboxUserRepository safeboxUserRepository, AppConfig appConfig) {
+        return new LoginServiceImpl(passwordService, safeboxUserRepository, appConfig.getMaxTries());
     }
 }

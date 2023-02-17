@@ -14,7 +14,7 @@ import javax.validation.constraints.NotNull;
 public class AppConfig {
 
     @NotNull
-    private Long maxTries;
+    private Integer maxTries;
 
     @NotNull
     private String tokenSecret;
