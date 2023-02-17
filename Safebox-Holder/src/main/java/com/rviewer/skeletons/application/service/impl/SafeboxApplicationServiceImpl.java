@@ -25,6 +25,23 @@ public class SafeboxApplicationServiceImpl implements SafeboxApplicationService 
     private SafeboxService safeboxService;
 
     @Override
+    public ResponseEntity<SafeboxDto> getSafebox(String owner) {
+        ResponseEntity<SafeboxDto> response;
+
+        try {
+            Safebox safebox = safeboxService.getSafebox(owner);
+            response = ResponseEntity.ok(new SafeboxDto().id(safebox.getId()));
+
+        } catch (SafeboxDoesNotExistException e) {
+            response = ResponseEntity.notFound().build();
+        } catch (SafeboxServiceException e) {
+            response = ResponseEntity.internalServerError().build();
+        }
+
+        return response;
+    }
+
+    @Override
     @Transactional
     public ResponseEntity<SafeboxDto> createSafebox(String owner) {
         ResponseEntity<SafeboxDto> response;

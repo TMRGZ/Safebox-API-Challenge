@@ -8,6 +8,8 @@ import java.util.List;
 
 public interface SafeboxApplicationService {
 
+    ResponseEntity<SafeboxDto> getSafebox(String owner);
+
     ResponseEntity<SafeboxDto> createSafebox(String owner);
 
     ResponseEntity<Void> addItemsToSafebox(String safeboxId, List<String> itemList);

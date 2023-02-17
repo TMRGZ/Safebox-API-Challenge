@@ -16,6 +16,11 @@ public class SafeboxServiceImpl implements SafeboxService {
     private SafeboxRepository safeboxRepository;
 
     @Override
+    public Safebox getSafebox(String owner) {
+        return safeboxRepository.findByOwner(owner).orElseThrow(SafeboxDoesNotExistException::new);
+    }
+
+    @Override
     public Safebox createSafebox(String owner) {
         safeboxRepository.findByOwner(owner).ifPresent(safebox -> {
             throw new SafeboxAlreadyExistsException();

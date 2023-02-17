@@ -16,17 +16,22 @@ public class SafeboxApiImpl implements SafeboxApi {
     private SafeboxApplicationService safeboxApplicationService;
 
     @Override
-    public ResponseEntity<ItemListDto> safeboxIdItemsGet(String id) {
+    public ResponseEntity<ItemListDto> getSafeboxItems(String id) {
         return safeboxApplicationService.getSafeboxItems(id);
     }
 
     @Override
-    public ResponseEntity<Void> safeboxIdItemsPut(String id, ItemListDto itemListDto) {
+    public ResponseEntity<Void> putSafeboxItems(String id, ItemListDto itemListDto) {
         return safeboxApplicationService.addItemsToSafebox(id, itemListDto.getItems());
     }
 
     @Override
-    public ResponseEntity<SafeboxDto> safeboxPost(CreateSafeboxRequestDto request) {
+    public ResponseEntity<SafeboxDto> getSafebox(String id) {
+        return safeboxApplicationService.getSafebox(id);
+    }
+
+    @Override
+    public ResponseEntity<SafeboxDto> postSafebox(CreateSafeboxRequestDto request) {
         return safeboxApplicationService.createSafebox(request.getOwner());
     }
 }

@@ -7,6 +7,8 @@ import java.util.List;
 
 public interface SafeboxService {
 
+    Safebox getSafebox(String owner);
+
     Safebox createSafebox(String key);
 
     void addItemsToSafebox(String safeboxId, List<Item> itemList);

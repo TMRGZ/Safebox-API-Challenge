@@ -3,6 +3,10 @@ import org.openapitools.generator.gradle.plugin.tasks.GenerateTask
 group 'com.rviewer.skeletons'
 version '1.0.0'
 
+dependencies {
+    testImplementation 'org.springframework.amqp:spring-rabbit-test'
+}
+
 tasks.register('buildHolderServer', GenerateTask) {
     generatorName = "spring"
     inputSpec = "$rootDir/api/safebox-holder.spec.yaml"

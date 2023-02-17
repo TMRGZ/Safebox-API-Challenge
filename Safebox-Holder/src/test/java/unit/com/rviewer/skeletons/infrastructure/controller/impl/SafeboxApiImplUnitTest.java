@@ -23,22 +23,31 @@ class SafeboxApiImplUnitTest {
     private SafeboxApplicationService safeboxApplicationService;
 
     @Test
-    void safeboxIdItemsGetUnitTest() {
-        safeboxApi.safeboxIdItemsGet("TEST");
+    void getSafeboxItemsUnitTest() {
+        safeboxApi.getSafeboxItems("TEST");
 
         Mockito.verify(safeboxApplicationService).getSafeboxItems(Mockito.anyString());
     }
 
     @Test
-    void safeboxIdItemsPutUnitTest() {
-        safeboxApi.safeboxIdItemsPut("TEST", new ItemListDto().items(Collections.emptyList()));
+    void putSafeboxItemsUnitTest() {
+        safeboxApi.putSafeboxItems("TEST", new ItemListDto().items(Collections.emptyList()));
 
         Mockito.verify(safeboxApplicationService).addItemsToSafebox(Mockito.anyString(), Mockito.anyList());
     }
 
     @Test
-    void safeboxPostUnitTest() {
-        safeboxApi.safeboxPost(new CreateSafeboxRequestDto().owner("TEST"));
+    void getSafeboxUnitTest() {
+        String id = "TEST";
+
+        safeboxApi.getSafebox(id);
+
+        Mockito.verify(safeboxApplicationService).getSafebox(id);
+    }
+
+    @Test
+    void postSafeboxtUnitTest() {
+        safeboxApi.postSafebox(new CreateSafeboxRequestDto().owner("TEST"));
 
         Mockito.verify(safeboxApplicationService).createSafebox(Mockito.anyString());
     }

@@ -13,14 +13,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.DynamicPropertyRegistry;
-import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.web.util.UriComponentsBuilder;
-import org.testcontainers.containers.RabbitMQContainer;
-import org.testcontainers.junit.jupiter.Container;
-import org.testcontainers.junit.jupiter.Testcontainers;
 
 import java.net.URI;
 import java.util.Collections;
@@ -32,18 +27,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest(classes = SafeboxHolderApplication.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureMockMvc
-@Testcontainers
 class SafeboxApiImplIntegrationTest {
-
-    @Container
-    private static RabbitMQContainer rabbitMQContainer = new RabbitMQContainer("rabbitmq:3-management")
-            .withQueue("SAFEBOX_CREATED_USER.QUEUE.TEST");
-
-    @DynamicPropertySource
-    static void configure(DynamicPropertyRegistry registry) {
-        registry.add("spring.rabbitmq.host", rabbitMQContainer::getHost);
-        registry.add("spring.rabbitmq.port", rabbitMQContainer::getAmqpPort);
-    }
 
     private static final String SAFEBOX_URL = "/safebox";
 
@@ -87,7 +71,7 @@ class SafeboxApiImplIntegrationTest {
     }
 
     @Test
-    void safeboxPost_alreadyExistingException_IntegrationTest() throws Exception {
+    void postSafeboxt_alreadyExistingException_IntegrationTest() throws Exception {
         String safeboxOwner = "EXISTING_SAFEBOX";
 
         Optional<Safebox> byOwner = safeboxRepository.findByOwner(safeboxOwner);
@@ -102,7 +86,7 @@ class SafeboxApiImplIntegrationTest {
     }
 
     @Test
-    void safeboxIdItemsGetIntegrationTest() throws Exception {
+    void getSafeboxItemsIntegrationTest() throws Exception {
         String id = "EXISTING_SAFEBOX";
 
         Optional<Safebox> byId = safeboxRepository.findById(id);
@@ -127,7 +111,7 @@ class SafeboxApiImplIntegrationTest {
     }
 
     @Test
-    void safeboxIdItemsGet_safeboxDoesNotExist_IntegrationTest() throws Exception {
+    void getSafeboxItems_safeboxDoesNotExist_IntegrationTest() throws Exception {
         String id = UUID.randomUUID().toString();
 
         Optional<Safebox> byId = safeboxRepository.findById(id);
@@ -138,7 +122,7 @@ class SafeboxApiImplIntegrationTest {
     }
 
     @Test
-    void safeboxIdItemsPutIntegrationTest() throws Exception {
+    void putSafeboxItemsIntegrationTest() throws Exception {
         String id = "EMPTY_SAFEBOX";
 
         Optional<Safebox> byId = safeboxRepository.findById(id);
@@ -158,7 +142,7 @@ class SafeboxApiImplIntegrationTest {
     }
 
     @Test
-    void safeboxIdItemsPutIntegrationTest_safeboxDoesNotExist_IntegrationTest() throws Exception {
+    void putSafeboxItems_safeboxDoesNotExist_IntegrationTest() throws Exception {
         String id = UUID.randomUUID().toString();
 
         Optional<Safebox> byId = safeboxRepository.findById(id);
