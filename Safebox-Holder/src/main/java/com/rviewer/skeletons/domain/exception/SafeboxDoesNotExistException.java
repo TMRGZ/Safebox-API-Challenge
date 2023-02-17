@@ -1,4 +1,4 @@
 package com.rviewer.skeletons.domain.exception;
 
-public class SafeboxDoesNotExistException extends SafeboxServiceException {
+public class SafeboxDoesNotExistException extends SafeboxHolderException {
 }

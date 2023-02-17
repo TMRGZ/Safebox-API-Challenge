@@ -5,7 +5,7 @@ import com.rviewer.skeletons.application.model.SafeboxDto;
 import com.rviewer.skeletons.application.service.SafeboxApplicationService;
 import com.rviewer.skeletons.domain.exception.SafeboxAlreadyExistsException;
 import com.rviewer.skeletons.domain.exception.SafeboxDoesNotExistException;
-import com.rviewer.skeletons.domain.exception.SafeboxServiceException;
+import com.rviewer.skeletons.domain.exception.SafeboxHolderException;
 import com.rviewer.skeletons.domain.model.Item;
 import com.rviewer.skeletons.domain.model.Safebox;
 import com.rviewer.skeletons.domain.service.SafeboxService;
@@ -34,7 +34,7 @@ public class SafeboxApplicationServiceImpl implements SafeboxApplicationService 
 
         } catch (SafeboxDoesNotExistException e) {
             response = ResponseEntity.notFound().build();
-        } catch (SafeboxServiceException e) {
+        } catch (SafeboxHolderException e) {
             response = ResponseEntity.internalServerError().build();
         }
 
@@ -53,7 +53,7 @@ public class SafeboxApplicationServiceImpl implements SafeboxApplicationService 
 
         } catch (SafeboxAlreadyExistsException e) {
             response = ResponseEntity.status(HttpStatus.CONFLICT).build();
-        } catch (SafeboxServiceException e) {
+        } catch (SafeboxHolderException e) {
             response = ResponseEntity.internalServerError().build();
         }
 
@@ -76,7 +76,7 @@ public class SafeboxApplicationServiceImpl implements SafeboxApplicationService 
 
         } catch (SafeboxDoesNotExistException e) {
             response = ResponseEntity.notFound().build();
-        } catch (SafeboxServiceException e) {
+        } catch (SafeboxHolderException e) {
             response = ResponseEntity.internalServerError().build();
         }
 
@@ -94,7 +94,7 @@ public class SafeboxApplicationServiceImpl implements SafeboxApplicationService 
 
         } catch (SafeboxDoesNotExistException e) {
             response = ResponseEntity.notFound().build();
-        } catch (SafeboxServiceException e) {
+        } catch (SafeboxHolderException e) {
             response = ResponseEntity.internalServerError().build();
         }
 

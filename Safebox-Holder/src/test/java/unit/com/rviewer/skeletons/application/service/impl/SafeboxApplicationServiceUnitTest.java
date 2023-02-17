@@ -5,7 +5,7 @@ import com.rviewer.skeletons.application.model.SafeboxDto;
 import com.rviewer.skeletons.application.service.impl.SafeboxApplicationServiceImpl;
 import com.rviewer.skeletons.domain.exception.SafeboxAlreadyExistsException;
 import com.rviewer.skeletons.domain.exception.SafeboxDoesNotExistException;
-import com.rviewer.skeletons.domain.exception.SafeboxServiceException;
+import com.rviewer.skeletons.domain.exception.SafeboxHolderException;
 import com.rviewer.skeletons.domain.model.Item;
 import com.rviewer.skeletons.domain.model.Safebox;
 import com.rviewer.skeletons.domain.service.SafeboxService;
@@ -70,7 +70,7 @@ class SafeboxApplicationServiceUnitTest {
     @Test
     void getSafebox_errorException_UnitTest() {
         String owner = "TEST";
-        Mockito.when(safeboxService.getSafebox(owner)).thenThrow(new SafeboxServiceException());
+        Mockito.when(safeboxService.getSafebox(owner)).thenThrow(new SafeboxHolderException());
 
         ResponseEntity<SafeboxDto> response = safeboxApplicationService.getSafebox(owner);
 
@@ -114,7 +114,7 @@ class SafeboxApplicationServiceUnitTest {
 
     @Test
     void createSafebox_errorException_UnitTest() {
-        Mockito.when(safeboxService.createSafebox(Mockito.anyString())).thenThrow(new SafeboxServiceException());
+        Mockito.when(safeboxService.createSafebox(Mockito.anyString())).thenThrow(new SafeboxHolderException());
 
         ResponseEntity<SafeboxDto> response = safeboxApplicationService.createSafebox("TEST");
 
@@ -157,7 +157,7 @@ class SafeboxApplicationServiceUnitTest {
     void addItemsToSafebox_errorException_UnitTest() {
         String id = "TEST";
         List<String> itemList = Collections.singletonList("TEST");
-        Mockito.doThrow(new SafeboxServiceException()).when(safeboxService).addItemsToSafebox(Mockito.eq(id), Mockito.anyList());
+        Mockito.doThrow(new SafeboxHolderException()).when(safeboxService).addItemsToSafebox(Mockito.eq(id), Mockito.anyList());
 
         ResponseEntity<Void> response =
                 safeboxApplicationService.addItemsToSafebox(id, itemList);
@@ -200,7 +200,7 @@ class SafeboxApplicationServiceUnitTest {
     @Test
     void getSafeboxItems_errorException_UnitTest() {
         Mockito.when(safeboxService.getSafeboxItems(Mockito.anyString()))
-                .thenThrow(new SafeboxServiceException());
+                .thenThrow(new SafeboxHolderException());
 
         ResponseEntity<ItemListDto> response = safeboxApplicationService.getSafeboxItems("TEST");
 
