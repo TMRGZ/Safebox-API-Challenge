@@ -1,7 +1,7 @@
 package integration.com.rviewer.skeletons.infrastructure.controller.impl;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.rviewer.skeletons.SafeboxServiceApplication;
+import com.rviewer.skeletons.SafeboxHolderApplication;
 import com.rviewer.skeletons.application.model.CreateSafeboxRequestDto;
 import com.rviewer.skeletons.application.model.ItemListDto;
 import com.rviewer.skeletons.application.model.SafeboxDto;
@@ -30,7 +30,7 @@ import java.util.UUID;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@SpringBootTest(classes = SafeboxServiceApplication.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@SpringBootTest(classes = SafeboxHolderApplication.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureMockMvc
 @Testcontainers
 class SafeboxApiImplIntegrationTest {

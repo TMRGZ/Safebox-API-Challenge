@@ -4,10 +4,10 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class SafeboxServiceApplication {
+public class SafeboxHolderApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(SafeboxServiceApplication.class, args);
+        SpringApplication.run(SafeboxHolderApplication.class, args);
     }
 
 }
