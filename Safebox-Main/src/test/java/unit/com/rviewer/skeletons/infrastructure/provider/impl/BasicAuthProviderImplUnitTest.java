@@ -42,6 +42,7 @@ class BasicAuthProviderImplUnitTest {
         Mockito.verify(loginService).loginUser(username, password);
 
         Assertions.assertNotNull(authenticate);
+        Assertions.assertTrue(authenticate.isAuthenticated());
         Assertions.assertNotNull(authenticate.getPrincipal());
         Assertions.assertEquals(username, authenticate.getPrincipal());
         Assertions.assertNotNull(authenticate.getCredentials());
@@ -57,9 +58,12 @@ class BasicAuthProviderImplUnitTest {
         Authentication authentication = new UsernamePasswordAuthenticationToken(username, password);
         Mockito.when(loginService.loginUser(username, password)).thenThrow(new UserDoesNotExistException());
 
-        Assertions.assertThrows(UsernameNotFoundException.class, () -> basicAuthProvider.authenticate(authentication));
+        Authentication authenticate = basicAuthProvider.authenticate(authentication);
 
         Mockito.verify(loginService).loginUser(username, password);
+
+        Assertions.assertNotNull(authenticate);
+        Assertions.assertFalse(authenticate.isAuthenticated());
     }
 
     @Test
@@ -69,9 +73,12 @@ class BasicAuthProviderImplUnitTest {
         Authentication authentication = new UsernamePasswordAuthenticationToken(username, password);
         Mockito.when(loginService.loginUser(username, password)).thenThrow(new UserIsUnauthorizedException());
 
-        Assertions.assertThrows(BadCredentialsException.class, () -> basicAuthProvider.authenticate(authentication));
+        Authentication authenticate = basicAuthProvider.authenticate(authentication);
 
         Mockito.verify(loginService).loginUser(username, password);
+
+        Assertions.assertNotNull(authenticate);
+        Assertions.assertFalse(authenticate.isAuthenticated());
     }
 
     @Test

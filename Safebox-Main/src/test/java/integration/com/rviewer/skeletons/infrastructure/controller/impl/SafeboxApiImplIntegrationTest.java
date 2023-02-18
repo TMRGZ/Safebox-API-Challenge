@@ -28,7 +28,8 @@ import java.net.URI;
 import java.util.Collections;
 import java.util.List;
 
-import static com.github.tomakehurst.wiremock.client.WireMock.*;
+import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
+import static com.github.tomakehurst.wiremock.client.WireMock.equalToJson;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -86,6 +87,27 @@ class SafeboxApiImplIntegrationTest {
 
         Assertions.assertNotNull(response);
         Assertions.assertNotNull(response.getId());
+    }
+
+    @Test
+    void postSafebox_authSeverBadRequest_IntegrationTest() throws Exception {
+        CreateSafeboxRequestDto createSafeboxRequestDto = new CreateSafeboxRequestDto();
+        createSafeboxRequestDto.setName("TEST-USER");
+        createSafeboxRequestDto.setPassword("TEST-PASSWORD");
+
+        URI safeboxAuthUserUri = URI.create(SAFEBOX_AUTH_POST_USER_URL);
+        WireMock.stubFor(WireMock.post(WireMock.urlEqualTo(safeboxAuthUserUri.getPath()))
+                .willReturn(aResponse()
+                        .withHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                        .withStatus(HttpStatus.BAD_REQUEST.value())
+                )
+        );
+
+        URI baseSafeboxUri = URI.create(SAFEBOX_BASE_URL);
+        mockMvc.perform(post(baseSafeboxUri)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(createSafeboxRequestDto))
+        ).andExpect(status().isInternalServerError());
     }
 
     @Test
@@ -185,7 +207,7 @@ class SafeboxApiImplIntegrationTest {
     }
 
     @Test
-    void openSafebox_safeboxLocked423_IntegrationTest() throws Exception {
+    void openSafebox_safeboxLocked_IntegrationTest() throws Exception {
         String id = "TEST-ID";
         String username = "TEST-USER";
         String password = "TEST-PASSWORD";
@@ -202,6 +224,182 @@ class SafeboxApiImplIntegrationTest {
         mockMvc.perform(get(openSafeboxUri).with(httpBasic(username, password))
                 .contentType(MediaType.APPLICATION_JSON)
         ).andExpect(status().isLocked());
+    }
+
+    @Test
+    void openSafebox_safeboxUserDoesNotExist_IntegrationTest() throws Exception {
+        String id = "TEST-ID";
+        String username = "TEST-USER";
+        String password = "TEST-PASSWORD";
+
+        URI safeboxAuthLoginUri = URI.create(SAFEBOX_AUTH_LOGIN_URL);
+        WireMock.stubFor(WireMock.post(WireMock.urlEqualTo(safeboxAuthLoginUri.getPath()))
+                .willReturn(aResponse()
+                        .withHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                        .withStatus(HttpStatus.NOT_FOUND.value())
+                )
+        );
+
+        URI openSafeboxUri = UriComponentsBuilder.fromUriString(OPEN_SAFEBOX_URL).build(id);
+        mockMvc.perform(get(openSafeboxUri).with(httpBasic(username, password))
+                .contentType(MediaType.APPLICATION_JSON)
+        ).andExpect(status().isForbidden());
+    }
+
+    @Test
+    void openSafebox_safeboxUserUnauthorized_IntegrationTest() throws Exception {
+        String id = "TEST-ID";
+        String username = "TEST-USER";
+        String password = "TEST-PASSWORD";
+
+        URI safeboxAuthLoginUri = URI.create(SAFEBOX_AUTH_LOGIN_URL);
+        WireMock.stubFor(WireMock.post(WireMock.urlEqualTo(safeboxAuthLoginUri.getPath()))
+                .willReturn(aResponse()
+                        .withHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                        .withStatus(HttpStatus.UNAUTHORIZED.value())
+                )
+        );
+
+        URI openSafeboxUri = UriComponentsBuilder.fromUriString(OPEN_SAFEBOX_URL).build(id);
+        mockMvc.perform(get(openSafeboxUri).with(httpBasic(username, password))
+                .contentType(MediaType.APPLICATION_JSON)
+        ).andExpect(status().isForbidden());
+    }
+
+    @Test
+    void openSafebox_safeboxAuthBadRequest_IntegrationTest() throws Exception {
+        String id = "TEST-ID";
+        String username = "TEST-USER";
+        String password = "TEST-PASSWORD";
+
+        URI safeboxAuthLoginUri = URI.create(SAFEBOX_AUTH_LOGIN_URL);
+        WireMock.stubFor(WireMock.post(WireMock.urlEqualTo(safeboxAuthLoginUri.getPath()))
+                .willReturn(aResponse()
+                        .withHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                        .withStatus(HttpStatus.BAD_REQUEST.value())
+                )
+        );
+
+        URI openSafeboxUri = UriComponentsBuilder.fromUriString(OPEN_SAFEBOX_URL).build(id);
+        mockMvc.perform(get(openSafeboxUri).with(httpBasic(username, password))
+                .contentType(MediaType.APPLICATION_JSON)
+        ).andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    void openSafebox_authServerFailed_IntegrationTest() throws Exception {
+        String id = "TEST-ID";
+        String username = "TEST-USER";
+        String password = "TEST-PASSWORD";
+
+        URI safeboxAuthLoginUri = URI.create(SAFEBOX_AUTH_LOGIN_URL);
+        WireMock.stubFor(WireMock.post(WireMock.urlEqualTo(safeboxAuthLoginUri.getPath()))
+                .willReturn(aResponse()
+                        .withHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                        .withStatus(HttpStatus.INTERNAL_SERVER_ERROR.value())
+                )
+        );
+
+        URI openSafeboxUri = UriComponentsBuilder.fromUriString(OPEN_SAFEBOX_URL).build(id);
+        mockMvc.perform(get(openSafeboxUri).with(httpBasic(username, password))
+                .contentType(MediaType.APPLICATION_JSON)
+        ).andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    void openSafebox_safeboxDoesNotExist_IntegrationTest() throws Exception {
+        String id = "TEST-ID";
+        String username = "TEST-USER";
+        String password = "TEST-PASSWORD";
+        String token = "TOKEN";
+
+        AuthLoginResponseDto loginResponseDto = new AuthLoginResponseDto();
+        loginResponseDto.setToken(token);
+
+        URI safeboxAuthLoginUri = URI.create(SAFEBOX_AUTH_LOGIN_URL);
+        WireMock.stubFor(WireMock.post(WireMock.urlEqualTo(safeboxAuthLoginUri.getPath()))
+                .willReturn(aResponse()
+                        .withHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                        .withBody(objectMapper.writeValueAsString(loginResponseDto))
+                )
+        );
+
+        URI safeboxHolderGetUri = UriComponentsBuilder.fromUriString(SPECIFIC_SAFEBOX_URL).build(id);
+        WireMock.stubFor(WireMock.get(WireMock.urlEqualTo(safeboxHolderGetUri.getPath()))
+                .willReturn(aResponse()
+                        .withHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                        .withStatus(HttpStatus.NOT_FOUND.value())
+                )
+        );
+
+        URI openSafeboxUri = UriComponentsBuilder.fromUriString(OPEN_SAFEBOX_URL).build(id);
+        mockMvc.perform(get(openSafeboxUri).with(httpBasic(username, password))
+                .contentType(MediaType.APPLICATION_JSON)
+        ).andExpect(status().isNotFound());
+    }
+
+    @Test
+    void openSafebox_safeboxHolderFailed_IntegrationTest() throws Exception {
+        String id = "TEST-ID";
+        String username = "TEST-USER";
+        String password = "TEST-PASSWORD";
+        String token = "TOKEN";
+
+        AuthLoginResponseDto loginResponseDto = new AuthLoginResponseDto();
+        loginResponseDto.setToken(token);
+
+        URI safeboxAuthLoginUri = URI.create(SAFEBOX_AUTH_LOGIN_URL);
+        WireMock.stubFor(WireMock.post(WireMock.urlEqualTo(safeboxAuthLoginUri.getPath()))
+                .willReturn(aResponse()
+                        .withHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                        .withBody(objectMapper.writeValueAsString(loginResponseDto))
+                )
+        );
+
+        URI safeboxHolderGetUri = UriComponentsBuilder.fromUriString(SPECIFIC_SAFEBOX_URL).build(id);
+        WireMock.stubFor(WireMock.get(WireMock.urlEqualTo(safeboxHolderGetUri.getPath()))
+                .willReturn(aResponse()
+                        .withHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                        .withStatus(HttpStatus.INTERNAL_SERVER_ERROR.value())
+                )
+        );
+
+        URI openSafeboxUri = UriComponentsBuilder.fromUriString(OPEN_SAFEBOX_URL).build(id);
+        mockMvc.perform(get(openSafeboxUri).with(httpBasic(username, password))
+                .contentType(MediaType.APPLICATION_JSON)
+        ).andExpect(status().isBadGateway());
+    }
+
+    @Test
+    void openSafebox_safeboxHolderBadRequest_IntegrationTest() throws Exception {
+        String id = "TEST-ID";
+        String username = "TEST-USER";
+        String password = "TEST-PASSWORD";
+        String token = "TOKEN";
+
+        AuthLoginResponseDto loginResponseDto = new AuthLoginResponseDto();
+        loginResponseDto.setToken(token);
+
+        URI safeboxAuthLoginUri = URI.create(SAFEBOX_AUTH_LOGIN_URL);
+        WireMock.stubFor(WireMock.post(WireMock.urlEqualTo(safeboxAuthLoginUri.getPath()))
+                .willReturn(aResponse()
+                        .withHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                        .withBody(objectMapper.writeValueAsString(loginResponseDto))
+                )
+        );
+
+        URI safeboxHolderGetUri = UriComponentsBuilder.fromUriString(SPECIFIC_SAFEBOX_URL).build(id);
+        WireMock.stubFor(WireMock.get(WireMock.urlEqualTo(safeboxHolderGetUri.getPath()))
+                .willReturn(aResponse()
+                        .withHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                        .withStatus(HttpStatus.BAD_REQUEST.value())
+                )
+        );
+
+        URI openSafeboxUri = UriComponentsBuilder.fromUriString(OPEN_SAFEBOX_URL).build(id);
+        mockMvc.perform(get(openSafeboxUri).with(httpBasic(username, password))
+                .contentType(MediaType.APPLICATION_JSON)
+        ).andExpect(status().isInternalServerError());
     }
 
     @Test
@@ -244,6 +442,69 @@ class SafeboxApiImplIntegrationTest {
     }
 
     @Test
+    void getSafeboxItems_safeboxDoesNotExist_IntegrationTest() throws Exception {
+        String id = "TEST-ID";
+
+        HolderItemListDto itemListDto = new HolderItemListDto();
+        itemListDto.setItems(Collections.singletonList("ITEM"));
+
+        URI safeboxHolderGetUri = UriComponentsBuilder.fromUriString(SAFEBOX_ITEMS_URL).build(id);
+        WireMock.stubFor(WireMock.get(WireMock.urlEqualTo(safeboxHolderGetUri.getPath()))
+                .willReturn(aResponse()
+                        .withHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                        .withStatus(HttpStatus.NOT_FOUND.value())
+                )
+        );
+
+        URI baseSafeboxUri = UriComponentsBuilder.fromUriString(SAFEBOX_ITEMS_URL).build(id);
+        mockMvc.perform(get(baseSafeboxUri).with(jwt())
+                .contentType(MediaType.APPLICATION_JSON)
+        ).andExpect(status().isNotFound());
+    }
+
+    @Test
+    void getSafeboxItems_safeboxHolderFailed_IntegrationTest() throws Exception {
+        String id = "TEST-ID";
+
+        HolderItemListDto itemListDto = new HolderItemListDto();
+        itemListDto.setItems(Collections.singletonList("ITEM"));
+
+        URI safeboxHolderGetUri = UriComponentsBuilder.fromUriString(SAFEBOX_ITEMS_URL).build(id);
+        WireMock.stubFor(WireMock.get(WireMock.urlEqualTo(safeboxHolderGetUri.getPath()))
+                .willReturn(aResponse()
+                        .withHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                        .withStatus(HttpStatus.INTERNAL_SERVER_ERROR.value())
+                )
+        );
+
+        URI baseSafeboxUri = UriComponentsBuilder.fromUriString(SAFEBOX_ITEMS_URL).build(id);
+        mockMvc.perform(get(baseSafeboxUri).with(jwt())
+                .contentType(MediaType.APPLICATION_JSON)
+        ).andExpect(status().isBadGateway());
+    }
+
+    @Test
+    void getSafeboxItems_safeboxHolderBadRequest_IntegrationTest() throws Exception {
+        String id = "TEST-ID";
+
+        HolderItemListDto itemListDto = new HolderItemListDto();
+        itemListDto.setItems(Collections.singletonList("ITEM"));
+
+        URI safeboxHolderGetUri = UriComponentsBuilder.fromUriString(SAFEBOX_ITEMS_URL).build(id);
+        WireMock.stubFor(WireMock.get(WireMock.urlEqualTo(safeboxHolderGetUri.getPath()))
+                .willReturn(aResponse()
+                        .withHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                        .withStatus(HttpStatus.BAD_REQUEST.value())
+                )
+        );
+
+        URI baseSafeboxUri = UriComponentsBuilder.fromUriString(SAFEBOX_ITEMS_URL).build(id);
+        mockMvc.perform(get(baseSafeboxUri).with(jwt())
+                .contentType(MediaType.APPLICATION_JSON)
+        ).andExpect(status().isInternalServerError());
+    }
+
+    @Test
     void putSafeboxItemsIntegrationTest() throws Exception {
         String id = "TEST-ID";
         List<String> itemList = Collections.singletonList("ITEM");
@@ -252,7 +513,7 @@ class SafeboxApiImplIntegrationTest {
 
         URI safeboxHolderPutUri = UriComponentsBuilder.fromUriString(SAFEBOX_ITEMS_URL).build(id);
         WireMock.stubFor(WireMock.put(WireMock.urlEqualTo(safeboxHolderPutUri.getPath()))
-                        .withRequestBody(equalToJson(objectMapper.writeValueAsString(itemListDto)))
+                .withRequestBody(equalToJson(objectMapper.writeValueAsString(itemListDto)))
                 .willReturn(aResponse()
                         .withHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                 )
@@ -273,5 +534,74 @@ class SafeboxApiImplIntegrationTest {
         mockMvc.perform(put(baseSafeboxUri)
                 .contentType(MediaType.APPLICATION_JSON)
         ).andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    void putSafeboxItems_safeboxDoesNotExist_IntegrationTest() throws Exception {
+        String id = "TEST-ID";
+        List<String> itemList = Collections.singletonList("ITEM");
+        ItemListDto itemListDto = new ItemListDto();
+        itemListDto.setItems(itemList);
+
+        URI safeboxHolderPutUri = UriComponentsBuilder.fromUriString(SAFEBOX_ITEMS_URL).build(id);
+        WireMock.stubFor(WireMock.put(WireMock.urlEqualTo(safeboxHolderPutUri.getPath()))
+                .withRequestBody(equalToJson(objectMapper.writeValueAsString(itemListDto)))
+                .willReturn(aResponse()
+                        .withHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                        .withStatus(HttpStatus.NOT_FOUND.value())
+                )
+        );
+
+        URI baseSafeboxUri = UriComponentsBuilder.fromUriString(SAFEBOX_ITEMS_URL).build(id);
+        mockMvc.perform(put(baseSafeboxUri).with(jwt())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(itemListDto))
+        ).andExpect(status().isNotFound());
+    }
+
+    @Test
+    void putSafeboxItems_safeboxHolderFailed_IntegrationTest() throws Exception {
+        String id = "TEST-ID";
+        List<String> itemList = Collections.singletonList("ITEM");
+        ItemListDto itemListDto = new ItemListDto();
+        itemListDto.setItems(itemList);
+
+        URI safeboxHolderPutUri = UriComponentsBuilder.fromUriString(SAFEBOX_ITEMS_URL).build(id);
+        WireMock.stubFor(WireMock.put(WireMock.urlEqualTo(safeboxHolderPutUri.getPath()))
+                .withRequestBody(equalToJson(objectMapper.writeValueAsString(itemListDto)))
+                .willReturn(aResponse()
+                        .withHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                        .withStatus(HttpStatus.INTERNAL_SERVER_ERROR.value())
+                )
+        );
+
+        URI baseSafeboxUri = UriComponentsBuilder.fromUriString(SAFEBOX_ITEMS_URL).build(id);
+        mockMvc.perform(put(baseSafeboxUri).with(jwt())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(itemListDto))
+        ).andExpect(status().isBadGateway());
+    }
+
+    @Test
+    void putSafeboxItems_safeboxHolderBadRequest_IntegrationTest() throws Exception {
+        String id = "TEST-ID";
+        List<String> itemList = Collections.singletonList("ITEM");
+        ItemListDto itemListDto = new ItemListDto();
+        itemListDto.setItems(itemList);
+
+        URI safeboxHolderPutUri = UriComponentsBuilder.fromUriString(SAFEBOX_ITEMS_URL).build(id);
+        WireMock.stubFor(WireMock.put(WireMock.urlEqualTo(safeboxHolderPutUri.getPath()))
+                .withRequestBody(equalToJson(objectMapper.writeValueAsString(itemListDto)))
+                .willReturn(aResponse()
+                        .withHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                        .withStatus(HttpStatus.BAD_REQUEST.value())
+                )
+        );
+
+        URI baseSafeboxUri = UriComponentsBuilder.fromUriString(SAFEBOX_ITEMS_URL).build(id);
+        mockMvc.perform(put(baseSafeboxUri).with(jwt())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(itemListDto))
+        ).andExpect(status().isInternalServerError());
     }
 }

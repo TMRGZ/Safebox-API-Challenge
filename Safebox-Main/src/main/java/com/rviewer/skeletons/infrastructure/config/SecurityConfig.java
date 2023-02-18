@@ -13,10 +13,12 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
+import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
 public class SecurityConfig {
+
 
     @Bean
     public AuthenticationManager authenticationManager(HttpSecurity http, JwtProviderImpl jwtProvider, BasicAuthProviderImpl basicAuthProvider) throws Exception {
@@ -33,13 +35,13 @@ public class SecurityConfig {
     }
 
     @Bean
-    public SecurityFilterChain basicFilterChain(HttpSecurity httpSecurity) throws Exception {
+    public SecurityFilterChain basicFilterChain(HttpSecurity httpSecurity, AuthenticationEntryPoint entryPoint) throws Exception {
 
         httpSecurity.csrf().disable()
                 .authorizeHttpRequests()
                 .regexMatchers(HttpMethod.GET, "/safebox/.+/open").authenticated()
                 .and()
-                .httpBasic()
+                .httpBasic().authenticationEntryPoint(entryPoint)
                 .and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 
@@ -49,9 +51,11 @@ public class SecurityConfig {
 
     @Bean
     @Order(1)
-    public SecurityFilterChain jwtFilterChain(HttpSecurity httpSecurity) throws Exception {
+    public SecurityFilterChain jwtFilterChain(HttpSecurity httpSecurity, AuthenticationEntryPoint entryPoint) throws Exception {
         httpSecurity.regexMatcher("/safebox/.+/items")
                 .csrf().disable()
+                .exceptionHandling().authenticationEntryPoint(entryPoint)
+                .and()
                 .authorizeHttpRequests()
                 .anyRequest().authenticated()
                 .and()
