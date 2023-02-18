@@ -33,7 +33,7 @@ class SafeboxApiImplUnitTest {
     void putSafeboxItemsUnitTest() {
         safeboxApi.putSafeboxItems("TEST", new ItemListDto().items(Collections.emptyList()));
 
-        Mockito.verify(safeboxApplicationService).addItemsToSafebox(Mockito.anyString(), Mockito.anyList());
+        Mockito.verify(safeboxApplicationService).addItemsToSafebox(Mockito.anyString(), Mockito.any());
     }
 
     @Test
@@ -49,6 +49,6 @@ class SafeboxApiImplUnitTest {
     void postSafeboxtUnitTest() {
         safeboxApi.postSafebox(new CreateSafeboxRequestDto().owner("TEST"));
 
-        Mockito.verify(safeboxApplicationService).createSafebox(Mockito.anyString());
+        Mockito.verify(safeboxApplicationService).createSafebox(Mockito.any());
     }
 }

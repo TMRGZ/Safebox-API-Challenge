@@ -1,22 +1,34 @@
 package com.rviewer.skeletons.infrastructure.receiver;
 
-import com.rviewer.skeletons.application.service.SafeboxApplicationService;
+import com.rviewer.skeletons.domain.exception.SafeboxAlreadyExistsException;
+import com.rviewer.skeletons.domain.model.Safebox;
+import com.rviewer.skeletons.domain.service.SafeboxService;
 import com.rviewer.skeletons.infrastructure.config.CreatedUserQueueConfig;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+@Slf4j
 @Component
 public class CreatedUserReceiver {
 
     @Autowired
-    private SafeboxApplicationService safeboxService;
+    private SafeboxService safeboxService;
 
     @Autowired
     private CreatedUserQueueConfig createdUserQueueConfig;
 
     @RabbitListener(queues = "#{createdUserQueueConfig.getQueue()}")
     public void receive(String owner) {
-        safeboxService.createSafebox(owner);
+        log.info("User {} created event received from {}, trying to create a safebox", owner, createdUserQueueConfig.getQueue());
+
+        try {
+            Safebox safebox = safeboxService.createSafebox(owner);
+            log.info("Safebox {} successfully created", safebox.getId());
+
+        } catch (SafeboxAlreadyExistsException e) {
+            log.error("{} already has a safebox, creation process cancelled", owner);
+        }
     }
 }

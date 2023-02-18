@@ -22,7 +22,7 @@ public class SafeboxApiImpl implements SafeboxApi {
 
     @Override
     public ResponseEntity<Void> putSafeboxItems(String id, ItemListDto itemListDto) {
-        return safeboxApplicationService.addItemsToSafebox(id, itemListDto.getItems());
+        return safeboxApplicationService.addItemsToSafebox(id, itemListDto);
     }
 
     @Override
@@ -32,6 +32,6 @@ public class SafeboxApiImpl implements SafeboxApi {
 
     @Override
     public ResponseEntity<SafeboxDto> postSafebox(CreateSafeboxRequestDto request) {
-        return safeboxApplicationService.createSafebox(request.getOwner());
+        return safeboxApplicationService.createSafebox(request);
     }
 }

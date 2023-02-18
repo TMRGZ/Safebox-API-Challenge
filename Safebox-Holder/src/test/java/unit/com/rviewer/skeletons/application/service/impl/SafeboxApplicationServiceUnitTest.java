@@ -1,5 +1,8 @@
 package unit.com.rviewer.skeletons.application.service.impl;
 
+import com.rviewer.skeletons.application.mapper.InputItemMapper;
+import com.rviewer.skeletons.application.mapper.InputSafeboxMapper;
+import com.rviewer.skeletons.application.model.CreateSafeboxRequestDto;
 import com.rviewer.skeletons.application.model.ItemListDto;
 import com.rviewer.skeletons.application.model.SafeboxDto;
 import com.rviewer.skeletons.application.service.impl.SafeboxApplicationServiceImpl;
@@ -32,6 +35,12 @@ class SafeboxApplicationServiceUnitTest {
     @Mock
     private SafeboxService safeboxService;
 
+    @Mock
+    private InputSafeboxMapper safeboxMapper;
+
+    @Mock
+    private InputItemMapper itemMapper;
+
     @Test
     void getSafeboxUnitTest() {
         String owner = "TEST";
@@ -43,13 +52,11 @@ class SafeboxApplicationServiceUnitTest {
         ResponseEntity<SafeboxDto> response = safeboxApplicationService.getSafebox(owner);
 
         Mockito.verify(safeboxService).getSafebox(owner);
+        Mockito.verify(safeboxMapper).map(safebox);
 
         Assertions.assertNotNull(response);
         Assertions.assertNotNull(response.getStatusCode());
         Assertions.assertEquals(HttpStatus.OK, response.getStatusCode());
-        Assertions.assertNotNull(response.getBody());
-        Assertions.assertNotNull(response.getBody().getId());
-        Assertions.assertEquals(safebox.getId(), response.getBody().getId());
     }
 
     @Test
@@ -60,6 +67,7 @@ class SafeboxApplicationServiceUnitTest {
         ResponseEntity<SafeboxDto> response = safeboxApplicationService.getSafebox(owner);
 
         Mockito.verify(safeboxService).getSafebox(owner);
+        Mockito.verify(safeboxMapper, Mockito.never()).map(Mockito.any());
 
         Assertions.assertNotNull(response);
         Assertions.assertNotNull(response.getStatusCode());
@@ -75,6 +83,7 @@ class SafeboxApplicationServiceUnitTest {
         ResponseEntity<SafeboxDto> response = safeboxApplicationService.getSafebox(owner);
 
         Mockito.verify(safeboxService).getSafebox(owner);
+        Mockito.verify(safeboxMapper, Mockito.never()).map(Mockito.any());
 
         Assertions.assertNotNull(response);
         Assertions.assertNotNull(response.getStatusCode());
@@ -87,12 +96,14 @@ class SafeboxApplicationServiceUnitTest {
     void createSafeboxUnitTest() {
         Safebox safebox = new Safebox();
         safebox.setId(UUID.randomUUID().toString());
+        CreateSafeboxRequestDto requestDto = new CreateSafeboxRequestDto().owner("TEST");
 
         Mockito.when(safeboxService.createSafebox(Mockito.anyString())).thenReturn(safebox);
 
-        ResponseEntity<SafeboxDto> response = safeboxApplicationService.createSafebox("TEST");
+        ResponseEntity<SafeboxDto> response = safeboxApplicationService.createSafebox(requestDto);
 
         Mockito.verify(safeboxService).createSafebox(Mockito.anyString());
+        Mockito.verify(safeboxMapper).map(Mockito.any());
 
         Assertions.assertNotNull(response);
         Assertions.assertNotNull(response.getStatusCode());
@@ -102,10 +113,12 @@ class SafeboxApplicationServiceUnitTest {
     @Test
     void createSafebox_alreadyExistingException_UnitTest() {
         Mockito.when(safeboxService.createSafebox(Mockito.anyString())).thenThrow(new SafeboxAlreadyExistsException());
+        CreateSafeboxRequestDto requestDto = new CreateSafeboxRequestDto().owner("TEST");
 
-        ResponseEntity<SafeboxDto> response = safeboxApplicationService.createSafebox("TEST");
+        ResponseEntity<SafeboxDto> response = safeboxApplicationService.createSafebox(requestDto);
 
         Mockito.verify(safeboxService).createSafebox(Mockito.anyString());
+        Mockito.verify(safeboxMapper, Mockito.never()).map(Mockito.any());
 
         Assertions.assertNotNull(response);
         Assertions.assertNotNull(response.getStatusCode());
@@ -115,10 +128,12 @@ class SafeboxApplicationServiceUnitTest {
     @Test
     void createSafebox_errorException_UnitTest() {
         Mockito.when(safeboxService.createSafebox(Mockito.anyString())).thenThrow(new SafeboxHolderException());
+        CreateSafeboxRequestDto requestDto = new CreateSafeboxRequestDto().owner("TEST");
 
-        ResponseEntity<SafeboxDto> response = safeboxApplicationService.createSafebox("TEST");
+        ResponseEntity<SafeboxDto> response = safeboxApplicationService.createSafebox(requestDto);
 
         Mockito.verify(safeboxService).createSafebox(Mockito.anyString());
+        Mockito.verify(safeboxMapper, Mockito.never()).map(Mockito.any());
 
         Assertions.assertNotNull(response);
         Assertions.assertNotNull(response.getStatusCode());
@@ -127,9 +142,12 @@ class SafeboxApplicationServiceUnitTest {
 
     @Test
     void addItemsToSafeboxUnitTest() {
-        ResponseEntity<Void> response =
-                safeboxApplicationService.addItemsToSafebox("TEST", Collections.singletonList("TEST"));
+        ItemListDto itemListDto = new ItemListDto().items(Collections.singletonList("TEST"));
 
+        ResponseEntity<Void> response =
+                safeboxApplicationService.addItemsToSafebox("TEST", itemListDto);
+
+        Mockito.verify(itemMapper).map(itemListDto);
         Mockito.verify(safeboxService).addItemsToSafebox(Mockito.anyString(), Mockito.anyList());
 
         Assertions.assertNotNull(response);
@@ -140,12 +158,13 @@ class SafeboxApplicationServiceUnitTest {
     @Test
     void addItemsToSafebox_safeboxDoesNotExistException_UnitTest() {
         String id = "TEST";
-        List<String> itemList = Collections.singletonList("TEST");
+        ItemListDto itemListDto = new ItemListDto().items(Collections.singletonList("TEST"));
         Mockito.doThrow(new SafeboxDoesNotExistException()).when(safeboxService).addItemsToSafebox(Mockito.eq(id), Mockito.anyList());
 
         ResponseEntity<Void> response =
-                safeboxApplicationService.addItemsToSafebox(id, itemList);
+                safeboxApplicationService.addItemsToSafebox(id, itemListDto);
 
+        Mockito.verify(itemMapper).map(itemListDto);
         Mockito.verify(safeboxService).addItemsToSafebox(Mockito.anyString(), Mockito.anyList());
 
         Assertions.assertNotNull(response);
@@ -156,12 +175,14 @@ class SafeboxApplicationServiceUnitTest {
     @Test
     void addItemsToSafebox_errorException_UnitTest() {
         String id = "TEST";
-        List<String> itemList = Collections.singletonList("TEST");
+        ItemListDto itemListDto = new ItemListDto().items(Collections.singletonList("TEST"));
+
         Mockito.doThrow(new SafeboxHolderException()).when(safeboxService).addItemsToSafebox(Mockito.eq(id), Mockito.anyList());
 
         ResponseEntity<Void> response =
-                safeboxApplicationService.addItemsToSafebox(id, itemList);
+                safeboxApplicationService.addItemsToSafebox(id, itemListDto);
 
+        Mockito.verify(itemMapper).map(itemListDto);
         Mockito.verify(safeboxService).addItemsToSafebox(Mockito.anyString(), Mockito.anyList());
 
         Assertions.assertNotNull(response);
@@ -171,12 +192,14 @@ class SafeboxApplicationServiceUnitTest {
 
     @Test
     void getSafeboxItemsUnitTest() {
+        List<Item> itemList = Collections.singletonList(new Item("TEST"));
         Mockito.when(safeboxService.getSafeboxItems(Mockito.anyString()))
-                .thenReturn(Collections.singletonList(new Item("TEST")));
+                .thenReturn(itemList);
 
         ResponseEntity<ItemListDto> response = safeboxApplicationService.getSafeboxItems("TEST");
 
         Mockito.verify(safeboxService).getSafeboxItems(Mockito.anyString());
+        Mockito.verify(itemMapper).map(itemList);
 
         Assertions.assertNotNull(response);
         Assertions.assertNotNull(response.getStatusCode());
@@ -191,6 +214,7 @@ class SafeboxApplicationServiceUnitTest {
         ResponseEntity<ItemListDto> response = safeboxApplicationService.getSafeboxItems("TEST");
 
         Mockito.verify(safeboxService).getSafeboxItems(Mockito.anyString());
+        Mockito.verify(itemMapper, Mockito.never()).map(Mockito.anyList());
 
         Assertions.assertNotNull(response);
         Assertions.assertNotNull(response.getStatusCode());
@@ -205,6 +229,7 @@ class SafeboxApplicationServiceUnitTest {
         ResponseEntity<ItemListDto> response = safeboxApplicationService.getSafeboxItems("TEST");
 
         Mockito.verify(safeboxService).getSafeboxItems(Mockito.anyString());
+        Mockito.verify(itemMapper, Mockito.never()).map(Mockito.anyList());
 
         Assertions.assertNotNull(response);
         Assertions.assertNotNull(response.getStatusCode());
