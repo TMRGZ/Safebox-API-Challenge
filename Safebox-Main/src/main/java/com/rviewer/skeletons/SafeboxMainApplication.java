@@ -2,13 +2,12 @@ package com.rviewer.skeletons;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 
-@SpringBootApplication(exclude={DataSourceAutoConfiguration.class})
+@SpringBootApplication
 public class SafeboxMainApplication {
 
-	public static void main(String[] args) {
-		SpringApplication.run(SafeboxMainApplication.class, args);
-	}
+    public static void main(String[] args) {
+        SpringApplication.run(SafeboxMainApplication.class, args);
+    }
 
 }
