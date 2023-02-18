@@ -1,6 +1,8 @@
 package unit.com.rviewer.skeletons.infrastructure.service.impl;
 
 import com.rviewer.skeletons.domain.exception.*;
+import com.rviewer.skeletons.domain.model.User;
+import com.rviewer.skeletons.infrastructure.mapper.UserMapper;
 import com.rviewer.skeletons.infrastructure.rest.safebox.auth.LoginApi;
 import com.rviewer.skeletons.infrastructure.rest.safebox.auth.invoker.ApiClient;
 import com.rviewer.skeletons.infrastructure.rest.safebox.auth.model.AuthLoginResponseDto;
@@ -26,6 +28,9 @@ class LoginServiceImplUnitTest {
     @Mock
     private LoginApi loginApi;
 
+    @Mock
+    private UserMapper userMapper;
+
     @BeforeEach
     void setup() {
         Mockito.when(loginApi.getApiClient()).thenReturn(Mockito.mock(ApiClient.class));
@@ -36,11 +41,16 @@ class LoginServiceImplUnitTest {
         String username = "TEST";
         String password = "TEST";
         String token = "TOKEN";
-        Mockito.when(loginApi.loginUser()).thenReturn(new AuthLoginResponseDto().token(token));
+        AuthLoginResponseDto responseDto = new AuthLoginResponseDto().token(token);
+        User user = new User();
+        user.setToken(token);
+        Mockito.when(loginApi.loginUser()).thenReturn(responseDto);
+        Mockito.when(userMapper.map(responseDto)).thenReturn(user);
 
         String response = loginService.loginUser(username, password);
 
         Mockito.verify(loginApi).loginUser();
+        Mockito.verify(userMapper).map(responseDto);
 
         Assertions.assertNotNull(response);
         Assertions.assertEquals(token, response);
@@ -55,6 +65,7 @@ class LoginServiceImplUnitTest {
         Assertions.assertThrows(UserDoesNotExistException.class, () -> loginService.loginUser(username, password));
 
         Mockito.verify(loginApi).loginUser();
+        Mockito.verify(userMapper, Mockito.never()).map(Mockito.any(AuthLoginResponseDto.class));
     }
 
     @Test
@@ -66,6 +77,7 @@ class LoginServiceImplUnitTest {
         Assertions.assertThrows(UserIsUnauthorizedException.class, () -> loginService.loginUser(username, password));
 
         Mockito.verify(loginApi).loginUser();
+        Mockito.verify(userMapper, Mockito.never()).map(Mockito.any(AuthLoginResponseDto.class));
     }
 
     @Test
@@ -77,6 +89,7 @@ class LoginServiceImplUnitTest {
         Assertions.assertThrows(UserIsLockedException.class, () -> loginService.loginUser(username, password));
 
         Mockito.verify(loginApi).loginUser();
+        Mockito.verify(userMapper, Mockito.never()).map(Mockito.any(AuthLoginResponseDto.class));
     }
 
     @Test
@@ -88,6 +101,7 @@ class LoginServiceImplUnitTest {
         Assertions.assertThrows(SafeboxMainException.class, () -> loginService.loginUser(username, password));
 
         Mockito.verify(loginApi).loginUser();
+        Mockito.verify(userMapper, Mockito.never()).map(Mockito.any(AuthLoginResponseDto.class));
     }
 
     @Test
@@ -99,5 +113,6 @@ class LoginServiceImplUnitTest {
         Assertions.assertThrows(ExternalServiceException.class, () -> loginService.loginUser(username, password));
 
         Mockito.verify(loginApi).loginUser();
+        Mockito.verify(userMapper, Mockito.never()).map(Mockito.any(AuthLoginResponseDto.class));
     }
 }

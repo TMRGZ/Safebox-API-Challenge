@@ -64,7 +64,9 @@ class SafeboxServiceImplUnitTest {
     @Test
     void addItemsToSafeboxUnitTest() {
         String safeboxId = "TEST";
-        List<Item> itemList = Collections.singletonList(new Item("ITEM"));
+        Item item = new Item();
+        item.setDetail("ITEM");
+        List<Item> itemList = Collections.singletonList(item);
 
         safeboxService.addItemsToSafebox(safeboxId, itemList);
 

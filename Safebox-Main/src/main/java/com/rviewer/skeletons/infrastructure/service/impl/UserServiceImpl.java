@@ -4,13 +4,12 @@ package com.rviewer.skeletons.infrastructure.service.impl;
 import com.rviewer.skeletons.domain.exception.ExternalServiceException;
 import com.rviewer.skeletons.domain.exception.SafeboxAlreadyExistsException;
 import com.rviewer.skeletons.domain.exception.SafeboxMainException;
-import com.rviewer.skeletons.domain.exception.UserDoesNotExistException;
 import com.rviewer.skeletons.domain.model.User;
 import com.rviewer.skeletons.domain.service.UserService;
+import com.rviewer.skeletons.infrastructure.mapper.UserMapper;
 import com.rviewer.skeletons.infrastructure.rest.safebox.auth.UserApi;
 import com.rviewer.skeletons.infrastructure.rest.safebox.auth.model.AuthCreateUserDto;
 import com.rviewer.skeletons.infrastructure.rest.safebox.auth.model.AuthRegisteredUserDto;
-import com.rviewer.skeletons.infrastructure.rest.safebox.auth.model.AuthUserDto;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -25,13 +24,17 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private UserApi userApi;
 
+    @Autowired
+    private UserMapper userMapper;
+
     @Override
     public String createUser(String username, String password) {
-        AuthRegisteredUserDto registeredUserDto;
+        User user;
 
         try {
             log.info("Attempting to create user {}", username);
-            registeredUserDto = userApi.postUser(new AuthCreateUserDto().username(username).password(password));
+            AuthRegisteredUserDto registeredUserDto = userApi.postUser(new AuthCreateUserDto().username(username).password(password));
+            user = userMapper.map(registeredUserDto);
 
         } catch (HttpClientErrorException e) {
             log.error("Client error {} while attempting to create user {}", e.getStatusCode(), username);
@@ -48,6 +51,6 @@ public class UserServiceImpl implements UserService {
         }
         log.info("User {} successfully created", username);
 
-        return registeredUserDto.getId();
+        return user.getId();
     }
 }

@@ -4,6 +4,8 @@ package unit.com.rviewer.skeletons.infrastructure.service.impl;
 import com.rviewer.skeletons.domain.exception.ExternalServiceException;
 import com.rviewer.skeletons.domain.exception.SafeboxAlreadyExistsException;
 import com.rviewer.skeletons.domain.exception.SafeboxMainException;
+import com.rviewer.skeletons.domain.model.User;
+import com.rviewer.skeletons.infrastructure.mapper.UserMapper;
 import com.rviewer.skeletons.infrastructure.rest.safebox.auth.UserApi;
 import com.rviewer.skeletons.infrastructure.rest.safebox.auth.model.AuthRegisteredUserDto;
 import com.rviewer.skeletons.infrastructure.service.impl.UserServiceImpl;
@@ -27,17 +29,21 @@ class UserServiceImplUnitTest {
     @Mock
     private UserApi userApi;
 
+    @Mock
+    private UserMapper userMapper;
+
     @Test
     void createUserUnitTest() {
         String username = "TEST";
         String password = "TEST";
-        Mockito.when(userApi.postUser(Mockito.any())).thenReturn(new AuthRegisteredUserDto().id("ID"));
+        AuthRegisteredUserDto userDto = new AuthRegisteredUserDto().id("ID");
+        Mockito.when(userApi.postUser(Mockito.any())).thenReturn(userDto);
+        Mockito.when(userMapper.map(userDto)).thenReturn(new User());
 
-        String userId = userService.createUser(username, password);
+        userService.createUser(username, password);
 
         Mockito.verify(userApi).postUser(Mockito.any());
-
-        Assertions.assertNotNull(userId);
+        Mockito.verify(userMapper).map(userDto);
     }
 
     @Test
@@ -49,6 +55,7 @@ class UserServiceImplUnitTest {
         Assertions.assertThrows(SafeboxAlreadyExistsException.class, () -> userService.createUser(username, password));
 
         Mockito.verify(userApi).postUser(Mockito.any());
+        Mockito.verify(userMapper, Mockito.never()).map(Mockito.any(AuthRegisteredUserDto.class));
     }
 
     @Test
@@ -60,6 +67,7 @@ class UserServiceImplUnitTest {
         Assertions.assertThrows(SafeboxMainException.class, () -> userService.createUser(username, password));
 
         Mockito.verify(userApi).postUser(Mockito.any());
+        Mockito.verify(userMapper, Mockito.never()).map(Mockito.any(AuthRegisteredUserDto.class));
     }
 
     @Test
@@ -71,5 +79,6 @@ class UserServiceImplUnitTest {
         Assertions.assertThrows(ExternalServiceException.class, () -> userService.createUser(username, password));
 
         Mockito.verify(userApi).postUser(Mockito.any());
+        Mockito.verify(userMapper, Mockito.never()).map(Mockito.any(AuthRegisteredUserDto.class));
     }
 }

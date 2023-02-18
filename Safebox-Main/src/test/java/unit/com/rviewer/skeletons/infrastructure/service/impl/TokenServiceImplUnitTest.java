@@ -4,6 +4,7 @@ import com.rviewer.skeletons.domain.exception.BadTokenException;
 import com.rviewer.skeletons.domain.exception.ExternalServiceException;
 import com.rviewer.skeletons.domain.exception.SafeboxMainException;
 import com.rviewer.skeletons.domain.model.User;
+import com.rviewer.skeletons.infrastructure.mapper.UserMapper;
 import com.rviewer.skeletons.infrastructure.rest.safebox.auth.TokenApi;
 import com.rviewer.skeletons.infrastructure.rest.safebox.auth.invoker.ApiClient;
 import com.rviewer.skeletons.infrastructure.rest.safebox.auth.model.AuthUserDto;
@@ -31,18 +32,22 @@ class TokenServiceImplUnitTest {
     @Mock
     private TokenApi tokenApi;
 
+    @Mock
+    private UserMapper userMapper;
+
     @Test
     void decodeTokenUnitTest() {
         String token = "TOKEN";
         Mockito.when(tokenApi.getApiClient()).thenReturn(Mockito.mock(ApiClient.class));
-        Mockito.when(tokenApi.decodeToken()).thenReturn(new AuthUserDto());
+        AuthUserDto userDto = new AuthUserDto();
+        Mockito.when(tokenApi.decodeToken()).thenReturn(userDto);
+        Mockito.when(userMapper.map(userDto)).thenReturn(new User());
 
-        User user = tokenService.decodeToken(token);
+        tokenService.decodeToken(token);
 
         Mockito.verify(tokenApi).getApiClient();
         Mockito.verify(tokenApi).decodeToken();
-
-        Assertions.assertNotNull(user);
+        Mockito.verify(userMapper).map(userDto);
     }
 
     @Test
@@ -55,6 +60,7 @@ class TokenServiceImplUnitTest {
 
         Mockito.verify(tokenApi).getApiClient();
         Mockito.verify(tokenApi).decodeToken();
+        Mockito.verify(userMapper, Mockito.never()).map(Mockito.any(AuthUserDto.class));
     }
 
     @Test
@@ -67,6 +73,7 @@ class TokenServiceImplUnitTest {
 
         Mockito.verify(tokenApi).getApiClient();
         Mockito.verify(tokenApi).decodeToken();
+        Mockito.verify(userMapper, Mockito.never()).map(Mockito.any(AuthUserDto.class));
     }
 
     @Test
@@ -79,6 +86,7 @@ class TokenServiceImplUnitTest {
 
         Mockito.verify(tokenApi).getApiClient();
         Mockito.verify(tokenApi).decodeToken();
+        Mockito.verify(userMapper, Mockito.never()).map(Mockito.any(AuthUserDto.class));
     }
 
     @Test

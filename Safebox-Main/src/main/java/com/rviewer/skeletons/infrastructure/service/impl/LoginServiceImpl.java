@@ -1,7 +1,9 @@
 package com.rviewer.skeletons.infrastructure.service.impl;
 
 import com.rviewer.skeletons.domain.exception.*;
+import com.rviewer.skeletons.domain.model.User;
 import com.rviewer.skeletons.domain.service.LoginService;
+import com.rviewer.skeletons.infrastructure.mapper.UserMapper;
 import com.rviewer.skeletons.infrastructure.rest.safebox.auth.LoginApi;
 import com.rviewer.skeletons.infrastructure.rest.safebox.auth.model.AuthLoginResponseDto;
 import lombok.extern.slf4j.Slf4j;
@@ -17,17 +19,20 @@ public class LoginServiceImpl implements LoginService {
     @Autowired
     private LoginApi loginApi;
 
+    @Autowired
+    private UserMapper userMapper;
+
     @Override
     public String loginUser(String username, String password) {
         loginApi.getApiClient().setUsername(username);
         loginApi.getApiClient().setPassword(password);
 
-        AuthLoginResponseDto loginResponseDto;
+        User user;
 
         try {
             log.info("Attempting to log user {}", username);
-
-            loginResponseDto = loginApi.loginUser();
+            AuthLoginResponseDto loginResponseDto = loginApi.loginUser();
+            user = userMapper.map(loginResponseDto);
 
         } catch (HttpClientErrorException e) {
             log.error("Client error {} while attempting to login user {}", e.getStatusCode(), username);
@@ -47,6 +52,6 @@ public class LoginServiceImpl implements LoginService {
 
         log.info("User {} logged in successfully", username);
 
-        return loginResponseDto.getToken();
+        return user.getToken();
     }
 }

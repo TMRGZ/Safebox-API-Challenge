@@ -5,6 +5,8 @@ import com.rviewer.skeletons.domain.exception.SafeboxDoesNotExistException;
 import com.rviewer.skeletons.domain.exception.SafeboxMainException;
 import com.rviewer.skeletons.domain.model.Item;
 import com.rviewer.skeletons.domain.model.Safebox;
+import com.rviewer.skeletons.infrastructure.mapper.ItemMapper;
+import com.rviewer.skeletons.infrastructure.mapper.SafeboxMapper;
 import com.rviewer.skeletons.infrastructure.rest.safebox.holder.SafeboxHolderApi;
 import com.rviewer.skeletons.infrastructure.rest.safebox.holder.model.HolderItemListDto;
 import com.rviewer.skeletons.infrastructure.rest.safebox.holder.model.HolderSafeboxDto;
@@ -12,7 +14,6 @@ import com.rviewer.skeletons.infrastructure.service.impl.SafeboxHolderServiceImp
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
@@ -33,18 +34,23 @@ class SafeboxHolderServiceImplUnitTest {
     @Mock
     private SafeboxHolderApi safeboxHolderApi;
 
+    @Mock
+    private SafeboxMapper safeboxMapper;
+
+    @Mock
+    private ItemMapper itemMapper;
+
     @Test
     void getSafeboxUnitTest() {
         String id = "TEST";
-        Mockito.when(safeboxHolderApi.getSafebox(id)).thenReturn(new HolderSafeboxDto().id(id));
+        HolderSafeboxDto safeboxDto = new HolderSafeboxDto().id(id);
+        Mockito.when(safeboxHolderApi.getSafebox(id)).thenReturn(safeboxDto);
+        Mockito.when(safeboxMapper.map(safeboxDto)).thenReturn(new Safebox());
 
-        Safebox safebox = safeboxHolderService.getSafebox(id);
+        safeboxHolderService.getSafebox(id);
 
         Mockito.verify(safeboxHolderApi).getSafebox(id);
-
-        Assertions.assertNotNull(safebox);
-        Assertions.assertNotNull(safebox.getId());
-        Assertions.assertEquals(id, safebox.getId());
+        Mockito.verify(safeboxMapper).map(safeboxDto);
     }
 
     @Test
@@ -55,6 +61,7 @@ class SafeboxHolderServiceImplUnitTest {
         Assertions.assertThrows(SafeboxDoesNotExistException.class, () -> safeboxHolderService.getSafebox(id));
 
         Mockito.verify(safeboxHolderApi).getSafebox(id);
+        Mockito.verify(safeboxMapper, Mockito.never()).map(Mockito.any());
     }
 
     @Test
@@ -65,6 +72,7 @@ class SafeboxHolderServiceImplUnitTest {
         Assertions.assertThrows(SafeboxMainException.class, () -> safeboxHolderService.getSafebox(id));
 
         Mockito.verify(safeboxHolderApi).getSafebox(id);
+        Mockito.verify(safeboxMapper, Mockito.never()).map(Mockito.any());
     }
 
     @Test
@@ -75,21 +83,20 @@ class SafeboxHolderServiceImplUnitTest {
         Assertions.assertThrows(ExternalServiceException.class, () -> safeboxHolderService.getSafebox(id));
 
         Mockito.verify(safeboxHolderApi).getSafebox(id);
+        Mockito.verify(safeboxMapper, Mockito.never()).map(Mockito.any());
     }
 
     @Test
     void getSafeboxItemsUnitTest() {
         String id = "TEST";
         List<String> itemList = Collections.singletonList("ITEM");
-        Mockito.when(safeboxHolderApi.getSafeboxItems(id)).thenReturn(new HolderItemListDto().items(itemList));
+        HolderItemListDto itemListDto = new HolderItemListDto().items(itemList);
+        Mockito.when(safeboxHolderApi.getSafeboxItems(id)).thenReturn(itemListDto);
 
-        List<Item> safeboxItems = safeboxHolderService.getSafeboxItems(id);
+        safeboxHolderService.getSafeboxItems(id);
 
         Mockito.verify(safeboxHolderApi).getSafeboxItems(id);
-
-        Assertions.assertNotNull(safeboxItems);
-        Assertions.assertEquals(itemList.size(), safeboxItems.size());
-        safeboxItems.forEach(item -> Assertions.assertTrue(itemList.contains(item.getDetail())));
+        Mockito.verify(itemMapper).map(itemListDto);
     }
 
     @Test
@@ -100,6 +107,7 @@ class SafeboxHolderServiceImplUnitTest {
         Assertions.assertThrows(SafeboxDoesNotExistException.class, () -> safeboxHolderService.getSafeboxItems(id));
 
         Mockito.verify(safeboxHolderApi).getSafeboxItems(id);
+        Mockito.verify(itemMapper, Mockito.never()).map(Mockito.any(HolderItemListDto.class));
     }
 
     @Test
@@ -110,6 +118,7 @@ class SafeboxHolderServiceImplUnitTest {
         Assertions.assertThrows(SafeboxMainException.class, () -> safeboxHolderService.getSafeboxItems(id));
 
         Mockito.verify(safeboxHolderApi).getSafeboxItems(id);
+        Mockito.verify(itemMapper, Mockito.never()).map(Mockito.any(HolderItemListDto.class));
     }
 
     @Test
@@ -120,56 +129,61 @@ class SafeboxHolderServiceImplUnitTest {
         Assertions.assertThrows(ExternalServiceException.class, () -> safeboxHolderService.getSafeboxItems(id));
 
         Mockito.verify(safeboxHolderApi).getSafeboxItems(id);
+        Mockito.verify(itemMapper, Mockito.never()).map(Mockito.any(HolderItemListDto.class));
     }
 
     @Test
     void putSafeboxItemsUnitTest() {
         String id = "TEST";
-        List<Item> itemList = Collections.singletonList(new Item("ITEM"));
-        ArgumentCaptor<HolderItemListDto> itemListDtoArgumentCaptor = ArgumentCaptor.forClass(HolderItemListDto.class);
+        Item item = new Item();
+        item.setDetail("ITEM");
+        List<Item> itemList = Collections.singletonList(item);
 
         safeboxHolderService.putSafeboxItems(id, itemList);
 
-        Mockito.verify(safeboxHolderApi).putSafeboxItems(Mockito.eq(id), itemListDtoArgumentCaptor.capture());
-
-        HolderItemListDto itemListDto = itemListDtoArgumentCaptor.getValue();
-
-        Assertions.assertNotNull(itemListDto);
-        Assertions.assertNotNull(itemListDto.getItems());
-        Assertions.assertEquals(itemList.size(), itemListDto.getItems().size());
-        itemList.forEach(item -> Assertions.assertTrue(itemListDto.getItems().contains(item.getDetail())));
+        Mockito.verify(itemMapper).map(itemList);
+        Mockito.verify(safeboxHolderApi).putSafeboxItems(Mockito.eq(id), Mockito.any());
     }
 
     @Test
     void putSafeboxItems_safeboxDoesNotExistException_UnitTest() {
         String id = "TEST";
-        List<Item> itemList = Collections.singletonList(new Item("ITEM"));
+        Item item = new Item();
+        item.setDetail("ITEM");
+        List<Item> itemList = Collections.singletonList(item);
         Mockito.doThrow(new HttpClientErrorException(HttpStatus.NOT_FOUND)).when(safeboxHolderApi).putSafeboxItems(Mockito.eq(id), Mockito.any());
 
         Assertions.assertThrows(SafeboxDoesNotExistException.class, () -> safeboxHolderService.putSafeboxItems(id, itemList));
 
+        Mockito.verify(itemMapper).map(itemList);
         Mockito.verify(safeboxHolderApi).putSafeboxItems(Mockito.eq(id), Mockito.any());
     }
 
     @Test
     void putSafeboxItems_unknownClientErrorException_UnitTest() {
         String id = "TEST";
-        List<Item> itemList = Collections.singletonList(new Item("ITEM"));
+        Item item = new Item();
+        item.setDetail("ITEM");
+        List<Item> itemList = Collections.singletonList(item);
         Mockito.doThrow(new HttpClientErrorException(HttpStatus.BAD_REQUEST)).when(safeboxHolderApi).putSafeboxItems(Mockito.eq(id), Mockito.any());
 
         Assertions.assertThrows(SafeboxMainException.class, () -> safeboxHolderService.putSafeboxItems(id, itemList));
 
+        Mockito.verify(itemMapper).map(itemList);
         Mockito.verify(safeboxHolderApi).putSafeboxItems(Mockito.eq(id), Mockito.any());
     }
 
     @Test
     void putSafeboxItems_externalServiceException_UnitTest() {
         String id = "TEST";
-        List<Item> itemList = Collections.singletonList(new Item("ITEM"));
+        Item item = new Item();
+        item.setDetail("ITEM");
+        List<Item> itemList = Collections.singletonList(item);
         Mockito.doThrow(new HttpServerErrorException(HttpStatus.INTERNAL_SERVER_ERROR)).when(safeboxHolderApi).putSafeboxItems(Mockito.eq(id), Mockito.any());
 
         Assertions.assertThrows(ExternalServiceException.class, () -> safeboxHolderService.putSafeboxItems(id, itemList));
 
+        Mockito.verify(itemMapper).map(itemList);
         Mockito.verify(safeboxHolderApi).putSafeboxItems(Mockito.eq(id), Mockito.any());
     }
 }

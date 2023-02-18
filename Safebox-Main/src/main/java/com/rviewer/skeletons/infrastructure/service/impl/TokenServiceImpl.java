@@ -5,6 +5,7 @@ import com.rviewer.skeletons.domain.exception.ExternalServiceException;
 import com.rviewer.skeletons.domain.exception.SafeboxMainException;
 import com.rviewer.skeletons.domain.model.User;
 import com.rviewer.skeletons.domain.service.TokenService;
+import com.rviewer.skeletons.infrastructure.mapper.UserMapper;
 import com.rviewer.skeletons.infrastructure.rest.safebox.auth.TokenApi;
 import com.rviewer.skeletons.infrastructure.rest.safebox.auth.model.AuthUserDto;
 import com.rviewer.skeletons.infrastructure.utils.AuthenticationUtils;
@@ -22,17 +23,19 @@ public class TokenServiceImpl implements TokenService {
     @Autowired
     private TokenApi tokenApi;
 
+    @Autowired
+    private UserMapper userMapper;
+
     @Override
     public User decodeToken(String token) {
         User user;
 
         try {
             log.info("Attempting to decode token: {}", token);
-
             tokenApi.getApiClient().setBearerToken(token);
+
             AuthUserDto userDto = tokenApi.decodeToken();
-            user = new User();
-            user.setUsername(userDto.getUsername());
+            user = userMapper.map(userDto);
 
         } catch (HttpClientErrorException e) {
             log.error("Client error {} while attempting to decode token {}", e.getStatusCode(), token);

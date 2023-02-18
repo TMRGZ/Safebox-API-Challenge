@@ -6,6 +6,8 @@ import com.rviewer.skeletons.domain.exception.SafeboxMainException;
 import com.rviewer.skeletons.domain.model.Item;
 import com.rviewer.skeletons.domain.model.Safebox;
 import com.rviewer.skeletons.domain.service.SafeboxHolderService;
+import com.rviewer.skeletons.infrastructure.mapper.ItemMapper;
+import com.rviewer.skeletons.infrastructure.mapper.SafeboxMapper;
 import com.rviewer.skeletons.infrastructure.rest.safebox.holder.SafeboxHolderApi;
 import com.rviewer.skeletons.infrastructure.rest.safebox.holder.model.HolderItemListDto;
 import com.rviewer.skeletons.infrastructure.rest.safebox.holder.model.HolderSafeboxDto;
@@ -25,14 +27,19 @@ public class SafeboxHolderServiceImpl implements SafeboxHolderService {
     @Autowired
     private SafeboxHolderApi safeboxHolderApi;
 
+    @Autowired
+    private SafeboxMapper safeboxMapper;
+
+    @Autowired
+    private ItemMapper itemMapper;
+
     @Override
     public Safebox getSafebox(String id) {
         Safebox safebox;
 
         try {
             HolderSafeboxDto safeboxDto = safeboxHolderApi.getSafebox(id);
-            safebox = new Safebox();
-            safebox.setId(safeboxDto.getId());
+            safebox = safeboxMapper.map(safeboxDto);
 
         } catch (HttpClientErrorException e) {
             if (e.getStatusCode() == HttpStatus.NOT_FOUND) {
@@ -49,10 +56,11 @@ public class SafeboxHolderServiceImpl implements SafeboxHolderService {
 
     @Override
     public List<Item> getSafeboxItems(String id) {
-        HolderItemListDto safeboxItems;
+        List<Item> itemList;
 
         try {
-            safeboxItems = safeboxHolderApi.getSafeboxItems(id);
+            HolderItemListDto safeboxItems = safeboxHolderApi.getSafeboxItems(id);
+            itemList = itemMapper.map(safeboxItems);
 
         } catch (HttpClientErrorException e) {
             if (e.getStatusCode() == HttpStatus.NOT_FOUND) {
@@ -64,17 +72,16 @@ public class SafeboxHolderServiceImpl implements SafeboxHolderService {
             throw new ExternalServiceException();
         }
 
-        return safeboxItems.getItems().stream().map(Item::new).toList();
+        return itemList;
     }
 
     @Override
     public void putSafeboxItems(String id, List<Item> itemList) {
-        List<String> itemDetails = itemList.stream().map(Item::getDetail).toList();
 
         try {
             log.info("Attempting to add {} items to safebox {}", itemList.size(), id);
 
-            safeboxHolderApi.putSafeboxItems(id, new HolderItemListDto().items(itemDetails));
+            safeboxHolderApi.putSafeboxItems(id, itemMapper.map(itemList));
 
         } catch (HttpClientErrorException e) {
             log.error("Client error {} while attempting to add {} items to {}", e.getStatusCode(), itemList.size(), id);

@@ -1,5 +1,7 @@
 package com.rviewer.skeletons.application.service.impl;
 
+import com.rviewer.skeletons.application.mapper.InputItemMapper;
+import com.rviewer.skeletons.application.mapper.InputUserMapper;
 import com.rviewer.skeletons.application.model.CreateSafeboxRequestDto;
 import com.rviewer.skeletons.application.model.CreatedSafeboxDto;
 import com.rviewer.skeletons.application.model.ItemListDto;
@@ -25,14 +27,18 @@ public class SafeboxApplicationServiceImpl implements SafeboxApplicationService 
     @Autowired
     private SafeboxService safeboxService;
 
+    @Autowired
+    private InputItemMapper itemMapper;
+
+    @Autowired
+    private InputUserMapper userMapper;
+
     @Override
     public ResponseEntity<CreatedSafeboxDto> createSafebox(CreateSafeboxRequestDto createSafeboxRequestDto) {
-        User user = new User();
-        user.setUsername(createSafeboxRequestDto.getName());
-        user.setPassword(createSafeboxRequestDto.getPassword());
         ResponseEntity<CreatedSafeboxDto> response;
 
         try {
+            User user = userMapper.map(createSafeboxRequestDto);
             String safeboxId = safeboxService.createSafebox(user);
             response = ResponseEntity.status(HttpStatus.CREATED).body(new CreatedSafeboxDto().id(safeboxId));
 
@@ -72,8 +78,7 @@ public class SafeboxApplicationServiceImpl implements SafeboxApplicationService 
 
         try {
             List<Item> itemList = safeboxService.getSafeboxItems(id);
-            List<String> itemDetailList = itemList.stream().map(Item::getDetail).toList();
-            response = ResponseEntity.ok(new ItemListDto().items(itemDetailList));
+            response = ResponseEntity.ok(itemMapper.map(itemList));
 
         } catch (SafeboxDoesNotExistException e) {
             response = ResponseEntity.notFound().build();
@@ -88,7 +93,7 @@ public class SafeboxApplicationServiceImpl implements SafeboxApplicationService 
 
     @Override
     public ResponseEntity<Void> addItemsToSafebox(String id, ItemListDto itemListDto) {
-        List<Item> itemList = itemListDto.getItems().stream().map(Item::new).toList();
+        List<Item> itemList = itemMapper.map(itemListDto);
         ResponseEntity<Void> response;
 
         try {
