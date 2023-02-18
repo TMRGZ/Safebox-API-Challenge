@@ -5,6 +5,10 @@ import com.rviewer.skeletons.application.model.CreatedSafeboxDto;
 import com.rviewer.skeletons.application.model.ItemListDto;
 import com.rviewer.skeletons.application.model.SafeboxKeyDto;
 import com.rviewer.skeletons.application.service.impl.SafeboxApplicationServiceImpl;
+import com.rviewer.skeletons.domain.exception.ExternalServiceException;
+import com.rviewer.skeletons.domain.exception.SafeboxAlreadyExistsException;
+import com.rviewer.skeletons.domain.exception.SafeboxDoesNotExistException;
+import com.rviewer.skeletons.domain.exception.SafeboxMainException;
 import com.rviewer.skeletons.domain.model.Item;
 import com.rviewer.skeletons.domain.service.SafeboxService;
 import org.junit.jupiter.api.Assertions;
@@ -47,6 +51,51 @@ class SafeboxApplicationServiceImplUnitTest {
     }
 
     @Test
+    void createSafebox_alreadyExistingException_UnitTest() {
+        CreateSafeboxRequestDto createSafeboxRequestDto = new CreateSafeboxRequestDto();
+        Mockito.when(safeboxService.createSafebox(Mockito.any())).thenThrow(new SafeboxAlreadyExistsException());
+
+        ResponseEntity<CreatedSafeboxDto> response = safeboxApplicationService.createSafebox(createSafeboxRequestDto);
+
+        Mockito.verify(safeboxService).createSafebox(Mockito.any());
+
+        Assertions.assertNotNull(response);
+        Assertions.assertNotNull(response.getStatusCode());
+        Assertions.assertEquals(HttpStatus.CONFLICT, response.getStatusCode());
+        Assertions.assertNull(response.getBody());
+    }
+
+    @Test
+    void createSafebox_externalServiceException_UnitTest() {
+        CreateSafeboxRequestDto createSafeboxRequestDto = new CreateSafeboxRequestDto();
+        Mockito.when(safeboxService.createSafebox(Mockito.any())).thenThrow(new ExternalServiceException());
+
+        ResponseEntity<CreatedSafeboxDto> response = safeboxApplicationService.createSafebox(createSafeboxRequestDto);
+
+        Mockito.verify(safeboxService).createSafebox(Mockito.any());
+
+        Assertions.assertNotNull(response);
+        Assertions.assertNotNull(response.getStatusCode());
+        Assertions.assertEquals(HttpStatus.BAD_GATEWAY, response.getStatusCode());
+        Assertions.assertNull(response.getBody());
+    }
+
+    @Test
+    void createSafebox_errorException_UnitTest() {
+        CreateSafeboxRequestDto createSafeboxRequestDto = new CreateSafeboxRequestDto();
+        Mockito.when(safeboxService.createSafebox(Mockito.any())).thenThrow(new SafeboxMainException());
+
+        ResponseEntity<CreatedSafeboxDto> response = safeboxApplicationService.createSafebox(createSafeboxRequestDto);
+
+        Mockito.verify(safeboxService).createSafebox(Mockito.any());
+
+        Assertions.assertNotNull(response);
+        Assertions.assertNotNull(response.getStatusCode());
+        Assertions.assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
+        Assertions.assertNull(response.getBody());
+    }
+
+    @Test
     void openSafeboxUnitTest() {
         String id = "TEST";
         Mockito.when(safeboxService.openSafebox(id)).thenReturn("TOKEN");
@@ -60,6 +109,51 @@ class SafeboxApplicationServiceImplUnitTest {
         Assertions.assertEquals(HttpStatus.OK, response.getStatusCode());
         Assertions.assertNotNull(response.getBody());
         Assertions.assertNotNull(response.getBody().getToken());
+    }
+
+    @Test
+    void openSafebox_safeboxDoesNotExistException_UnitTest() {
+        String id = "TEST";
+        Mockito.when(safeboxService.openSafebox(id)).thenThrow(new SafeboxDoesNotExistException());
+
+        ResponseEntity<SafeboxKeyDto> response = safeboxApplicationService.openSafebox(id);
+
+        Mockito.verify(safeboxService).openSafebox(id);
+
+        Assertions.assertNotNull(response);
+        Assertions.assertNotNull(response.getStatusCode());
+        Assertions.assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+        Assertions.assertNull(response.getBody());
+    }
+
+    @Test
+    void openSafebox_externalServiceException_UnitTest() {
+        String id = "TEST";
+        Mockito.when(safeboxService.openSafebox(id)).thenThrow(new ExternalServiceException());
+
+        ResponseEntity<SafeboxKeyDto> response = safeboxApplicationService.openSafebox(id);
+
+        Mockito.verify(safeboxService).openSafebox(id);
+
+        Assertions.assertNotNull(response);
+        Assertions.assertNotNull(response.getStatusCode());
+        Assertions.assertEquals(HttpStatus.BAD_GATEWAY, response.getStatusCode());
+        Assertions.assertNull(response.getBody());
+    }
+
+    @Test
+    void openSafebox_errorException_UnitTest() {
+        String id = "TEST";
+        Mockito.when(safeboxService.openSafebox(id)).thenThrow(new SafeboxMainException());
+
+        ResponseEntity<SafeboxKeyDto> response = safeboxApplicationService.openSafebox(id);
+
+        Mockito.verify(safeboxService).openSafebox(id);
+
+        Assertions.assertNotNull(response);
+        Assertions.assertNotNull(response.getStatusCode());
+        Assertions.assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
+        Assertions.assertNull(response.getBody());
     }
 
     @Test
@@ -82,6 +176,51 @@ class SafeboxApplicationServiceImplUnitTest {
     }
 
     @Test
+    void getSafeboxItems_safeboxDoesNotExistException_UnitTest() {
+        String id = "TEST";
+        Mockito.when(safeboxService.getSafeboxItems(id)).thenThrow(new SafeboxDoesNotExistException());
+
+        ResponseEntity<ItemListDto> response = safeboxApplicationService.getSafeboxItems(id);
+
+        Mockito.verify(safeboxService).getSafeboxItems(id);
+
+        Assertions.assertNotNull(response);
+        Assertions.assertNotNull(response.getStatusCode());
+        Assertions.assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+        Assertions.assertNull(response.getBody());
+    }
+
+    @Test
+    void getSafeboxItems_externalServiceException_UnitTest() {
+        String id = "TEST";
+        Mockito.when(safeboxService.getSafeboxItems(id)).thenThrow(new ExternalServiceException());
+
+        ResponseEntity<ItemListDto> response = safeboxApplicationService.getSafeboxItems(id);
+
+        Mockito.verify(safeboxService).getSafeboxItems(id);
+
+        Assertions.assertNotNull(response);
+        Assertions.assertNotNull(response.getStatusCode());
+        Assertions.assertEquals(HttpStatus.BAD_GATEWAY, response.getStatusCode());
+        Assertions.assertNull(response.getBody());
+    }
+
+    @Test
+    void getSafeboxItems_errorException_UnitTest() {
+        String id = "TEST";
+        Mockito.when(safeboxService.getSafeboxItems(id)).thenThrow(new SafeboxMainException());
+
+        ResponseEntity<ItemListDto> response = safeboxApplicationService.getSafeboxItems(id);
+
+        Mockito.verify(safeboxService).getSafeboxItems(id);
+
+        Assertions.assertNotNull(response);
+        Assertions.assertNotNull(response.getStatusCode());
+        Assertions.assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
+        Assertions.assertNull(response.getBody());
+    }
+
+    @Test
     void addItemsToSafeboxUnitTest() {
         String id = "TEST";
         List<String> itemList = Collections.singletonList("ITEM");
@@ -95,6 +234,75 @@ class SafeboxApplicationServiceImplUnitTest {
         Assertions.assertNotNull(response);
         Assertions.assertNotNull(response.getStatusCode());
         Assertions.assertEquals(HttpStatus.OK, response.getStatusCode());
+        Assertions.assertNull(response.getBody());
+
+        List<Item> capturedList = itemListCaptor.getValue();
+
+        Assertions.assertEquals(itemList.size(), capturedList.size());
+        capturedList.forEach(item -> Assertions.assertTrue(itemList.contains(item.getDetail())));
+    }
+
+    @Test
+    void addItemsToSafebox_safeboxDoesNotExistException_UnitTest() {
+        String id = "TEST";
+        List<String> itemList = Collections.singletonList("ITEM");
+        ItemListDto itemListDto = new ItemListDto().items(itemList);
+        ArgumentCaptor<List<Item>> itemListCaptor = ArgumentCaptor.forClass(List.class);
+        Mockito.doThrow(new SafeboxDoesNotExistException()).when(safeboxService).addItemsToSafebox(Mockito.eq(id), Mockito.anyList());
+
+        ResponseEntity<Void> response = safeboxApplicationService.addItemsToSafebox(id, itemListDto);
+
+        Mockito.verify(safeboxService).addItemsToSafebox(Mockito.eq(id), itemListCaptor.capture());
+
+        Assertions.assertNotNull(response);
+        Assertions.assertNotNull(response.getStatusCode());
+        Assertions.assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+        Assertions.assertNull(response.getBody());
+
+        List<Item> capturedList = itemListCaptor.getValue();
+
+        Assertions.assertEquals(itemList.size(), capturedList.size());
+        capturedList.forEach(item -> Assertions.assertTrue(itemList.contains(item.getDetail())));
+    }
+
+    @Test
+    void addItemsToSafebox_externalServiceException_UnitTest() {
+        String id = "TEST";
+        List<String> itemList = Collections.singletonList("ITEM");
+        ItemListDto itemListDto = new ItemListDto().items(itemList);
+        ArgumentCaptor<List<Item>> itemListCaptor = ArgumentCaptor.forClass(List.class);
+        Mockito.doThrow(new ExternalServiceException()).when(safeboxService).addItemsToSafebox(Mockito.eq(id), Mockito.anyList());
+
+        ResponseEntity<Void> response = safeboxApplicationService.addItemsToSafebox(id, itemListDto);
+
+        Mockito.verify(safeboxService).addItemsToSafebox(Mockito.eq(id), itemListCaptor.capture());
+
+        Assertions.assertNotNull(response);
+        Assertions.assertNotNull(response.getStatusCode());
+        Assertions.assertEquals(HttpStatus.BAD_GATEWAY, response.getStatusCode());
+        Assertions.assertNull(response.getBody());
+
+        List<Item> capturedList = itemListCaptor.getValue();
+
+        Assertions.assertEquals(itemList.size(), capturedList.size());
+        capturedList.forEach(item -> Assertions.assertTrue(itemList.contains(item.getDetail())));
+    }
+
+    @Test
+    void addItemsToSafebox_errorException_UnitTest() {
+        String id = "TEST";
+        List<String> itemList = Collections.singletonList("ITEM");
+        ItemListDto itemListDto = new ItemListDto().items(itemList);
+        ArgumentCaptor<List<Item>> itemListCaptor = ArgumentCaptor.forClass(List.class);
+        Mockito.doThrow(new SafeboxMainException()).when(safeboxService).addItemsToSafebox(Mockito.eq(id), Mockito.anyList());
+
+        ResponseEntity<Void> response = safeboxApplicationService.addItemsToSafebox(id, itemListDto);
+
+        Mockito.verify(safeboxService).addItemsToSafebox(Mockito.eq(id), itemListCaptor.capture());
+
+        Assertions.assertNotNull(response);
+        Assertions.assertNotNull(response.getStatusCode());
+        Assertions.assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
         Assertions.assertNull(response.getBody());
 
         List<Item> capturedList = itemListCaptor.getValue();

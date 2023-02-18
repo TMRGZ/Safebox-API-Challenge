@@ -49,8 +49,21 @@ public class SafeboxApplicationServiceImpl implements SafeboxApplicationService 
 
     @Override
     public ResponseEntity<SafeboxKeyDto> openSafebox(String id) {
-        String token = safeboxService.openSafebox(id);
-        return ResponseEntity.ok(new SafeboxKeyDto().token(token));
+        ResponseEntity<SafeboxKeyDto> response;
+
+        try {
+            String token = safeboxService.openSafebox(id);
+            response = ResponseEntity.ok(new SafeboxKeyDto().token(token));
+
+        } catch (SafeboxDoesNotExistException e) {
+            response = ResponseEntity.notFound().build();
+        } catch (ExternalServiceException e) {
+            response = ResponseEntity.status(HttpStatus.BAD_GATEWAY).build();
+        } catch (SafeboxMainException e) {
+            response = ResponseEntity.internalServerError().build();
+        }
+
+        return response;
     }
 
     @Override

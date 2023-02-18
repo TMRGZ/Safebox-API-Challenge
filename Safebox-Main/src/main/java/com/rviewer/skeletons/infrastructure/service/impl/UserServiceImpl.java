@@ -29,6 +29,7 @@ public class UserServiceImpl implements UserService {
 
         try {
             registeredUserDto = userApi.postUser(new AuthCreateUserDto().username(username).password(password));
+
         } catch (HttpClientErrorException e) {
             if (e.getStatusCode() == HttpStatus.CONFLICT) {
                 throw new SafeboxAlreadyExistsException();
