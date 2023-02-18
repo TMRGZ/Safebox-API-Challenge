@@ -1,7 +1,7 @@
 package unit.com.rviewer.skeletons.infrastructure.config;
 
-import com.rviewer.skeletons.domain.service.SafeboxService;
 import com.rviewer.skeletons.domain.service.SafeboxHolderService;
+import com.rviewer.skeletons.domain.service.SafeboxService;
 import com.rviewer.skeletons.domain.service.TokenService;
 import com.rviewer.skeletons.domain.service.UserService;
 import com.rviewer.skeletons.infrastructure.config.BeanConfig;

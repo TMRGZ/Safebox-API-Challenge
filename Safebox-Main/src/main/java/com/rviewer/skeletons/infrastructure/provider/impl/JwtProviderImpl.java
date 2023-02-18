@@ -2,19 +2,14 @@ package com.rviewer.skeletons.infrastructure.provider.impl;
 
 import com.rviewer.skeletons.domain.exception.BadTokenException;
 import com.rviewer.skeletons.domain.exception.ExternalServiceException;
-import com.rviewer.skeletons.domain.exception.UserDoesNotExistException;
-import com.rviewer.skeletons.domain.exception.UserIsUnauthorizedException;
 import com.rviewer.skeletons.domain.model.User;
 import com.rviewer.skeletons.domain.service.TokenService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationProvider;
-import org.springframework.security.authentication.AuthenticationServiceException;
-import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.InternalAuthenticationServiceException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.oauth2.server.resource.BearerTokenAuthenticationToken;
 import org.springframework.stereotype.Component;
 

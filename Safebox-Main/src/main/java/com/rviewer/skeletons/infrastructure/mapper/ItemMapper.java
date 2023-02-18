@@ -5,7 +5,6 @@ import com.rviewer.skeletons.infrastructure.rest.safebox.holder.model.HolderItem
 import org.springframework.stereotype.Component;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Component
 public class ItemMapper {
@@ -17,11 +16,11 @@ public class ItemMapper {
     }
 
     public List<Item> map(HolderItemListDto itemListDto) {
-        return itemListDto.getItems().stream().map(this::map).collect(Collectors.toList());
+        return itemListDto.getItems().stream().map(this::map).toList();
     }
 
     public HolderItemListDto map(List<Item> itemList) {
-        List<String> itemDetailList = itemList.stream().map(Item::getDetail).collect(Collectors.toList());
+        List<String> itemDetailList = itemList.stream().map(Item::getDetail).toList();
         return new HolderItemListDto().items(itemDetailList);
     }
 

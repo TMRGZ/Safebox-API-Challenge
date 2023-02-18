@@ -2,8 +2,6 @@ package unit.com.rviewer.skeletons.infrastructure.provider.impl;
 
 import com.rviewer.skeletons.domain.exception.BadTokenException;
 import com.rviewer.skeletons.domain.exception.ExternalServiceException;
-import com.rviewer.skeletons.domain.exception.UserDoesNotExistException;
-import com.rviewer.skeletons.domain.exception.UserIsUnauthorizedException;
 import com.rviewer.skeletons.domain.model.User;
 import com.rviewer.skeletons.domain.service.TokenService;
 import com.rviewer.skeletons.infrastructure.provider.impl.JwtProviderImpl;
@@ -14,11 +12,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.security.authentication.AuthenticationServiceException;
-import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.InternalAuthenticationServiceException;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.oauth2.server.resource.BearerTokenAuthenticationToken;
 
 @ExtendWith(MockitoExtension.class)

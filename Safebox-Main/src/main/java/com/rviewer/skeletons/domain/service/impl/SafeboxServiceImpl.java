@@ -2,8 +2,8 @@ package com.rviewer.skeletons.domain.service.impl;
 
 import com.rviewer.skeletons.domain.model.Item;
 import com.rviewer.skeletons.domain.model.User;
-import com.rviewer.skeletons.domain.service.SafeboxService;
 import com.rviewer.skeletons.domain.service.SafeboxHolderService;
+import com.rviewer.skeletons.domain.service.SafeboxService;
 import com.rviewer.skeletons.domain.service.TokenService;
 import com.rviewer.skeletons.domain.service.UserService;
 import lombok.AllArgsConstructor;

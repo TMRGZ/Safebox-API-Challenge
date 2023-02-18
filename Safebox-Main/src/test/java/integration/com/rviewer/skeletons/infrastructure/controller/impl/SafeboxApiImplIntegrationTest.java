@@ -39,23 +39,16 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest(classes = SafeboxMainApplication.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class SafeboxApiImplIntegrationTest {
 
+    private static final String SAFEBOX_BASE_URL = "/safebox";
+    private static final String SPECIFIC_SAFEBOX_URL = SAFEBOX_BASE_URL + "/{id}";
+    private static final String OPEN_SAFEBOX_URL = SAFEBOX_BASE_URL + "/{id}/open";
+    private static final String SAFEBOX_ITEMS_URL = SAFEBOX_BASE_URL + "/{id}/items";
+    private static final String SAFEBOX_AUTH_POST_USER_URL = "/user";
+    private static final String SAFEBOX_AUTH_LOGIN_URL = "/login";
     @Autowired
     private MockMvc mockMvc;
-
     @Autowired
     private ObjectMapper objectMapper;
-
-    private static final String SAFEBOX_BASE_URL = "/safebox";
-
-    private static final String SPECIFIC_SAFEBOX_URL = SAFEBOX_BASE_URL + "/{id}";
-
-    private static final String OPEN_SAFEBOX_URL = SAFEBOX_BASE_URL + "/{id}/open";
-
-    private static final String SAFEBOX_ITEMS_URL = SAFEBOX_BASE_URL + "/{id}/items";
-
-    private static final String SAFEBOX_AUTH_POST_USER_URL = "/user";
-
-    private static final String SAFEBOX_AUTH_LOGIN_URL = "/login";
 
     @Test
     void postSafeboxIntegrationTest() throws Exception {

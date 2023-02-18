@@ -1,7 +1,7 @@
 package com.rviewer.skeletons.infrastructure.config.endpoint;
 
-import com.rviewer.skeletons.infrastructure.rest.safebox.holder.invoker.ApiClient;
 import com.rviewer.skeletons.infrastructure.rest.safebox.holder.SafeboxHolderApi;
+import com.rviewer.skeletons.infrastructure.rest.safebox.holder.invoker.ApiClient;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
