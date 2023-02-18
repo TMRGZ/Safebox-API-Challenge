@@ -37,7 +37,7 @@ class LoginApiImplIntegrationTest extends AbstractControllerIntegrationTest {
         URI uri = UriComponentsBuilder.fromUriString(LOGIN_URL).build(id);
         MvcResult result = mockMvc.perform(post(uri).with(httpBasic(username, password))
                 .contentType(MediaType.APPLICATION_JSON)
-        ).andExpect(status().isOk()).andReturn();
+        ).andExpect(status().isCreated()).andReturn();
 
         Assertions.assertNotNull(result);
         Assertions.assertNotNull(result.getResponse());

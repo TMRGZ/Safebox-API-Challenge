@@ -2,6 +2,7 @@ package com.rviewer.skeletons.infrastructure.handler;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.InternalAuthenticationServiceException;
 import org.springframework.security.authentication.LockedException;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -14,6 +15,11 @@ public class AuthenticationExceptionHandler extends ResponseEntityExceptionHandl
     @ExceptionHandler(LockedException.class)
     public ResponseEntity<Void> handleLockedException() {
         return ResponseEntity.status(HttpStatus.LOCKED).build();
+    }
+
+    @ExceptionHandler(InternalAuthenticationServiceException.class)
+    public ResponseEntity<Void> handleInternalAuthenticationServiceException(){
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
     }
 
     @ExceptionHandler(AuthenticationException.class)

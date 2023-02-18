@@ -1,9 +1,6 @@
 package unit.com.rviewer.skeletons.infrastructure.provider.impl;
 
-import com.rviewer.skeletons.domain.exception.ExternalServiceException;
-import com.rviewer.skeletons.domain.exception.UserDoesNotExistException;
-import com.rviewer.skeletons.domain.exception.UserIsLockedException;
-import com.rviewer.skeletons.domain.exception.UserIsUnauthorizedException;
+import com.rviewer.skeletons.domain.exception.*;
 import com.rviewer.skeletons.domain.service.LoginService;
 import com.rviewer.skeletons.infrastructure.provider.impl.BasicAuthProviderImpl;
 import org.junit.jupiter.api.Assertions;
@@ -65,11 +62,26 @@ class BasicAuthProviderImplUnitTest {
     }
 
     @Test
-    void authenticate_userDoesUnauthorizedException_UnitTest() {
+    void authenticate_userIsUnauthorizedException_UnitTest() {
         String username = "TEST";
         String password = "TEST";
         Authentication authentication = new UsernamePasswordAuthenticationToken(username, password);
         Mockito.when(loginService.loginUser(username, password)).thenThrow(new UserIsUnauthorizedException());
+
+        Authentication authenticate = basicAuthProvider.authenticate(authentication);
+
+        Mockito.verify(loginService).loginUser(username, password);
+
+        Assertions.assertNotNull(authenticate);
+        Assertions.assertFalse(authenticate.isAuthenticated());
+    }
+
+    @Test
+    void authenticate_userIsForbiddenException_UnitTest() {
+        String username = "TEST";
+        String password = "TEST";
+        Authentication authentication = new UsernamePasswordAuthenticationToken(username, password);
+        Mockito.when(loginService.loginUser(username, password)).thenThrow(new UserBadPasswordException());
 
         Authentication authenticate = basicAuthProvider.authenticate(authentication);
 

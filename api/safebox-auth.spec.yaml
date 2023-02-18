@@ -28,10 +28,10 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/RegisteredUser'
+        '400':
+          description: Malformed expected data
         '409':
           description: Username already registered
-        '422':
-          description: Malformed expected data
         '500':
           description: Unexpected API error
 
@@ -46,23 +46,23 @@ paths:
       security:
         - basicPassword: [ ]
       responses:
-        '200':
+        '201':
           description: User correctly logged in
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/LoginResponse'
-        '404':
-          description: User id not found
-        '422':
-          description: Username or password are wrong
+        '401':
+          description: Authentication header not found
+        '403':
+          description: User and password wrong
         '423':
           description: User is locked
         '500':
           description: Unexpected API error
 
   /token/decode:
-    get:
+    post:
       tags:
         - Token
       operationId: decode-token
@@ -78,10 +78,10 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/User'
-        '404':
-          description: User id not found
-        '422':
-          description: Username or password are wrong
+        '401':
+          description: Authentication header not found
+        '403':
+          description: Bad token
         '423':
           description: User is locked
         '500':

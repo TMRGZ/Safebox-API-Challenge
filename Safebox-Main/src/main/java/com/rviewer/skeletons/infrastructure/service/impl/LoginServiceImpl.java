@@ -40,6 +40,7 @@ public class LoginServiceImpl implements LoginService {
             switch (e.getStatusCode()) {
                 case NOT_FOUND -> throw new UserDoesNotExistException();
                 case UNAUTHORIZED -> throw new UserIsUnauthorizedException();
+                case FORBIDDEN -> throw new UserBadPasswordException();
                 case LOCKED -> throw new UserIsLockedException();
                 default -> throw new SafeboxMainException();
             }

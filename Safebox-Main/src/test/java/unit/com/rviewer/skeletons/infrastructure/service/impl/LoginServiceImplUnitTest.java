@@ -81,6 +81,18 @@ class LoginServiceImplUnitTest {
     }
 
     @Test
+    void loginUser_userForbiddenException_UnitTest() {
+        String username = "TEST";
+        String password = "TEST";
+        Mockito.when(loginApi.loginUser()).thenThrow(new HttpClientErrorException(HttpStatus.FORBIDDEN));
+
+        Assertions.assertThrows(UserBadPasswordException.class, () -> loginService.loginUser(username, password));
+
+        Mockito.verify(loginApi).loginUser();
+        Mockito.verify(userMapper, Mockito.never()).map(Mockito.any(AuthLoginResponseDto.class));
+    }
+
+    @Test
     void loginUser_userLockedException_UnitTest() {
         String username = "TEST";
         String password = "TEST";

@@ -152,7 +152,7 @@ class SafeboxApplicationServiceUnitTest {
 
         Assertions.assertNotNull(response);
         Assertions.assertNotNull(response.getStatusCode());
-        Assertions.assertEquals(HttpStatus.OK, response.getStatusCode());
+        Assertions.assertEquals(HttpStatus.CREATED, response.getStatusCode());
     }
 
     @Test

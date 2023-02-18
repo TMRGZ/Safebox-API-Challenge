@@ -28,10 +28,10 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Safebox'
+        '400':
+          description: Malformed expected data
         '409':
           description: Safebox already exists
-        '422':
-          description: Malformed expected data
         '500':
           description: Unexpected API error
   /safebox/{id}:
@@ -56,6 +56,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Safebox'
+        '400':
+          description: Malformed expected data
         '404':
           description: Safebox does not exist
         '500':
@@ -82,10 +84,10 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ItemList'
+        '400':
+          description: Malformed expected data
         '404':
           description: Requested safebox does not exist
-        '422':
-          description: Malformed expected data
         '500':
           description: Unexpected API error
     put:
@@ -109,12 +111,12 @@ paths:
             schema:
               $ref: '#/components/schemas/ItemList'
       responses:
-        '200':
+        '201':
           description: Content correctly added to the safebox
+        '400':
+          description: Malformed expected data
         '404':
           description: Requested safebox does not exist
-        '422':
-          description: Malformed expected data
         '500':
           description: Unexpected API error
 components:

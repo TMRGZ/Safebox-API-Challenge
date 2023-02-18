@@ -33,7 +33,7 @@ class LoginApplicationServiceImplUnitTest {
 
         Assertions.assertNotNull(response);
         Assertions.assertNotNull(response.getStatusCode());
-        Assertions.assertEquals(HttpStatus.OK, response.getStatusCode());
+        Assertions.assertEquals(HttpStatus.CREATED, response.getStatusCode());
         Assertions.assertNotNull(response.getBody());
         Assertions.assertNotNull(response.getBody().getToken());
         Assertions.assertEquals(token, response.getBody().getToken());

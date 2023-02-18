@@ -1,9 +1,6 @@
 package com.rviewer.skeletons.infrastructure.provider.impl;
 
-import com.rviewer.skeletons.domain.exception.SafeboxMainException;
-import com.rviewer.skeletons.domain.exception.UserDoesNotExistException;
-import com.rviewer.skeletons.domain.exception.UserIsLockedException;
-import com.rviewer.skeletons.domain.exception.UserIsUnauthorizedException;
+import com.rviewer.skeletons.domain.exception.*;
 import com.rviewer.skeletons.domain.service.LoginService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,11 +43,14 @@ public class BasicAuthProviderImpl implements AuthenticationProvider {
         } catch (UserIsUnauthorizedException e) {
             log.error("User {} is not authorized in the authentication server", username);
             authToken = new UsernamePasswordAuthenticationToken(authentication.getPrincipal(), authentication.getCredentials());
+        } catch (UserBadPasswordException e) {
+            log.error("Password for user {} is wrong", username);
+            authToken = new UsernamePasswordAuthenticationToken(authentication.getPrincipal(), authentication.getCredentials());
         } catch (UserIsLockedException e) {
             log.error("User {} is locked", username);
             throw new LockedException("The user is locked");
         } catch (SafeboxMainException e) {
-            log.error("An unknown error happened while trying to authenticate {}", username);
+            log.error("An unknown error happened while trying to authenticate", e);
             throw new InternalAuthenticationServiceException("The authentication server has failed");
         }
 

@@ -29,6 +29,26 @@ class SafeboxServiceImplUnitTest {
     private SafeboxRepository safeboxRepository;
 
     @Test
+    void getSafeboxUnitTest() {
+        Mockito.when(safeboxRepository.findByOwner(Mockito.anyString())).thenReturn(Optional.of(new Safebox()));
+
+        Safebox safebox = safeboxService.getSafebox("TEST");
+
+        Mockito.verify(safeboxRepository).findByOwner(Mockito.anyString());
+
+        Assertions.assertNotNull(safebox);
+    }
+
+    @Test
+    void getSafebox_safeboxDoesNotExistException_UnitTest() {
+        Mockito.when(safeboxRepository.findByOwner(Mockito.anyString())).thenReturn(Optional.empty());
+
+        Assertions.assertThrows(SafeboxDoesNotExistException.class, () -> safeboxService.getSafebox("TEST"));
+
+        Mockito.verify(safeboxRepository).findByOwner(Mockito.anyString());
+    }
+
+    @Test
     void createSafeboxUnitTest() {
         Mockito.when(safeboxRepository.findByOwner(Mockito.anyString())).thenReturn(Optional.empty());
 

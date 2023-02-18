@@ -91,7 +91,7 @@ public class SafeboxApplicationServiceImpl implements SafeboxApplicationService 
 
             List<Item> itemList = inputItemMapper.map(itemListDto);
             safeboxService.addItemsToSafebox(owner, itemList);
-            response = ResponseEntity.ok().build();
+            response = ResponseEntity.status(HttpStatus.CREATED).build();
 
             log.info("{} items successfully added to {}'s safebox", itemListDto.getItems().size(), owner);
 

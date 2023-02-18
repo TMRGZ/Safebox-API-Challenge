@@ -190,7 +190,7 @@ class SafeboxApiImplIntegrationTest {
     }
 
     @Test
-    void openSafebox_noAuthentication401_IntegrationTest() throws Exception {
+    void openSafebox_noAuthentication_IntegrationTest() throws Exception {
         String id = "TEST-ID";
 
         URI openSafeboxUri = UriComponentsBuilder.fromUriString(OPEN_SAFEBOX_URL).build(id);
@@ -260,6 +260,26 @@ class SafeboxApiImplIntegrationTest {
     }
 
     @Test
+    void openSafebox_safeboxUserForbidden_IntegrationTest() throws Exception {
+        String id = "TEST-ID";
+        String username = "TEST-USER";
+        String password = "TEST-PASSWORD";
+
+        URI safeboxAuthLoginUri = URI.create(SAFEBOX_AUTH_LOGIN_URL);
+        WireMock.stubFor(WireMock.post(WireMock.urlEqualTo(safeboxAuthLoginUri.getPath()))
+                .willReturn(aResponse()
+                        .withHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                        .withStatus(HttpStatus.FORBIDDEN.value())
+                )
+        );
+
+        URI openSafeboxUri = UriComponentsBuilder.fromUriString(OPEN_SAFEBOX_URL).build(id);
+        mockMvc.perform(get(openSafeboxUri).with(httpBasic(username, password))
+                .contentType(MediaType.APPLICATION_JSON)
+        ).andExpect(status().isForbidden());
+    }
+
+    @Test
     void openSafebox_safeboxAuthBadRequest_IntegrationTest() throws Exception {
         String id = "TEST-ID";
         String username = "TEST-USER";
@@ -276,7 +296,7 @@ class SafeboxApiImplIntegrationTest {
         URI openSafeboxUri = UriComponentsBuilder.fromUriString(OPEN_SAFEBOX_URL).build(id);
         mockMvc.perform(get(openSafeboxUri).with(httpBasic(username, password))
                 .contentType(MediaType.APPLICATION_JSON)
-        ).andExpect(status().isUnauthorized());
+        ).andExpect(status().isForbidden());
     }
 
     @Test
@@ -296,7 +316,7 @@ class SafeboxApiImplIntegrationTest {
         URI openSafeboxUri = UriComponentsBuilder.fromUriString(OPEN_SAFEBOX_URL).build(id);
         mockMvc.perform(get(openSafeboxUri).with(httpBasic(username, password))
                 .contentType(MediaType.APPLICATION_JSON)
-        ).andExpect(status().isUnauthorized());
+        ).andExpect(status().isForbidden());
     }
 
     @Test
@@ -516,7 +536,7 @@ class SafeboxApiImplIntegrationTest {
         mockMvc.perform(put(baseSafeboxUri).with(jwt())
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(itemListDto))
-        ).andExpect(status().isOk());
+        ).andExpect(status().isCreated());
     }
 
     @Test

@@ -10,7 +10,7 @@ import org.springframework.test.web.servlet.MvcResult;
 import java.net.URI;
 
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.jwt;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 class TokenApiImplIntegrationTest extends AbstractControllerIntegrationTest {
@@ -22,7 +22,7 @@ class TokenApiImplIntegrationTest extends AbstractControllerIntegrationTest {
         URI uri = URI.create(DECODE_TOKEN_URL);
         SecurityMockMvcRequestPostProcessors.JwtRequestPostProcessor jwt = jwt();
 
-        MvcResult result = mockMvc.perform(get(uri).with(jwt)
+        MvcResult result = mockMvc.perform(post(uri).with(jwt)
                 .contentType(MediaType.APPLICATION_JSON)
         ).andExpect(status().isOk()).andReturn();
 

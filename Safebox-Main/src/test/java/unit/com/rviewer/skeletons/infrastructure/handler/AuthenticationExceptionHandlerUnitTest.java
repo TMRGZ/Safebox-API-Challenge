@@ -25,6 +25,15 @@ class AuthenticationExceptionHandlerUnitTest {
     }
 
     @Test
+    void handleInternalAuthenticationServiceExceptionUnitTest() {
+        ResponseEntity<Void> response = handler.handleInternalAuthenticationServiceException();
+
+        Assertions.assertNotNull(response);
+        Assertions.assertNotNull(response.getStatusCode());
+        Assertions.assertEquals(HttpStatus.FORBIDDEN, response.getStatusCode());
+    }
+
+    @Test
     void handleAuthenticationExceptionUnitTest() {
         ResponseEntity<Void> response = handler.handleAuthenticationException();
 

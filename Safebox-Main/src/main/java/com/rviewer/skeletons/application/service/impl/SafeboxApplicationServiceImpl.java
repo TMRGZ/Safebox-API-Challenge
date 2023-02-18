@@ -98,7 +98,7 @@ public class SafeboxApplicationServiceImpl implements SafeboxApplicationService 
 
         try {
             safeboxService.addItemsToSafebox(id, itemList);
-            response = ResponseEntity.ok().build();
+            response = ResponseEntity.status(HttpStatus.CREATED).build();
 
         } catch (SafeboxDoesNotExistException e) {
             response = ResponseEntity.notFound().build();

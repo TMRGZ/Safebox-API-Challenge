@@ -31,7 +31,9 @@ class SafeboxApiImplIntegrationTest {
 
     private static final String SAFEBOX_URL = "/safebox";
 
-    private static final String SAFEBOX_ITEMS_URL = "/safebox/{id}/items";
+    private static final String SPECIFIC_SAFEBOX_URL = SAFEBOX_URL + "/{id}";
+
+    private static final String SAFEBOX_ITEMS_URL = SPECIFIC_SAFEBOX_URL + "/items";
 
     @Autowired
     private MockMvc mockMvc;
@@ -86,6 +88,39 @@ class SafeboxApiImplIntegrationTest {
     }
 
     @Test
+    void getSafeboxIntegrationTest() throws Exception {
+        String id = "EXISTING_SAFEBOX";
+
+        Optional<Safebox> byId = safeboxRepository.findById(id);
+        Assertions.assertTrue(byId.isPresent());
+
+        URI uri = UriComponentsBuilder.fromUriString(SPECIFIC_SAFEBOX_URL).build(id);
+        MvcResult result = mockMvc.perform(get(uri))
+                .andExpect(status().isOk())
+                .andReturn();
+
+        Assertions.assertNotNull(result);
+        Assertions.assertNotNull(result.getResponse());
+
+        SafeboxDto response = objectMapper.readValue(result.getResponse().getContentAsString(), SafeboxDto.class);
+
+        Assertions.assertNotNull(response);
+        Assertions.assertNotNull(response.getId());
+    }
+
+    @Test
+    void getSafebox_safeboxDoesNotExist_IntegrationTest() throws Exception {
+        String id = "NOT_EXISTING_SAFEBOX";
+
+        Optional<Safebox> byId = safeboxRepository.findById(id);
+        Assertions.assertFalse(byId.isPresent());
+
+        URI uri = UriComponentsBuilder.fromUriString(SPECIFIC_SAFEBOX_URL).build(id);
+        mockMvc.perform(get(uri))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
     void getSafeboxItemsIntegrationTest() throws Exception {
         String id = "EXISTING_SAFEBOX";
 
@@ -134,7 +169,7 @@ class SafeboxApiImplIntegrationTest {
         mockMvc.perform(put(uri)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(itemListDto))
-        ).andExpect(status().isOk());
+        ).andExpect(status().isCreated());
 
         byId = safeboxRepository.findById(id);
         Assertions.assertTrue(byId.isPresent());
