@@ -41,27 +41,4 @@ public class UserServiceImpl implements UserService {
 
         return registeredUserDto.getId();
     }
-
-    @Override
-    public User getUser(String token) {
-        User user;
-
-        try {
-            userApi.getApiClient().setBearerToken(token);
-            AuthUserDto userDto = userApi.getUser();
-            user = new User();
-            user.setUsername(userDto.getUsername());
-
-        } catch (HttpClientErrorException e) {
-            if (e.getStatusCode() == HttpStatus.NOT_FOUND) {
-                throw new UserDoesNotExistException();
-            }
-            throw new SafeboxMainException();
-
-        } catch (HttpServerErrorException e) {
-            throw new ExternalServiceException();
-        }
-
-        return user;
-    }
 }
