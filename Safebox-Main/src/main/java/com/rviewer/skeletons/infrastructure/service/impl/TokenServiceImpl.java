@@ -3,18 +3,19 @@ package com.rviewer.skeletons.infrastructure.service.impl;
 import com.rviewer.skeletons.domain.exception.BadTokenException;
 import com.rviewer.skeletons.domain.exception.ExternalServiceException;
 import com.rviewer.skeletons.domain.exception.SafeboxMainException;
-import com.rviewer.skeletons.domain.exception.UserIsUnauthorizedException;
 import com.rviewer.skeletons.domain.model.User;
 import com.rviewer.skeletons.domain.service.TokenService;
 import com.rviewer.skeletons.infrastructure.rest.safebox.auth.TokenApi;
 import com.rviewer.skeletons.infrastructure.rest.safebox.auth.model.AuthUserDto;
+import com.rviewer.skeletons.infrastructure.utils.AuthenticationUtils;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpServerErrorException;
 
+@Slf4j
 @Service
 public class TokenServiceImpl implements TokenService {
 
@@ -26,12 +27,16 @@ public class TokenServiceImpl implements TokenService {
         User user;
 
         try {
+            log.info("Attempting to decode token: {}", token);
+
             tokenApi.getApiClient().setBearerToken(token);
             AuthUserDto userDto = tokenApi.decodeToken();
             user = new User();
             user.setUsername(userDto.getUsername());
 
         } catch (HttpClientErrorException e) {
+            log.error("Client error {} while attempting to decode token {}", e.getStatusCode(), token);
+
             if (e.getStatusCode() == HttpStatus.FORBIDDEN || e.getStatusCode() == HttpStatus.UNAUTHORIZED) {
                 throw new BadTokenException();
             }
@@ -39,14 +44,18 @@ public class TokenServiceImpl implements TokenService {
             throw new SafeboxMainException();
 
         } catch (HttpServerErrorException e) {
+            log.error("Server error {} while attempting to decode token {}", e.getStatusCode(), token);
+
             throw new ExternalServiceException();
         }
+
+        log.info("Decoding successful for token {}", token);
 
         return user;
     }
 
     @Override
     public String retrieveCurrenUserToken() {
-        return SecurityContextHolder.getContext().getAuthentication().getDetails().toString();
+        return AuthenticationUtils.retrieveCurrenUserToken();
     }
 }

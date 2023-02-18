@@ -9,6 +9,7 @@ import com.rviewer.skeletons.domain.service.SafeboxHolderService;
 import com.rviewer.skeletons.infrastructure.rest.safebox.holder.SafeboxHolderApi;
 import com.rviewer.skeletons.infrastructure.rest.safebox.holder.model.HolderItemListDto;
 import com.rviewer.skeletons.infrastructure.rest.safebox.holder.model.HolderSafeboxDto;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -17,6 +18,7 @@ import org.springframework.web.client.HttpServerErrorException;
 
 import java.util.List;
 
+@Slf4j
 @Service
 public class SafeboxHolderServiceImpl implements SafeboxHolderService {
 
@@ -70,16 +72,24 @@ public class SafeboxHolderServiceImpl implements SafeboxHolderService {
         List<String> itemDetails = itemList.stream().map(Item::getDetail).toList();
 
         try {
+            log.info("Attempting to add {} items to safebox {}", itemList.size(), id);
+
             safeboxHolderApi.putSafeboxItems(id, new HolderItemListDto().items(itemDetails));
 
         } catch (HttpClientErrorException e) {
+            log.error("Client error {} while attempting to add {} items to {}", e.getStatusCode(), itemList.size(), id);
+
             if (e.getStatusCode() == HttpStatus.NOT_FOUND) {
                 throw new SafeboxDoesNotExistException();
             }
             throw new SafeboxMainException();
 
         } catch (HttpServerErrorException e) {
+            log.error("Server error {} while attempting to add {} items to {}", e.getStatusCode(), itemList.size(), id);
+
             throw new ExternalServiceException();
         }
+
+        log.info("Added {} items to {} successfully", itemList.size(), id);
     }
 }

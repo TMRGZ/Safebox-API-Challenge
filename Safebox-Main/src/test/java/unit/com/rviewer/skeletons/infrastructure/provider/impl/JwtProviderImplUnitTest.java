@@ -1,5 +1,6 @@
 package unit.com.rviewer.skeletons.infrastructure.provider.impl;
 
+import com.rviewer.skeletons.domain.exception.BadTokenException;
 import com.rviewer.skeletons.domain.exception.ExternalServiceException;
 import com.rviewer.skeletons.domain.exception.UserDoesNotExistException;
 import com.rviewer.skeletons.domain.exception.UserIsUnauthorizedException;
@@ -15,6 +16,7 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.authentication.AuthenticationServiceException;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.InternalAuthenticationServiceException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.oauth2.server.resource.BearerTokenAuthenticationToken;
@@ -46,23 +48,14 @@ class JwtProviderImplUnitTest {
     }
 
     @Test
-    void authenticate_userDoesNotExistException_UnitTest() {
+    void authenticate_badTokenException_UnitTest() {
         String token = "TOKEN";
         Authentication authentication = new BearerTokenAuthenticationToken(token);
-        Mockito.when(tokenService.decodeToken(token)).thenThrow(new UserDoesNotExistException());
+        Mockito.when(tokenService.decodeToken(token)).thenThrow(new BadTokenException());
 
-        Assertions.assertThrows(UsernameNotFoundException.class, () -> jwtProvider.authenticate(authentication));
+        Authentication authenticate = jwtProvider.authenticate(authentication);
 
-        Mockito.verify(tokenService).decodeToken(token);
-    }
-
-    @Test
-    void authenticate_userUnauthorizedException_UnitTest() {
-        String token = "TOKEN";
-        Authentication authentication = new BearerTokenAuthenticationToken(token);
-        Mockito.when(tokenService.decodeToken(token)).thenThrow(new UserIsUnauthorizedException());
-
-        Assertions.assertThrows(BadCredentialsException.class, () -> jwtProvider.authenticate(authentication));
+        Assertions.assertFalse(authenticate.isAuthenticated());
 
         Mockito.verify(tokenService).decodeToken(token);
     }
@@ -73,7 +66,7 @@ class JwtProviderImplUnitTest {
         Authentication authentication = new BearerTokenAuthenticationToken(token);
         Mockito.when(tokenService.decodeToken(token)).thenThrow(new ExternalServiceException());
 
-        Assertions.assertThrows(AuthenticationServiceException.class, () -> jwtProvider.authenticate(authentication));
+        Assertions.assertThrows(InternalAuthenticationServiceException.class, () -> jwtProvider.authenticate(authentication));
 
         Mockito.verify(tokenService).decodeToken(token);
     }

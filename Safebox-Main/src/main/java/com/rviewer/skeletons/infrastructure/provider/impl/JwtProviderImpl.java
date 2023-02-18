@@ -1,20 +1,24 @@
 package com.rviewer.skeletons.infrastructure.provider.impl;
 
+import com.rviewer.skeletons.domain.exception.BadTokenException;
 import com.rviewer.skeletons.domain.exception.ExternalServiceException;
 import com.rviewer.skeletons.domain.exception.UserDoesNotExistException;
 import com.rviewer.skeletons.domain.exception.UserIsUnauthorizedException;
 import com.rviewer.skeletons.domain.model.User;
 import com.rviewer.skeletons.domain.service.TokenService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.AuthenticationServiceException;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.InternalAuthenticationServiceException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.oauth2.server.resource.BearerTokenAuthenticationToken;
 import org.springframework.stereotype.Component;
 
+@Slf4j
 @Component
 public class JwtProviderImpl implements AuthenticationProvider {
 
@@ -27,16 +31,20 @@ public class JwtProviderImpl implements AuthenticationProvider {
         String jwt = bearerTokenAuthenticationToken.getToken();
 
         try {
+            log.info("Trying to authenticate token {}", jwt);
+
             User user = tokenService.decodeToken(jwt);
             bearerTokenAuthenticationToken.setAuthenticated(true);
             bearerTokenAuthenticationToken.setDetails(user.getUsername());
 
-        } catch (UserDoesNotExistException e) {
-            throw new UsernameNotFoundException("The user does not exist");
-        } catch (UserIsUnauthorizedException e) {
-            throw new BadCredentialsException("The user is unauthorized");
+            log.info("Token {} successfully authenticated", jwt);
+
+        } catch (BadTokenException e) {
+            log.error("Token {} can't be authenticated", jwt);
+
         } catch (ExternalServiceException e) {
-            throw new AuthenticationServiceException("The authentication server has failed");
+            log.error("An unknown error happened while trying to verify {}", jwt);
+            throw new InternalAuthenticationServiceException("The authentication server has failed");
         }
 
         return bearerTokenAuthenticationToken;

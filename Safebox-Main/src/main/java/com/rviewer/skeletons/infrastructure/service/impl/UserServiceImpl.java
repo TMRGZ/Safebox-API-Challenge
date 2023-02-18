@@ -11,12 +11,14 @@ import com.rviewer.skeletons.infrastructure.rest.safebox.auth.UserApi;
 import com.rviewer.skeletons.infrastructure.rest.safebox.auth.model.AuthCreateUserDto;
 import com.rviewer.skeletons.infrastructure.rest.safebox.auth.model.AuthRegisteredUserDto;
 import com.rviewer.skeletons.infrastructure.rest.safebox.auth.model.AuthUserDto;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpServerErrorException;
 
+@Slf4j
 @Service
 public class UserServiceImpl implements UserService {
 
@@ -28,17 +30,23 @@ public class UserServiceImpl implements UserService {
         AuthRegisteredUserDto registeredUserDto;
 
         try {
+            log.info("Attempting to create user {}", username);
             registeredUserDto = userApi.postUser(new AuthCreateUserDto().username(username).password(password));
 
         } catch (HttpClientErrorException e) {
+            log.error("Client error {} while attempting to create user {}", e.getStatusCode(), username);
+
             if (e.getStatusCode() == HttpStatus.CONFLICT) {
                 throw new SafeboxAlreadyExistsException();
             }
             throw new SafeboxMainException();
 
         } catch (HttpServerErrorException e) {
+            log.error("Server error {} while attempting to create user {}", e.getStatusCode(), username);
+
             throw new ExternalServiceException();
         }
+        log.info("User {} successfully created", username);
 
         return registeredUserDto.getId();
     }
