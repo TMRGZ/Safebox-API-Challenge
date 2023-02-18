@@ -16,21 +16,21 @@ import org.springframework.context.annotation.Configuration;
 public class RabbitMqConfig {
 
     @Autowired
-    private SafeboxServiceMessagingConfig safeboxServiceMessagingConfig;
+    private SafeboxHolderMessagingConfig safeboxHolderMessagingConfig;
 
     @Bean
     public Queue queue() {
-        return new Queue(safeboxServiceMessagingConfig.getQueue(), false);
+        return new Queue(safeboxHolderMessagingConfig.getQueue(), false);
     }
 
     @Bean
     public DirectExchange exchange() {
-        return new DirectExchange(safeboxServiceMessagingConfig.getExchange());
+        return new DirectExchange(safeboxHolderMessagingConfig.getExchange());
     }
 
     @Bean
     public Binding binding(Queue queue, DirectExchange exchange) {
-        return BindingBuilder.bind(queue).to(exchange).with(safeboxServiceMessagingConfig.getRoutingKey());
+        return BindingBuilder.bind(queue).to(exchange).with(safeboxHolderMessagingConfig.getRoutingKey());
     }
 
     @Bean

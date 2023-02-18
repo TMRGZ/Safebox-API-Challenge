@@ -1,6 +1,8 @@
 package unit.com.rviewer.skeletons.infrastructure.provider;
 
 import com.rviewer.skeletons.domain.exception.BadPasswordException;
+import com.rviewer.skeletons.domain.exception.SafeboxAuthException;
+import com.rviewer.skeletons.domain.exception.UserDoesNotExistException;
 import com.rviewer.skeletons.domain.exception.UserIsLockedException;
 import com.rviewer.skeletons.domain.service.LoginService;
 import com.rviewer.skeletons.infrastructure.provider.BasicAuthenticationProvider;
@@ -12,6 +14,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.InternalAuthenticationServiceException;
 import org.springframework.security.authentication.LockedException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -41,6 +44,38 @@ class BasicAuthenticationProviderUnitTest {
     }
 
     @Test
+    void authenticate_userDoesNotExistException_UnitTest() {
+        String username = "TEST";
+        String password = "TEST";
+        Authentication authentication = Mockito.mock(Authentication.class);
+        Mockito.when(authentication.getName()).thenReturn(username);
+        Mockito.when(authentication.getCredentials()).thenReturn(password);
+        Mockito.doThrow(new UserDoesNotExistException()).when(loginService).loginUser(username, password);
+
+        Authentication authenticate = basicAuthenticationProvider.authenticate(authentication);
+
+        Mockito.verify(loginService).loginUser(username, password);
+
+        Assertions.assertFalse(authenticate.isAuthenticated());
+    }
+
+    @Test
+    void authenticate_badPasswordException_UnitTest() {
+        String username = "TEST";
+        String password = "TEST";
+        Authentication authentication = Mockito.mock(Authentication.class);
+        Mockito.when(authentication.getName()).thenReturn(username);
+        Mockito.when(authentication.getCredentials()).thenReturn(password);
+        Mockito.doThrow(new BadPasswordException()).when(loginService).loginUser(username, password);
+
+        Authentication authenticate = basicAuthenticationProvider.authenticate(authentication);
+
+        Mockito.verify(loginService).loginUser(username, password);
+
+        Assertions.assertFalse(authenticate.isAuthenticated());
+    }
+
+    @Test
     void authenticate_lockedException_UnitTest() {
         String username = "TEST";
         String password = "TEST";
@@ -50,6 +85,20 @@ class BasicAuthenticationProviderUnitTest {
         Mockito.doThrow(new UserIsLockedException()).when(loginService).loginUser(username, password);
 
         Assertions.assertThrows(LockedException.class, () -> basicAuthenticationProvider.authenticate(authentication));
+
+        Mockito.verify(loginService).loginUser(username, password);
+    }
+
+    @Test
+    void authenticate_errorException_UnitTest() {
+        String username = "TEST";
+        String password = "TEST";
+        Authentication authentication = Mockito.mock(Authentication.class);
+        Mockito.when(authentication.getName()).thenReturn(username);
+        Mockito.when(authentication.getCredentials()).thenReturn(password);
+        Mockito.doThrow(new SafeboxAuthException()).when(loginService).loginUser(username, password);
+
+        Assertions.assertThrows(InternalAuthenticationServiceException.class, () -> basicAuthenticationProvider.authenticate(authentication));
 
         Mockito.verify(loginService).loginUser(username, password);
     }

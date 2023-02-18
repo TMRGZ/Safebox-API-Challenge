@@ -8,6 +8,7 @@ import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.JwtParser;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.time.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -17,6 +18,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
+@Slf4j
 @Service
 public class TokenServiceImpl implements TokenService {
 
@@ -29,11 +31,15 @@ public class TokenServiceImpl implements TokenService {
     }
 
     private String generate(String username) {
+        log.info("Generating token for {}", username);
+
         return createToken(new HashMap<>(), username);
     }
 
     @Override
     public String decode(String token) {
+        log.info("Decoding token {}", token);
+
         String subject;
 
         try {
@@ -45,6 +51,7 @@ public class TokenServiceImpl implements TokenService {
             subject = claimsJws.getSubject();
 
         } catch (JwtException e) {
+            log.error("Error while trying to decode token", e);
             subject = null;
         }
 

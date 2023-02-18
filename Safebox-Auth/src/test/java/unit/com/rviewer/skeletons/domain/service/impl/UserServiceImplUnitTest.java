@@ -6,22 +6,16 @@ import com.rviewer.skeletons.domain.model.event.EventTypeEnum;
 import com.rviewer.skeletons.domain.model.user.SafeboxUser;
 import com.rviewer.skeletons.domain.model.user.SafeboxUserHistory;
 import com.rviewer.skeletons.domain.repository.SafeboxUserRepository;
-import com.rviewer.skeletons.domain.sender.SafeboxServiceSender;
+import com.rviewer.skeletons.domain.sender.SafeboxHolderSender;
 import com.rviewer.skeletons.domain.service.PasswordService;
-import com.rviewer.skeletons.domain.service.TokenService;
 import com.rviewer.skeletons.domain.service.impl.UserServiceImpl;
-import org.awaitility.Awaitility;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.*;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.Date;
 import java.util.Optional;
-import java.util.concurrent.TimeUnit;
 
 
 @ExtendWith(MockitoExtension.class)
@@ -37,7 +31,7 @@ class UserServiceImplUnitTest {
     private SafeboxUserRepository safeboxUserRepository;
 
     @Mock
-    private SafeboxServiceSender safeboxServiceSender;
+    private SafeboxHolderSender safeboxHolderSender;
 
     @Test
     void createUserUnitTest() {
@@ -52,7 +46,7 @@ class UserServiceImplUnitTest {
         Mockito.verify(safeboxUserRepository).findByUsername(username);
         Mockito.verify(passwordService).encodePassword(password);
         Mockito.verify(safeboxUserRepository).save(Mockito.any());
-        Mockito.verify(safeboxServiceSender).send(Mockito.any());
+        Mockito.verify(safeboxHolderSender).send(Mockito.any());
 
         Assertions.assertNotNull(createdUser.getUsername());
         Assertions.assertNotNull(createdUser.getPassword());

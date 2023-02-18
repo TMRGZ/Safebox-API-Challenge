@@ -11,7 +11,7 @@ import javax.validation.constraints.NotNull;
 @Setter
 @Configuration
 @ConfigurationProperties(prefix = "safebox-service-messaging-config")
-public class SafeboxServiceMessagingConfig {
+public class SafeboxHolderMessagingConfig {
 
     @NotNull
     private String queue;

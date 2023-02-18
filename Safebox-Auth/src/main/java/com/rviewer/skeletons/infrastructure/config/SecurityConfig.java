@@ -14,6 +14,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
+import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
@@ -36,13 +37,13 @@ public class SecurityConfig {
 
 
     @Bean
-    public SecurityFilterChain basicFilterChain(HttpSecurity httpSecurity) throws Exception {
+    public SecurityFilterChain basicFilterChain(HttpSecurity httpSecurity, AuthenticationEntryPoint entryPoint) throws Exception {
 
         httpSecurity.csrf().disable()
                 .authorizeHttpRequests()
                 .antMatchers(HttpMethod.POST, "/login").authenticated()
                 .and()
-                .httpBasic()
+                .httpBasic().authenticationEntryPoint(entryPoint)
                 .and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 
@@ -52,9 +53,11 @@ public class SecurityConfig {
 
     @Bean
     @Order(1)
-    public SecurityFilterChain jwtFilterChain(HttpSecurity httpSecurity) throws Exception {
+    public SecurityFilterChain jwtFilterChain(HttpSecurity httpSecurity, AuthenticationEntryPoint entryPoint) throws Exception {
         httpSecurity.antMatcher("/token/decode")
                 .csrf().disable()
+                .exceptionHandling().authenticationEntryPoint(entryPoint)
+                .and()
                 .authorizeHttpRequests()
                 .anyRequest().authenticated()
                 .and()

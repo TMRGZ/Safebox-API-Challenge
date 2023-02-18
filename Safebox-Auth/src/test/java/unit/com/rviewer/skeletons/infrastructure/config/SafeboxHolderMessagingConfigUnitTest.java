@@ -1,14 +1,14 @@
 package unit.com.rviewer.skeletons.infrastructure.config;
 
-import com.rviewer.skeletons.infrastructure.config.SafeboxServiceMessagingConfig;
+import com.rviewer.skeletons.infrastructure.config.SafeboxHolderMessagingConfig;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-class SafeboxServiceMessagingConfigUnitTest {
+class SafeboxHolderMessagingConfigUnitTest {
 
     @Test
     void creationUnitTest() {
-        SafeboxServiceMessagingConfig config = new SafeboxServiceMessagingConfig();
+        SafeboxHolderMessagingConfig config = new SafeboxHolderMessagingConfig();
 
         config.setQueue("TEST");
         config.setExchange("TEST");

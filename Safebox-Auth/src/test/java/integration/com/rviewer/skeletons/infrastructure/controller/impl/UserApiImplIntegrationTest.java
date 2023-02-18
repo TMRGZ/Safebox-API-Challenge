@@ -4,7 +4,7 @@ import com.rviewer.skeletons.application.model.CreateUserDto;
 import com.rviewer.skeletons.application.model.RegisteredUserDto;
 import com.rviewer.skeletons.domain.model.event.EventResultEnum;
 import com.rviewer.skeletons.domain.model.event.EventTypeEnum;
-import com.rviewer.skeletons.domain.sender.SafeboxServiceSender;
+import com.rviewer.skeletons.domain.sender.SafeboxHolderSender;
 import com.rviewer.skeletons.infrastructure.persistence.dao.UserDao;
 import com.rviewer.skeletons.infrastructure.persistence.dao.UserHistoryDao;
 import com.rviewer.skeletons.infrastructure.persistence.repository.JpaUserRepository;
@@ -29,7 +29,7 @@ class UserApiImplIntegrationTest extends AbstractControllerIntegrationTest {
     private JpaUserRepository userRepository;
 
     @MockBean
-    private SafeboxServiceSender safeboxServiceSender;
+    private SafeboxHolderSender safeboxHolderSender;
 
     @Test
     void postUserIntegrationTest() throws Exception {

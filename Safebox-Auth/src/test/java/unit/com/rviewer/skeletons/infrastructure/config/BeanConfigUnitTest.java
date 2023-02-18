@@ -1,7 +1,7 @@
 package unit.com.rviewer.skeletons.infrastructure.config;
 
 import com.rviewer.skeletons.domain.repository.SafeboxUserRepository;
-import com.rviewer.skeletons.domain.sender.SafeboxServiceSender;
+import com.rviewer.skeletons.domain.sender.SafeboxHolderSender;
 import com.rviewer.skeletons.domain.service.PasswordService;
 import com.rviewer.skeletons.infrastructure.config.AppConfig;
 import com.rviewer.skeletons.infrastructure.config.BeanConfig;
@@ -22,9 +22,9 @@ class BeanConfigUnitTest {
     void userServiceUnitTest() {
         PasswordService passwordService = Mockito.mock(PasswordService.class);
         SafeboxUserRepository userRepository = Mockito.mock(SafeboxUserRepository.class);
-        SafeboxServiceSender safeboxServiceSender = Mockito.mock(SafeboxServiceSender.class);
+        SafeboxHolderSender safeboxHolderSender = Mockito.mock(SafeboxHolderSender.class);
 
-        Assertions.assertNotNull(beanConfig.userService(passwordService, userRepository, safeboxServiceSender));
+        Assertions.assertNotNull(beanConfig.userService(passwordService, userRepository, safeboxHolderSender));
     }
 
     @Test

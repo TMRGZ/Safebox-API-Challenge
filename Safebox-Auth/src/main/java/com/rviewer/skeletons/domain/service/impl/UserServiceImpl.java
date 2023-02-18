@@ -7,17 +7,15 @@ import com.rviewer.skeletons.domain.model.user.SafeboxUser;
 import com.rviewer.skeletons.domain.model.user.SafeboxUserHistory;
 import com.rviewer.skeletons.domain.repository.SafeboxUserRepository;
 import com.rviewer.skeletons.domain.service.PasswordService;
-import com.rviewer.skeletons.domain.sender.SafeboxServiceSender;
-import com.rviewer.skeletons.domain.service.TokenService;
+import com.rviewer.skeletons.domain.sender.SafeboxHolderSender;
 import com.rviewer.skeletons.domain.service.UserService;
 import lombok.AllArgsConstructor;
-import org.apache.commons.lang3.BooleanUtils;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.Date;
-import java.util.Optional;
 
+@Slf4j
 @AllArgsConstructor
 public class UserServiceImpl implements UserService {
 
@@ -25,12 +23,15 @@ public class UserServiceImpl implements UserService {
 
     private SafeboxUserRepository safeboxUserRepository;
 
-    private SafeboxServiceSender safeboxServiceSender;
+    private SafeboxHolderSender safeboxHolderSender;
 
 
     @Override
     public SafeboxUser createUser(String username, String password) {
+        log.info("Starting user cretion process for {}", username);
+
         safeboxUserRepository.findByUsername(username).ifPresent(user -> {
+            log.error("Username {} is already registered", username);
             throw new UserAlreadyRegisteredException();
         });
 
@@ -48,7 +49,10 @@ public class UserServiceImpl implements UserService {
         safeboxUserHistory.setCurrentTries(0L);
 
         SafeboxUser savedUser = safeboxUserRepository.save(safeboxUser);
-        safeboxServiceSender.send(savedUser.getId());
+
+        log.info("User {} successfully created, sending creation event...", username);
+
+        safeboxHolderSender.send(savedUser.getId());
 
         return savedUser;
     }

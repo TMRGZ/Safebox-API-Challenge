@@ -1,7 +1,7 @@
 package unit.com.rviewer.skeletons.infrastructure.config;
 
 import com.rviewer.skeletons.infrastructure.config.RabbitMqConfig;
-import com.rviewer.skeletons.infrastructure.config.SafeboxServiceMessagingConfig;
+import com.rviewer.skeletons.infrastructure.config.SafeboxHolderMessagingConfig;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -11,7 +11,6 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.amqp.core.Binding;
 import org.springframework.amqp.core.DirectExchange;
-import org.springframework.amqp.core.Exchange;
 import org.springframework.amqp.core.Queue;
 
 @ExtendWith(MockitoExtension.class)
@@ -21,15 +20,15 @@ class RabbitMqConfigUnitTest {
     private RabbitMqConfig rabbitMqConfig;
 
     @Mock
-    private SafeboxServiceMessagingConfig safeboxServiceMessagingConfig;
+    private SafeboxHolderMessagingConfig safeboxHolderMessagingConfig;
 
     @Test
     void queueUnitTest() {
-        Mockito.when(safeboxServiceMessagingConfig.getQueue()).thenReturn("TEST");
+        Mockito.when(safeboxHolderMessagingConfig.getQueue()).thenReturn("TEST");
 
         Queue queue = rabbitMqConfig.queue();
 
-        Mockito.verify(safeboxServiceMessagingConfig).getQueue();
+        Mockito.verify(safeboxHolderMessagingConfig).getQueue();
 
         Assertions.assertNotNull(queue);
     }
@@ -38,7 +37,7 @@ class RabbitMqConfigUnitTest {
     void exchangeUnitTest() {
         DirectExchange exchange = rabbitMqConfig.exchange();
 
-        Mockito.verify(safeboxServiceMessagingConfig).getExchange();
+        Mockito.verify(safeboxHolderMessagingConfig).getExchange();
 
         Assertions.assertNotNull(exchange);
     }
@@ -50,7 +49,7 @@ class RabbitMqConfigUnitTest {
 
         Binding binding = rabbitMqConfig.binding(queue, exchange);
 
-        Mockito.verify(safeboxServiceMessagingConfig).getRoutingKey();
+        Mockito.verify(safeboxHolderMessagingConfig).getRoutingKey();
 
         Assertions.assertNotNull(binding);
     }
