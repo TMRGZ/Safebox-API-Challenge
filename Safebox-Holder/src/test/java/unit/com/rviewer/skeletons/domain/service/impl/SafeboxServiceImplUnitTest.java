@@ -53,42 +53,42 @@ class SafeboxServiceImplUnitTest {
         Safebox safebox = new Safebox();
         safebox.setItemList(new ArrayList<>());
 
-        Mockito.when(safeboxRepository.findById(Mockito.anyString())).thenReturn(Optional.of(safebox));
+        Mockito.when(safeboxRepository.findByOwner(Mockito.anyString())).thenReturn(Optional.of(safebox));
 
         safeboxService.addItemsToSafebox("TEST", Collections.singletonList(new Item("TEST")));
 
-        Mockito.verify(safeboxRepository).findById(Mockito.anyString());
+        Mockito.verify(safeboxRepository).findByOwner(Mockito.anyString());
         Mockito.verify(safeboxRepository).save(Mockito.any());
     }
 
     @Test
     void addItemsToSafebox_safeboxDoesNotExist_UnitTest() {
-        Mockito.when(safeboxRepository.findById(Mockito.anyString())).thenReturn(Optional.empty());
+        Mockito.when(safeboxRepository.findByOwner(Mockito.anyString())).thenReturn(Optional.empty());
         List<Item> itemList = Collections.singletonList(new Item("TEST"));
 
         Assertions.assertThrows(SafeboxDoesNotExistException.class,
                 () -> safeboxService.addItemsToSafebox("TEST", itemList));
 
-        Mockito.verify(safeboxRepository).findById(Mockito.anyString());
+        Mockito.verify(safeboxRepository).findByOwner(Mockito.anyString());
         Mockito.verify(safeboxRepository, Mockito.never()).save(Mockito.any());
     }
 
     @Test
     void getSafeboxItemsUnitTest() {
-        Mockito.when(safeboxRepository.findById(Mockito.anyString())).thenReturn(Optional.of(new Safebox()));
+        Mockito.when(safeboxRepository.findByOwner(Mockito.anyString())).thenReturn(Optional.of(new Safebox()));
 
         safeboxService.getSafeboxItems("TEST");
 
-        Mockito.verify(safeboxRepository).findById(Mockito.anyString());
+        Mockito.verify(safeboxRepository).findByOwner(Mockito.anyString());
     }
 
     @Test
     void getSafeboxItems_safeboxDoesNotExist_UnitTest() {
-        Mockito.when(safeboxRepository.findById(Mockito.anyString())).thenReturn(Optional.empty());
+        Mockito.when(safeboxRepository.findByOwner(Mockito.anyString())).thenReturn(Optional.empty());
 
         Assertions.assertThrows(SafeboxDoesNotExistException.class,
                 () -> safeboxService.getSafeboxItems("TEST"));
 
-        Mockito.verify(safeboxRepository).findById(Mockito.anyString());
+        Mockito.verify(safeboxRepository).findByOwner(Mockito.anyString());
     }
 }

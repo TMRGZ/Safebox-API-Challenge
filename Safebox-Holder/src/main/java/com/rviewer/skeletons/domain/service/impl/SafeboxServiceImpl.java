@@ -34,14 +34,14 @@ public class SafeboxServiceImpl implements SafeboxService {
 
     @Override
     public void addItemsToSafebox(String safeboxId, List<Item> itemList) {
-        Safebox safebox = safeboxRepository.findById(safeboxId).orElseThrow(SafeboxDoesNotExistException::new);
+        Safebox safebox = safeboxRepository.findByOwner(safeboxId).orElseThrow(SafeboxDoesNotExistException::new);
         safebox.getItemList().addAll(itemList);
         safeboxRepository.save(safebox);
     }
 
     @Override
     public List<Item> getSafeboxItems(String safeboxId) {
-        Safebox safebox = safeboxRepository.findById(safeboxId).orElseThrow(SafeboxDoesNotExistException::new);
+        Safebox safebox = safeboxRepository.findByOwner(safeboxId).orElseThrow(SafeboxDoesNotExistException::new);
         return safebox.getItemList();
     }
 }
