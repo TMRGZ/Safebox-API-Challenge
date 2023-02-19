@@ -14,8 +14,8 @@ public class RabbitStreamConfig {
     private static final String CREATED_USER_PRODUCER_BINDING = "createdUser-out-0";
 
     @Bean
-    public Function<Message<String>, String> createdUser() {
-        return Message::getPayload;
+    public Function<Message<String>, Message<String>> createdUser() {
+        return createdUser -> createdUser;
     }
 
     @Bean

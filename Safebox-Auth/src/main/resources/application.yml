@@ -14,7 +14,9 @@ spring:
     port: 5672
     username: test
     password: test
-
+  jpa:
+    hibernate:
+      ddl-auto: update
   cloud:
     stream:
       bindings:
@@ -29,6 +31,7 @@ spring:
           createdUser-out-0:
             producer:
               queue-name-group-only: true
+              binding-routing-key: ${safebox-holder-messaging-config.routing-key}
 
 appconfig:
   maxTries: 3
@@ -38,3 +41,4 @@ appconfig:
 safebox-holder-messaging-config:
   exchange: SAFEBOX_CREATED_USER.EXCHANGE
   queue:  SAFEBOX_CREATED_USER.QUEUE
+  routing-key: SAFEBOX_CREATED_USER.ROUTINGKEY

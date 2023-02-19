@@ -5,9 +5,9 @@ import com.rviewer.skeletons.domain.model.Safebox;
 import com.rviewer.skeletons.domain.service.SafeboxService;
 import com.rviewer.skeletons.infrastructure.config.CreatedUserQueueConfig;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 @Slf4j
 @Component
@@ -19,7 +19,7 @@ public class CreatedUserReceiver {
     @Autowired
     private CreatedUserQueueConfig createdUserQueueConfig;
 
-    @RabbitListener(queues = "#{createdUserQueueConfig.getQueue()}")
+    @Transactional
     public void receive(String owner) {
         log.info("User {} created event received from {}, trying to create a safebox", owner, createdUserQueueConfig.getQueue());
 

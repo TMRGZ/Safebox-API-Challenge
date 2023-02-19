@@ -19,4 +19,7 @@ public class SafeboxHolderMessagingConfig {
     @NotNull
     private String exchange;
 
+    @NotNull
+    private String routingKey;
+
 }
