@@ -11,14 +11,12 @@ import com.rviewer.skeletons.domain.model.user.SafeboxUserHistory;
 import com.rviewer.skeletons.domain.repository.SafeboxUserRepository;
 import com.rviewer.skeletons.domain.service.LoginService;
 import com.rviewer.skeletons.domain.service.PasswordService;
-import com.rviewer.skeletons.domain.service.TokenService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.BooleanUtils;
 
 import java.util.Comparator;
 import java.util.Date;
-import java.util.Optional;
 
 @Slf4j
 @AllArgsConstructor

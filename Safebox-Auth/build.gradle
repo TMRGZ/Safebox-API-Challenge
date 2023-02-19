@@ -26,7 +26,8 @@ tasks.register('buildAuthServer', GenerateTask) {
     outputDir = "$buildDir/generated/sources".toString()
     configOptions = [
             interfaceOnly        : "true",
-            performBeanValidation: "true"
+            performBeanValidation: "true",
+            useSpringBoot3       : "true"
     ]
 }
 

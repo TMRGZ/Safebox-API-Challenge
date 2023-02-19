@@ -2,11 +2,11 @@ package com.rviewer.skeletons.infrastructure.persistence.dao;
 
 import com.rviewer.skeletons.domain.model.event.EventResultEnum;
 import com.rviewer.skeletons.domain.model.event.EventTypeEnum;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.GenericGenerator;
 
-import javax.persistence.*;
 import java.util.Date;
 
 @Getter

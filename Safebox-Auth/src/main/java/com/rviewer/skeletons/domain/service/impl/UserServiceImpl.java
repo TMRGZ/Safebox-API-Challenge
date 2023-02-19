@@ -1,13 +1,13 @@
 package com.rviewer.skeletons.domain.service.impl;
 
-import com.rviewer.skeletons.domain.exception.*;
+import com.rviewer.skeletons.domain.exception.UserAlreadyRegisteredException;
 import com.rviewer.skeletons.domain.model.event.EventResultEnum;
 import com.rviewer.skeletons.domain.model.event.EventTypeEnum;
 import com.rviewer.skeletons.domain.model.user.SafeboxUser;
 import com.rviewer.skeletons.domain.model.user.SafeboxUserHistory;
 import com.rviewer.skeletons.domain.repository.SafeboxUserRepository;
-import com.rviewer.skeletons.domain.service.PasswordService;
 import com.rviewer.skeletons.domain.sender.SafeboxHolderSender;
+import com.rviewer.skeletons.domain.service.PasswordService;
 import com.rviewer.skeletons.domain.service.UserService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

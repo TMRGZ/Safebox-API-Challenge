@@ -15,6 +15,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpServerErrorException;
+import org.springframework.web.client.ResourceAccessException;
 
 @Slf4j
 @Service
@@ -48,7 +49,9 @@ public class TokenServiceImpl implements TokenService {
 
         } catch (HttpServerErrorException e) {
             log.error("Server error {} while attempting to decode token {}", e.getStatusCode(), token);
-
+            throw new ExternalServiceException();
+        } catch (ResourceAccessException e) {
+            log.error("Unknown error while attempting to decode token", e);
             throw new ExternalServiceException();
         }
 

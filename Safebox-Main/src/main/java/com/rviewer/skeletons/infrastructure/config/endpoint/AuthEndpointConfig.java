@@ -3,13 +3,13 @@ package com.rviewer.skeletons.infrastructure.config.endpoint;
 import com.rviewer.skeletons.infrastructure.rest.safebox.auth.LoginApi;
 import com.rviewer.skeletons.infrastructure.rest.safebox.auth.UserApi;
 import com.rviewer.skeletons.infrastructure.rest.safebox.auth.invoker.ApiClient;
+import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import javax.validation.constraints.NotNull;
 
 @Getter
 @Setter

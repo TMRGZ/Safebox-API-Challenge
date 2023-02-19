@@ -1,9 +1,9 @@
 plugins {
-    id 'org.springframework.boot' version '2.7.0'
-    id 'io.spring.dependency-management' version '1.0.11.RELEASE'
+    id 'org.springframework.boot' version '3.0.2'
+    id 'io.spring.dependency-management' version '1.1.0'
     id 'java'
     id 'jacoco'
-    id "org.openapi.generator" version "6.2.1"
+    id "org.openapi.generator" version "6.3.0"
 }
 
 group = 'com.rviewer.skeletons'
@@ -28,6 +28,7 @@ subprojects {
     dependencies {
         implementation 'org.springframework.boot:spring-boot-starter-web'
         implementation 'org.springframework.boot:spring-boot-starter-validation'
+        implementation 'org.springframework.boot:spring-boot-starter-actuator'
         implementation 'org.openapitools:jackson-databind-nullable:0.2.4'
         implementation 'org.springdoc:springdoc-openapi-ui:1.6.14'
         implementation 'org.modelmapper:modelmapper:3.1.1'

@@ -11,7 +11,6 @@ import com.rviewer.skeletons.domain.model.user.SafeboxUserHistory;
 import com.rviewer.skeletons.domain.repository.SafeboxUserRepository;
 import com.rviewer.skeletons.domain.service.PasswordService;
 import com.rviewer.skeletons.domain.service.impl.LoginServiceImpl;
-import org.awaitility.Awaitility;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -27,7 +26,6 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.Optional;
-import java.util.concurrent.TimeUnit;
 
 @ExtendWith(MockitoExtension.class)
 class LoginServiceImplUnitTest {

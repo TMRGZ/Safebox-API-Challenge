@@ -4,6 +4,7 @@ import com.rviewer.skeletons.domain.model.Item;
 import com.rviewer.skeletons.domain.model.Safebox;
 import com.rviewer.skeletons.infrastructure.persistence.dao.ItemDao;
 import com.rviewer.skeletons.infrastructure.persistence.dao.SafeboxDao;
+import jakarta.annotation.PostConstruct;
 import org.modelmapper.Conditions;
 import org.modelmapper.Converter;
 import org.modelmapper.ModelMapper;
@@ -11,7 +12,6 @@ import org.modelmapper.TypeMap;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.PostConstruct;
 import java.util.List;
 
 @Component

@@ -9,7 +9,7 @@ dependencies {
     implementation 'com.google.code.findbugs:jsr305:3.0.2'
     implementation 'org.springframework.boot:spring-boot-starter-security'
     implementation 'org.springframework.boot:spring-boot-starter-oauth2-resource-server'
-    testImplementation 'org.springframework.cloud:spring-cloud-contract-wiremock:3.1.5'
+    testImplementation 'org.springframework.cloud:spring-cloud-contract-wiremock:4.0.0'
     testImplementation 'org.springframework.security:spring-security-test'
 
 }
@@ -24,7 +24,9 @@ tasks.register('buildMainServer', GenerateTask) {
     configOptions = [
             interfaceOnly        : "true",
             performBeanValidation: "true",
+            useSpringBoot3       : "true"
     ]
+
 }
 
 tasks.register('buildAuthClient', GenerateTask) {
@@ -39,7 +41,8 @@ tasks.register('buildAuthClient', GenerateTask) {
     modelNamePrefix = "Auth"
     configOptions = [
             generateApiDocumentation: "false",
-            generateApiTests        : "false"
+            generateApiTests        : "false",
+            useJakartaEe            : "true"
     ]
 }
 
@@ -55,7 +58,8 @@ tasks.register('buildHolderClient', GenerateTask) {
     modelNamePrefix = "Holder"
     configOptions = [
             generateApiDocumentation: "false",
-            generateApiTests        : "false"
+            generateApiTests        : "false",
+            useJakartaEe            : "true"
     ]
 }
 

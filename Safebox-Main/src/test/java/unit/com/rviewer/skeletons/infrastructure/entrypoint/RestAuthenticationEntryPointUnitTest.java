@@ -1,6 +1,8 @@
 package unit.com.rviewer.skeletons.infrastructure.entrypoint;
 
 import com.rviewer.skeletons.infrastructure.entrypoint.RestAuthenticationEntryPoint;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -13,8 +15,7 @@ import org.springframework.security.authentication.AuthenticationServiceExceptio
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.servlet.HandlerExceptionResolver;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+
 
 @ExtendWith(MockitoExtension.class)
 class RestAuthenticationEntryPointUnitTest {

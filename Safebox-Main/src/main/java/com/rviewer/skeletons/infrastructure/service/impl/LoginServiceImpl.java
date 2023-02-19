@@ -8,9 +8,11 @@ import com.rviewer.skeletons.infrastructure.rest.safebox.auth.LoginApi;
 import com.rviewer.skeletons.infrastructure.rest.safebox.auth.model.AuthLoginResponseDto;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpServerErrorException;
+import org.springframework.web.client.ResourceAccessException;
 
 @Slf4j
 @Service
@@ -37,17 +39,22 @@ public class LoginServiceImpl implements LoginService {
         } catch (HttpClientErrorException e) {
             log.error("Client error {} while attempting to login user {}", e.getStatusCode(), username);
 
-            switch (e.getStatusCode()) {
-                case NOT_FOUND -> throw new UserDoesNotExistException();
-                case UNAUTHORIZED -> throw new UserIsUnauthorizedException();
-                case FORBIDDEN -> throw new UserBadPasswordException();
-                case LOCKED -> throw new UserIsLockedException();
-                default -> throw new SafeboxMainException();
+            if (e.getStatusCode().equals(HttpStatus.NOT_FOUND)) {
+                throw new UserDoesNotExistException();
+            } else if (e.getStatusCode().equals(HttpStatus.UNAUTHORIZED)) {
+                throw new UserIsUnauthorizedException();
+            } else if (e.getStatusCode().equals(HttpStatus.FORBIDDEN)) {
+                throw new UserBadPasswordException();
+            } else if (e.getStatusCode().equals(HttpStatus.LOCKED)) {
+                throw new UserIsLockedException();
             }
+            throw new SafeboxMainException();
 
         } catch (HttpServerErrorException e) {
             log.error("Server error {} while attempting to login user {}", e.getStatusCode(), username);
-
+            throw new ExternalServiceException();
+        } catch (ResourceAccessException e) {
+            log.error("Unknown error while attempting to login user", e);
             throw new ExternalServiceException();
         }
 

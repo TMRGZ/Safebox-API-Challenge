@@ -1,10 +1,10 @@
 package com.rviewer.skeletons.infrastructure.persistence.dao;
 
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.GenericGenerator;
 
-import javax.persistence.*;
 import java.util.List;
 
 @Getter

@@ -11,6 +11,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
@@ -41,7 +42,8 @@ public class SecurityConfig {
 
         httpSecurity.csrf().disable()
                 .authorizeHttpRequests()
-                .antMatchers(HttpMethod.POST, "/login").authenticated()
+                .requestMatchers(HttpMethod.POST, "/login").authenticated()
+                .requestMatchers(HttpMethod.POST, "/user").permitAll()
                 .and()
                 .httpBasic().authenticationEntryPoint(entryPoint)
                 .and()
@@ -54,7 +56,7 @@ public class SecurityConfig {
     @Bean
     @Order(1)
     public SecurityFilterChain jwtFilterChain(HttpSecurity httpSecurity, AuthenticationEntryPoint entryPoint) throws Exception {
-        httpSecurity.antMatcher("/token/decode")
+        httpSecurity.securityMatcher("/token/decode")
                 .csrf().disable()
                 .exceptionHandling().authenticationEntryPoint(entryPoint)
                 .and()
@@ -67,5 +69,10 @@ public class SecurityConfig {
                 .jwt();
 
         return httpSecurity.build();
+    }
+
+    @Bean
+    public WebSecurityCustomizer webSecurityCustomizer() {
+        return web -> web.ignoring().requestMatchers("/actuator", "/error");
     }
 }

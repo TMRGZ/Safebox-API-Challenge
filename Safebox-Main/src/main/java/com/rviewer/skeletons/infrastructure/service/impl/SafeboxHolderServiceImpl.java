@@ -17,6 +17,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpServerErrorException;
+import org.springframework.web.client.ResourceAccessException;
 
 import java.util.List;
 
@@ -94,6 +95,9 @@ public class SafeboxHolderServiceImpl implements SafeboxHolderService {
         } catch (HttpServerErrorException e) {
             log.error("Server error {} while attempting to add {} items to {}", e.getStatusCode(), itemList.size(), id);
 
+            throw new ExternalServiceException();
+        } catch (ResourceAccessException e) {
+            log.error("Unknown error while attempting to add items", e);
             throw new ExternalServiceException();
         }
 

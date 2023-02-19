@@ -1,6 +1,6 @@
 package unit.com.rviewer.skeletons.domain.service.impl;
 
-import com.rviewer.skeletons.domain.exception.*;
+import com.rviewer.skeletons.domain.exception.UserAlreadyRegisteredException;
 import com.rviewer.skeletons.domain.model.event.EventResultEnum;
 import com.rviewer.skeletons.domain.model.event.EventTypeEnum;
 import com.rviewer.skeletons.domain.model.user.SafeboxUser;
@@ -12,7 +12,10 @@ import com.rviewer.skeletons.domain.service.impl.UserServiceImpl;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.*;
+import org.mockito.AdditionalAnswers;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Optional;

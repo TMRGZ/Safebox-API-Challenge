@@ -1,9 +1,9 @@
 package com.rviewer.skeletons.infrastructure.config;
 
 import com.rviewer.skeletons.domain.repository.SafeboxUserRepository;
+import com.rviewer.skeletons.domain.sender.SafeboxHolderSender;
 import com.rviewer.skeletons.domain.service.LoginService;
 import com.rviewer.skeletons.domain.service.PasswordService;
-import com.rviewer.skeletons.domain.sender.SafeboxHolderSender;
 import com.rviewer.skeletons.domain.service.UserService;
 import com.rviewer.skeletons.domain.service.impl.LoginServiceImpl;
 import com.rviewer.skeletons.domain.service.impl.UserServiceImpl;
