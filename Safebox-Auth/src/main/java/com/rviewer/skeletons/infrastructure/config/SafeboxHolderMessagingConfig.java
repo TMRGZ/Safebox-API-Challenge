@@ -10,7 +10,7 @@ import org.springframework.context.annotation.Configuration;
 @Getter
 @Setter
 @Configuration
-@ConfigurationProperties(prefix = "safebox-service-messaging-config")
+@ConfigurationProperties(prefix = "safebox-holder-messaging-config")
 public class SafeboxHolderMessagingConfig {
 
     @NotNull
@@ -18,8 +18,5 @@ public class SafeboxHolderMessagingConfig {
 
     @NotNull
     private String exchange;
-
-    @NotNull
-    private String routingKey;
 
 }

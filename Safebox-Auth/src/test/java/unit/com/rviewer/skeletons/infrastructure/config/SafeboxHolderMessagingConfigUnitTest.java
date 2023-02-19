@@ -12,12 +12,9 @@ class SafeboxHolderMessagingConfigUnitTest {
 
         config.setQueue("TEST");
         config.setExchange("TEST");
-        config.setRoutingKey("TEST");
 
         Assertions.assertNotNull(config);
         Assertions.assertNotNull(config.getQueue());
         Assertions.assertNotNull(config.getExchange());
-        Assertions.assertNotNull(config.getRoutingKey());
     }
-
 }

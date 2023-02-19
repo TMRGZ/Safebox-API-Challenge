@@ -8,16 +8,16 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.amqp.core.AmqpTemplate;
+import org.springframework.messaging.MessageChannel;
 
 @ExtendWith(MockitoExtension.class)
 class SafeboxHolderSenderImplUnitTest {
 
     @InjectMocks
-    private SafeboxHolderSenderImpl safeboxServiceSender;
+    private SafeboxHolderSenderImpl safeboxHolderSender;
 
     @Mock
-    private AmqpTemplate amqpTemplate;
+    private MessageChannel messageChannel;
 
     @Mock
     private SafeboxHolderMessagingConfig safeboxHolderMessagingConfig;
@@ -26,10 +26,9 @@ class SafeboxHolderSenderImplUnitTest {
     void sendUnitTest() {
         String userId = "USER";
 
-        safeboxServiceSender.send(userId);
+        safeboxHolderSender.send(userId);
 
-        Mockito.verify(safeboxHolderMessagingConfig).getExchange();
-        Mockito.verify(safeboxHolderMessagingConfig).getRoutingKey();
-        Mockito.verify(amqpTemplate).convertAndSend(Mockito.any(), Mockito.any(), Mockito.eq(userId));
+        Mockito.verify(safeboxHolderMessagingConfig, Mockito.atLeastOnce()).getQueue();
+        Mockito.verify(messageChannel).send(Mockito.any());
     }
 }

@@ -18,7 +18,6 @@ appconfig:
   tokenSecret: THIS_IS_JUST_A_SECRET_TO_GENERATE_A_JWT
   tokenExpirationMinutes: 3
 
-safebox-service-messaging-config:
+safebox-holder-messaging-config:
   exchange: SAFEBOX_CREATED_USER.EXCHANGE.TEST
   queue:  SAFEBOX_CREATED_USER.QUEUE.TEST
-  routing-key: SAFEBOX_CREATED_USER.ROUTINGKEY.TEST

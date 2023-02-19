@@ -54,6 +54,7 @@ public class UserServiceImpl implements UserService {
 
         safeboxHolderSender.send(savedUser.getId());
 
+
         return savedUser;
     }
 }

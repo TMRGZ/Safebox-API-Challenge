@@ -3,8 +3,9 @@ package com.rviewer.skeletons.infrastructure.sender.impl;
 import com.rviewer.skeletons.domain.sender.SafeboxHolderSender;
 import com.rviewer.skeletons.infrastructure.config.SafeboxHolderMessagingConfig;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.amqp.core.AmqpTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.messaging.MessageChannel;
+import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.stereotype.Service;
 
 @Slf4j
@@ -12,7 +13,7 @@ import org.springframework.stereotype.Service;
 public class SafeboxHolderSenderImpl implements SafeboxHolderSender {
 
     @Autowired
-    private AmqpTemplate amqpTemplate;
+    private MessageChannel createdUserSender;
 
     @Autowired
     private SafeboxHolderMessagingConfig safeboxHolderMessagingConfig;
@@ -20,9 +21,7 @@ public class SafeboxHolderSenderImpl implements SafeboxHolderSender {
     @Override
     public void send(String userId) {
         log.info("Trying to send {} to {} event queue", userId, safeboxHolderMessagingConfig.getQueue());
-
-        amqpTemplate.convertAndSend(safeboxHolderMessagingConfig.getExchange(), safeboxHolderMessagingConfig.getRoutingKey(), userId);
-
+        createdUserSender.send(MessageBuilder.withPayload(userId).build());
         log.info("Successfully sent {} to {}", userId, safeboxHolderMessagingConfig.getQueue());
     }
 }

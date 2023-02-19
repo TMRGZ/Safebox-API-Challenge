@@ -4,15 +4,17 @@ import com.rviewer.skeletons.application.model.CreateUserDto;
 import com.rviewer.skeletons.application.model.RegisteredUserDto;
 import com.rviewer.skeletons.domain.model.event.EventResultEnum;
 import com.rviewer.skeletons.domain.model.event.EventTypeEnum;
-import com.rviewer.skeletons.domain.sender.SafeboxHolderSender;
 import com.rviewer.skeletons.infrastructure.persistence.dao.UserDao;
 import com.rviewer.skeletons.infrastructure.persistence.dao.UserHistoryDao;
 import com.rviewer.skeletons.infrastructure.persistence.repository.JpaUserRepository;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.cloud.stream.binder.test.OutputDestination;
 import org.springframework.http.MediaType;
+import org.springframework.messaging.Message;
 import org.springframework.test.web.servlet.MvcResult;
 
 import java.net.URI;
@@ -28,8 +30,18 @@ class UserApiImplIntegrationTest extends AbstractControllerIntegrationTest {
     @Autowired
     private JpaUserRepository userRepository;
 
-    @MockBean
-    private SafeboxHolderSender safeboxHolderSender;
+    @Autowired
+    private OutputDestination outputDestination;
+
+    @BeforeEach
+    void setup() {
+        outputDestination.clear();
+    }
+
+    @AfterEach
+    void cleanup() {
+        outputDestination.clear();
+    }
 
     @Test
     void postUserIntegrationTest() throws Exception {
@@ -77,6 +89,11 @@ class UserApiImplIntegrationTest extends AbstractControllerIntegrationTest {
         Assertions.assertFalse(history.getLocked());
         Assertions.assertNotNull(history.getCurrentTries());
         Assertions.assertEquals(0, history.getCurrentTries());
+
+        String sentId = messageToString(outputDestination.receive());
+
+        Assertions.assertNotNull(sentId);
+        Assertions.assertEquals(savedUser.getId(), sentId);
     }
 
     @Test
@@ -90,5 +107,13 @@ class UserApiImplIntegrationTest extends AbstractControllerIntegrationTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(newUserRequest))
         ).andExpect(status().isConflict());
+
+        String sentId = messageToString(outputDestination.receive());
+
+        Assertions.assertNull(sentId);
+    }
+
+    private String messageToString(Message<byte[]> message) {
+        return Optional.ofNullable(message).map(m -> new String(message.getPayload())).orElse(null);
     }
 }
