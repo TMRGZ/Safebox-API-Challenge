@@ -30,7 +30,7 @@ public class JwtProviderImpl implements AuthenticationProvider {
 
             User user = tokenService.decodeToken(jwt);
             bearerTokenAuthenticationToken.setAuthenticated(true);
-            bearerTokenAuthenticationToken.setDetails(user.getUsername());
+            bearerTokenAuthenticationToken.setDetails(user.getName());
 
             log.info("Token {} successfully authenticated", jwt);
 

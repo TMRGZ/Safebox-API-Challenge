@@ -32,6 +32,6 @@ class TokenApiImplIntegrationTest extends AbstractControllerIntegrationTest {
         UserDto response = objectMapper.readValue(result.getResponse().getContentAsString(), UserDto.class);
 
         Assertions.assertNotNull(response);
-        Assertions.assertNotNull(response.getUsername());
+        Assertions.assertNotNull(response.getName());
     }
 }

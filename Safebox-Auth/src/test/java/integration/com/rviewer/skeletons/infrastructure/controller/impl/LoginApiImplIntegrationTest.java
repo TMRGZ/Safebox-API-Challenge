@@ -53,8 +53,8 @@ class LoginApiImplIntegrationTest extends AbstractControllerIntegrationTest {
 
         UserDao byId = byIdOptional.get();
 
-        Assertions.assertNotNull(byId.getUsername());
-        Assertions.assertEquals(username, byId.getUsername());
+        Assertions.assertNotNull(byId.getName());
+        Assertions.assertEquals(username, byId.getName());
         Assertions.assertNotNull(byId.getPassword());
         Assertions.assertNotEquals(password, byId.getPassword());
         Assertions.assertNotNull(byId.getUserHistory());
@@ -106,8 +106,8 @@ class LoginApiImplIntegrationTest extends AbstractControllerIntegrationTest {
 
         UserDao byId = byIdOptional.get();
 
-        Assertions.assertNotNull(byId.getUsername());
-        Assertions.assertEquals(username, byId.getUsername());
+        Assertions.assertNotNull(byId.getName());
+        Assertions.assertEquals(username, byId.getName());
         Assertions.assertNotNull(byId.getPassword());
         Assertions.assertNotEquals(password, byId.getPassword());
         Assertions.assertNotNull(byId.getUserHistory());
@@ -162,8 +162,8 @@ class LoginApiImplIntegrationTest extends AbstractControllerIntegrationTest {
 
         UserDao byId = byIdOptional.get();
 
-        Assertions.assertNotNull(byId.getUsername());
-        Assertions.assertEquals(username, byId.getUsername());
+        Assertions.assertNotNull(byId.getName());
+        Assertions.assertEquals(username, byId.getName());
         Assertions.assertNotNull(byId.getPassword());
         Assertions.assertNotEquals(password, byId.getPassword());
         Assertions.assertNotNull(byId.getUserHistory());

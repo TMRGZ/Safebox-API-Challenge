@@ -30,7 +30,7 @@ public class UserServiceImpl implements UserService {
     public SafeboxUser createUser(String username, String password) {
         log.info("Starting user cretion process for {}", username);
 
-        safeboxUserRepository.findByUsername(username).ifPresent(user -> {
+        safeboxUserRepository.findByName(username).ifPresent(user -> {
             log.error("Username {} is already registered", username);
             throw new UserAlreadyRegisteredException();
         });
@@ -38,7 +38,7 @@ public class UserServiceImpl implements UserService {
         SafeboxUser safeboxUser = new SafeboxUser();
         SafeboxUserHistory safeboxUserHistory = new SafeboxUserHistory();
 
-        safeboxUser.setUsername(username);
+        safeboxUser.setName(username);
         safeboxUser.setPassword(passwordService.encodePassword(password));
         safeboxUser.setSafeboxUserHistory(Collections.singletonList(safeboxUserHistory));
 

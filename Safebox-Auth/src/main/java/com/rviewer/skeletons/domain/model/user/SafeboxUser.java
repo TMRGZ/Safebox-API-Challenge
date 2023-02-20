@@ -11,7 +11,7 @@ public class SafeboxUser {
 
     private String id;
 
-    private String username;
+    private String name;
 
     private String password;
 

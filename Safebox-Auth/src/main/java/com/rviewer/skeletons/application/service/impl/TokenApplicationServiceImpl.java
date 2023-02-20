@@ -16,6 +16,6 @@ public class TokenApplicationServiceImpl implements TokenApplicationService {
     @Override
     public ResponseEntity<UserDto> decodeToken() {
         String username = tokenService.getDecodedUsername();
-        return ResponseEntity.ok(new UserDto().username(username));
+        return ResponseEntity.ok(new UserDto().name(username));
     }
 }

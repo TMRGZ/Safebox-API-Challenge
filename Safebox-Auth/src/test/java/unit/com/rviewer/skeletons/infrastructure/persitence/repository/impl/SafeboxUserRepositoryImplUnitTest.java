@@ -44,11 +44,11 @@ class SafeboxUserRepositoryImplUnitTest {
     @Test
     void findByUsernameUnitTest() {
         String username = "TEST";
-        Mockito.when(jpaUserRepository.findByUsername(username)).thenReturn(Optional.of(new UserDao()));
+        Mockito.when(jpaUserRepository.findByName(username)).thenReturn(Optional.of(new UserDao()));
 
-        safeboxUserRepository.findByUsername(username);
+        safeboxUserRepository.findByName(username);
 
-        Mockito.verify(jpaUserRepository).findByUsername(username);
+        Mockito.verify(jpaUserRepository).findByName(username);
         Mockito.verify(userDaoMapper).map(Mockito.any(UserDao.class));
     }
 

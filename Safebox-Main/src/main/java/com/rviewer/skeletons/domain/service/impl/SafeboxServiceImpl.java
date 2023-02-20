@@ -33,8 +33,8 @@ public class SafeboxServiceImpl implements SafeboxService {
 
     @Override
     public String createSafebox(User user) {
-        log.info("Creating user {}", user.getUsername());
-        return userService.createUser(user.getUsername(), user.getPassword());
+        log.info("Creating user {}", user.getName());
+        return userService.createUser(user.getName(), user.getPassword());
     }
 
     @Override

@@ -47,7 +47,7 @@ class UserApiImplIntegrationTest extends AbstractControllerIntegrationTest {
     void postUserIntegrationTest() throws Exception {
         String username = "TEST_USER";
         String password = "TEST_USER";
-        CreateUserDto newUserRequest = new CreateUserDto().username(username).password(password);
+        CreateUserDto newUserRequest = new CreateUserDto().name(username).password(password);
         URI uri = new URI(REGISTER_URL);
 
         MvcResult result = mockMvc.perform(post(uri)
@@ -70,8 +70,8 @@ class UserApiImplIntegrationTest extends AbstractControllerIntegrationTest {
         UserDao savedUser = savedUserOptional.get();
 
         Assertions.assertNotNull(savedUser.getId());
-        Assertions.assertNotNull(savedUser.getUsername());
-        Assertions.assertEquals(username, savedUser.getUsername());
+        Assertions.assertNotNull(savedUser.getName());
+        Assertions.assertEquals(username, savedUser.getName());
         Assertions.assertNotNull(savedUser.getPassword());
         Assertions.assertNotEquals(password, savedUser.getPassword());
         Assertions.assertNotNull(savedUser.getUserHistory());
@@ -100,7 +100,7 @@ class UserApiImplIntegrationTest extends AbstractControllerIntegrationTest {
     void safeboxAuthUserPost_alreadyRegisteredUser409_IntegrationTest() throws Exception {
         String username = "REGISTERED_USER";
         String password = "REGISTERED_USER";
-        CreateUserDto newUserRequest = new CreateUserDto().username(username).password(password);
+        CreateUserDto newUserRequest = new CreateUserDto().name(username).password(password);
         URI uri = new URI(REGISTER_URL);
 
         mockMvc.perform(post(uri)

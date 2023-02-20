@@ -35,7 +35,7 @@ class TokenApplicationServiceImplUnitTest {
         Assertions.assertNotNull(response.getStatusCode());
         Assertions.assertEquals(HttpStatus.OK, response.getStatusCode());
         Assertions.assertNotNull(response.getBody());
-        Assertions.assertNotNull(response.getBody().getUsername());
-        Assertions.assertEquals(username, response.getBody().getUsername());
+        Assertions.assertNotNull(response.getBody().getName());
+        Assertions.assertEquals(username, response.getBody().getName());
     }
 }

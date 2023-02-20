@@ -28,8 +28,8 @@ public class SafeboxUserRepositoryImpl implements SafeboxUserRepository {
     }
 
     @Override
-    public Optional<SafeboxUser> findByUsername(String username) {
-        return userRepository.findByUsername(username).map(userDao -> userDaoMapper.map(userDao));
+    public Optional<SafeboxUser> findByName(String name) {
+        return userRepository.findByName(name).map(userDao -> userDaoMapper.map(userDao));
     }
 
     @Override

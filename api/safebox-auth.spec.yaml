@@ -92,28 +92,28 @@ components:
       description: 'User'
       type: object
       properties:
-        username:
+        name:
           description: Username of the user
           type: string
       required:
-        - username
+        - name
       example:
         username: Secure user 01
     CreateUser:
       description: 'Create user request'
       type: object
       properties:
-        username:
+        name:
           description: Username of the user
           type: string
         password:
           description: Desired user password
           type: string
       required:
-        - username
+        - name
         - password
       example:
-        username: Secure user 01
+        name: Secure user 01
         password: extremelySecurePassword
     RegisteredUser:
       description: Response for user registration

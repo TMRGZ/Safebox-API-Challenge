@@ -44,12 +44,12 @@ class SafeboxServiceImplUnitTest {
     @Test
     void createSafeboxUnitTest() {
         User user = new User();
-        user.setUsername("TEST");
+        user.setName("TEST");
         user.setPassword("TEST");
 
         safeboxService.createSafebox(user);
 
-        Mockito.verify(userService).createUser(user.getUsername(), user.getPassword());
+        Mockito.verify(userService).createUser(user.getName(), user.getPassword());
     }
 
     @Test

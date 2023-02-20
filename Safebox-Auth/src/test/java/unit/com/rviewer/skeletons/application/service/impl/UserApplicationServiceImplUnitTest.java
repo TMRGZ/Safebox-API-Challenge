@@ -27,14 +27,14 @@ class UserApplicationServiceImplUnitTest {
 
     @Test
     void createUserUnitTest() {
-        CreateUserDto userDto = new CreateUserDto().username("TEST").password("TEST");
+        CreateUserDto userDto = new CreateUserDto().name("TEST").password("TEST");
         SafeboxUser safeboxUser = new SafeboxUser();
         safeboxUser.setId("ID");
         Mockito.when(userService.createUser(Mockito.anyString(), Mockito.anyString())).thenReturn(safeboxUser);
 
         ResponseEntity<RegisteredUserDto> response = userApplicationService.createUser(userDto);
 
-        Mockito.verify(userService).createUser(userDto.getUsername(), userDto.getPassword());
+        Mockito.verify(userService).createUser(userDto.getName(), userDto.getPassword());
 
         Assertions.assertNotNull(response);
         Assertions.assertNotNull(response.getBody());
@@ -45,8 +45,8 @@ class UserApplicationServiceImplUnitTest {
 
     @Test
     void createUser_userAlreadyExisting_UnitTest() {
-        CreateUserDto userDto = new CreateUserDto().username("TEST").password("TEST");
-        Mockito.when(userService.createUser(userDto.getUsername(), userDto.getPassword())).thenThrow(new UserAlreadyRegisteredException());
+        CreateUserDto userDto = new CreateUserDto().name("TEST").password("TEST");
+        Mockito.when(userService.createUser(userDto.getName(), userDto.getPassword())).thenThrow(new UserAlreadyRegisteredException());
 
         ResponseEntity<RegisteredUserDto> response = userApplicationService.createUser(userDto);
 

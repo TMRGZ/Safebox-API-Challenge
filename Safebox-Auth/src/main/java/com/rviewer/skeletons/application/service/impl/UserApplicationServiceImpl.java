@@ -24,7 +24,7 @@ public class UserApplicationServiceImpl implements UserApplicationService {
         ResponseEntity<RegisteredUserDto> response;
 
         try {
-            SafeboxUser newSafeboxUser = userService.createUser(request.getUsername(), request.getPassword());
+            SafeboxUser newSafeboxUser = userService.createUser(request.getName(), request.getPassword());
             response = new ResponseEntity<>(new RegisteredUserDto().id(newSafeboxUser.getId()), HttpStatus.CREATED);
 
         } catch (UserAlreadyRegisteredException e) {

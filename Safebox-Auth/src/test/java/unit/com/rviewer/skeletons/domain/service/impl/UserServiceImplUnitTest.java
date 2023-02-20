@@ -40,18 +40,18 @@ class UserServiceImplUnitTest {
     void createUserUnitTest() {
         String username = "TEST";
         String password = "TEST";
-        Mockito.when(safeboxUserRepository.findByUsername(username)).thenReturn(Optional.empty());
+        Mockito.when(safeboxUserRepository.findByName(username)).thenReturn(Optional.empty());
         Mockito.when(passwordService.encodePassword(password)).thenReturn(password);
         Mockito.when(safeboxUserRepository.save(Mockito.any())).then(AdditionalAnswers.returnsFirstArg());
 
         SafeboxUser createdUser = userService.createUser(username, password);
 
-        Mockito.verify(safeboxUserRepository).findByUsername(username);
+        Mockito.verify(safeboxUserRepository).findByName(username);
         Mockito.verify(passwordService).encodePassword(password);
         Mockito.verify(safeboxUserRepository).save(Mockito.any());
         Mockito.verify(safeboxHolderSender).send(Mockito.any());
 
-        Assertions.assertNotNull(createdUser.getUsername());
+        Assertions.assertNotNull(createdUser.getName());
         Assertions.assertNotNull(createdUser.getPassword());
         Assertions.assertFalse(createdUser.getSafeboxUserHistory().isEmpty());
         Assertions.assertEquals(1, createdUser.getSafeboxUserHistory().size());
@@ -73,11 +73,11 @@ class UserServiceImplUnitTest {
     void createUser_userAlreadyExistsException_UnitTest() {
         String username = "TEST";
         String password = "TEST";
-        Mockito.when(safeboxUserRepository.findByUsername(username)).thenReturn(Optional.of(new SafeboxUser()));
+        Mockito.when(safeboxUserRepository.findByName(username)).thenReturn(Optional.of(new SafeboxUser()));
 
         Assertions.assertThrows(UserAlreadyRegisteredException.class, () -> userService.createUser(username, password));
 
-        Mockito.verify(safeboxUserRepository).findByUsername(username);
+        Mockito.verify(safeboxUserRepository).findByName(username);
         Mockito.verify(passwordService, Mockito.never()).encodePassword(password);
         Mockito.verify(safeboxUserRepository, Mockito.never()).save(Mockito.any());
     }

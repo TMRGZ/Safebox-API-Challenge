@@ -29,7 +29,7 @@ class JwtProviderImplUnitTest {
     void authenticateUnitTest() {
         String token = "TOKEN";
         User user = new User();
-        user.setUsername("TEST");
+        user.setName("TEST");
         Authentication authentication = new BearerTokenAuthenticationToken(token);
         Mockito.when(tokenService.decodeToken(token)).thenReturn(user);
 
@@ -39,7 +39,7 @@ class JwtProviderImplUnitTest {
 
         Assertions.assertNotNull(authenticate);
         Assertions.assertNotNull(authenticate.getDetails());
-        Assertions.assertEquals(user.getUsername(), authenticate.getDetails());
+        Assertions.assertEquals(user.getName(), authenticate.getDetails());
     }
 
     @Test

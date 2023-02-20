@@ -34,7 +34,7 @@ public class UserServiceImpl implements UserService {
 
         try {
             log.info("Attempting to create user {}", username);
-            AuthRegisteredUserDto registeredUserDto = userApi.postUser(new AuthCreateUserDto().username(username).password(password));
+            AuthRegisteredUserDto registeredUserDto = userApi.postUser(new AuthCreateUserDto().name(username).password(password));
             user = userMapper.map(registeredUserDto);
 
         } catch (HttpClientErrorException e) {

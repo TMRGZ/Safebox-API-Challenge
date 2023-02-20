@@ -8,7 +8,7 @@ public interface SafeboxUserRepository {
 
     Optional<SafeboxUser> findById(String id);
 
-    Optional<SafeboxUser> findByUsername(String username);
+    Optional<SafeboxUser> findByName(String username);
 
     SafeboxUser save(SafeboxUser safeboxUser);
 

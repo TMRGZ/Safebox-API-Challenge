@@ -11,7 +11,7 @@ public class User {
 
     private String token;
 
-    private String username;
+    private String name;
 
     private String password;
 

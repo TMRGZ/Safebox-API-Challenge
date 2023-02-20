@@ -32,7 +32,7 @@ public class LoginServiceImpl implements LoginService {
     public void loginUser(String username, String password) {
         log.info("Retrieving user with username {}", username);
 
-        SafeboxUser safeboxUserToLogin = safeboxUserRepository.findByUsername(username)
+        SafeboxUser safeboxUserToLogin = safeboxUserRepository.findByName(username)
                 .orElseThrow(UserDoesNotExistException::new);
         SafeboxUserHistory lastHistory = safeboxUserToLogin.getSafeboxUserHistory().stream()
                 .max(Comparator.comparing(SafeboxUserHistory::getEventDate))

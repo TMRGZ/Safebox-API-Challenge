@@ -51,7 +51,7 @@ class LoginServiceImplUnitTest {
         String password = "TEST";
         SafeboxUser existingUser = new SafeboxUser();
         SafeboxUserHistory existingUserHistory = new SafeboxUserHistory();
-        existingUser.setUsername(username);
+        existingUser.setName(username);
         existingUser.setPassword(password);
         existingUser.setSafeboxUserHistory(new ArrayList<>());
         existingUser.getSafeboxUserHistory().add(existingUserHistory);
@@ -60,21 +60,21 @@ class LoginServiceImplUnitTest {
         existingUserHistory.setEventResultEnum(EventResultEnum.SUCCESSFUL);
         existingUserHistory.setCurrentTries(0L);
         existingUserHistory.setLocked(false);
-        Mockito.when(safeboxUserRepository.findByUsername(username)).thenReturn(Optional.of(existingUser));
+        Mockito.when(safeboxUserRepository.findByName(username)).thenReturn(Optional.of(existingUser));
         Mockito.when(passwordService.checkPassword(existingUser.getPassword(), password)).thenReturn(true);
         ArgumentCaptor<SafeboxUser> acSafeboxUser = ArgumentCaptor.forClass(SafeboxUser.class);
         int historySize = existingUser.getSafeboxUserHistory().size();
 
         loginService.loginUser(username, password);
 
-        Mockito.verify(safeboxUserRepository).findByUsername(username);
+        Mockito.verify(safeboxUserRepository).findByName(username);
         Mockito.verify(passwordService).checkPassword(existingUser.getPassword(), password);
         Mockito.verify(safeboxUserRepository).save(acSafeboxUser.capture());
 
         SafeboxUser capturedSafeboxUser = acSafeboxUser.getValue();
         Assertions.assertNotNull(capturedSafeboxUser);
-        Assertions.assertNotNull(capturedSafeboxUser.getUsername());
-        Assertions.assertEquals(username, capturedSafeboxUser.getUsername());
+        Assertions.assertNotNull(capturedSafeboxUser.getName());
+        Assertions.assertEquals(username, capturedSafeboxUser.getName());
         Assertions.assertNotNull(capturedSafeboxUser.getPassword());
         Assertions.assertEquals(password, capturedSafeboxUser.getPassword());
         Assertions.assertNotNull(capturedSafeboxUser.getSafeboxUserHistory());
@@ -109,7 +109,7 @@ class LoginServiceImplUnitTest {
         String password = "TEST";
         SafeboxUser existingUser = new SafeboxUser();
         SafeboxUserHistory existingUserHistory = new SafeboxUserHistory();
-        existingUser.setUsername(username);
+        existingUser.setName(username);
         existingUser.setPassword(password);
         existingUser.setSafeboxUserHistory(new ArrayList<>());
         existingUser.getSafeboxUserHistory().add(existingUserHistory);
@@ -118,21 +118,21 @@ class LoginServiceImplUnitTest {
         existingUserHistory.setEventResultEnum(EventResultEnum.SUCCESSFUL);
         existingUserHistory.setCurrentTries(0L);
         existingUserHistory.setLocked(false);
-        Mockito.when(safeboxUserRepository.findByUsername(username)).thenReturn(Optional.of(existingUser));
+        Mockito.when(safeboxUserRepository.findByName(username)).thenReturn(Optional.of(existingUser));
         Mockito.when(passwordService.checkPassword(existingUser.getPassword(), password)).thenReturn(false);
         ArgumentCaptor<SafeboxUser> acSafeboxUser = ArgumentCaptor.forClass(SafeboxUser.class);
         int historySize = existingUser.getSafeboxUserHistory().size();
 
         Assertions.assertThrows(BadPasswordException.class, () -> loginService.loginUser(username, password));
 
-        Mockito.verify(safeboxUserRepository).findByUsername(username);
+        Mockito.verify(safeboxUserRepository).findByName(username);
         Mockito.verify(passwordService).checkPassword(existingUser.getPassword(), password);
         Mockito.verify(safeboxUserRepository).save(acSafeboxUser.capture());
 
         SafeboxUser capturedSafeboxUser = acSafeboxUser.getValue();
         Assertions.assertNotNull(capturedSafeboxUser);
-        Assertions.assertNotNull(capturedSafeboxUser.getUsername());
-        Assertions.assertEquals(username, capturedSafeboxUser.getUsername());
+        Assertions.assertNotNull(capturedSafeboxUser.getName());
+        Assertions.assertEquals(username, capturedSafeboxUser.getName());
         Assertions.assertNotNull(capturedSafeboxUser.getPassword());
         Assertions.assertEquals(password, capturedSafeboxUser.getPassword());
         Assertions.assertNotNull(capturedSafeboxUser.getSafeboxUserHistory());
@@ -168,7 +168,7 @@ class LoginServiceImplUnitTest {
         String password = "TEST";
         SafeboxUser existingUser = new SafeboxUser();
         SafeboxUserHistory existingUserHistory = new SafeboxUserHistory();
-        existingUser.setUsername(username);
+        existingUser.setName(username);
         existingUser.setPassword(password);
         existingUser.setSafeboxUserHistory(new ArrayList<>());
         existingUser.getSafeboxUserHistory().add(existingUserHistory);
@@ -177,21 +177,21 @@ class LoginServiceImplUnitTest {
         existingUserHistory.setEventResultEnum(EventResultEnum.SUCCESSFUL);
         existingUserHistory.setCurrentTries((long) MAX_TRIES);
         existingUserHistory.setLocked(true);
-        Mockito.when(safeboxUserRepository.findByUsername(username)).thenReturn(Optional.of(existingUser));
+        Mockito.when(safeboxUserRepository.findByName(username)).thenReturn(Optional.of(existingUser));
         Mockito.when(passwordService.checkPassword(existingUser.getPassword(), password)).thenReturn(false);
         ArgumentCaptor<SafeboxUser> acSafeboxUser = ArgumentCaptor.forClass(SafeboxUser.class);
         int historySize = existingUser.getSafeboxUserHistory().size();
 
         Assertions.assertThrows(UserIsLockedException.class, () -> loginService.loginUser(username, password));
 
-        Mockito.verify(safeboxUserRepository).findByUsername(username);
+        Mockito.verify(safeboxUserRepository).findByName(username);
         Mockito.verify(passwordService).checkPassword(existingUser.getPassword(), password);
         Mockito.verify(safeboxUserRepository).save(acSafeboxUser.capture());
 
         SafeboxUser capturedSafeboxUser = acSafeboxUser.getValue();
         Assertions.assertNotNull(capturedSafeboxUser);
-        Assertions.assertNotNull(capturedSafeboxUser.getUsername());
-        Assertions.assertEquals(username, capturedSafeboxUser.getUsername());
+        Assertions.assertNotNull(capturedSafeboxUser.getName());
+        Assertions.assertEquals(username, capturedSafeboxUser.getName());
         Assertions.assertNotNull(capturedSafeboxUser.getPassword());
         Assertions.assertEquals(password, capturedSafeboxUser.getPassword());
         Assertions.assertNotNull(capturedSafeboxUser.getSafeboxUserHistory());
@@ -225,11 +225,11 @@ class LoginServiceImplUnitTest {
     void loginUser_userDoesNotExistException_UnitTest() {
         String username = "TEST";
         String password = "TEST";
-        Mockito.when(safeboxUserRepository.findByUsername(username)).thenReturn(Optional.empty());
+        Mockito.when(safeboxUserRepository.findByName(username)).thenReturn(Optional.empty());
 
         Assertions.assertThrows(UserDoesNotExistException.class, () -> loginService.loginUser(username, password));
 
-        Mockito.verify(safeboxUserRepository).findByUsername(username);
+        Mockito.verify(safeboxUserRepository).findByName(username);
         Mockito.verify(passwordService, Mockito.never()).checkPassword(Mockito.anyString(), Mockito.anyString());
         Mockito.verify(safeboxUserRepository, Mockito.never()).save(Mockito.any());
     }
@@ -240,11 +240,11 @@ class LoginServiceImplUnitTest {
         String password = "TEST";
         SafeboxUser existingUser = new SafeboxUser();
         existingUser.setSafeboxUserHistory(new ArrayList<>());
-        Mockito.when(safeboxUserRepository.findByUsername(username)).thenReturn(Optional.of(existingUser));
+        Mockito.when(safeboxUserRepository.findByName(username)).thenReturn(Optional.of(existingUser));
 
         Assertions.assertThrows(SafeboxAuthException.class, () -> loginService.loginUser(username, password));
 
-        Mockito.verify(safeboxUserRepository).findByUsername(username);
+        Mockito.verify(safeboxUserRepository).findByName(username);
         Mockito.verify(passwordService, Mockito.never()).checkPassword(Mockito.anyString(), Mockito.anyString());
         Mockito.verify(safeboxUserRepository, Mockito.never()).save(Mockito.any());
     }
