@@ -1,40 +1,27 @@
 version: '3.9'
 
 services:
-#  java-skeleton-api:
-#    container_name: java-skeleton-api
-#    image: gradle:latest # this is due to some Mac M1 issues with Docker :_
-#    depends_on:
-#      - postgres-skeleton-db
-#    volumes:
-#      - "${PWD}:/home/gradle/project"
-#      - "rv-gradle-cache:/home/gradle/.gradle"
-#    working_dir: "/home/gradle/project"
-#    ports:
-#      - "8080:8080"
-#    networks:
-#      internal-net:
-
-  postgres-skeleton-auth-db:
-    container_name: postgres-skeleton-auth-db
+  safebox-authentication-db:
+    container_name: safebox-authentication-db
     image: postgres:13.4-alpine
     restart: on-failure
     ports:
       - "54321:5432"
     volumes:
-      - rv-volume-safebox-auth:/var/lib/postgresql/data
+      - rv-volume-safebox-authentication:/var/lib/postgresql/data
     env_file:
       - postgres.dev.env
     networks:
       internal-net:
-  postgres-skeleton-service-db:
-    container_name: postgres-skeleton-service-db
+
+  safebox-holder-db:
+    container_name: safebox-holder-db
     image: postgres:13.4-alpine
     ports:
       - "54320:5432"
     restart: on-failure
     volumes:
-      - rv-volume-safebox-service:/var/lib/postgresql/data
+      - rv-volume-safebox-holder:/var/lib/postgresql/data
     env_file:
       - postgres.dev.env
     networks:
@@ -50,10 +37,10 @@ services:
       internal-net:
 
 volumes:
-  rv-volume-safebox-auth:
-  rv-volume-safebox-service:
+  rv-volume-safebox-authentication:
+  rv-volume-safebox-holder:
   rv-gradle-cache:
 
 networks:
   internal-net:
-    name: rv-skeleton-net
+    name: internal-net
