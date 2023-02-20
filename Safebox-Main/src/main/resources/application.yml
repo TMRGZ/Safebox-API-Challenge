@@ -5,4 +5,4 @@ endpoints:
   safebox-auth:
     url: http://localhost:8081
   safebox-service:
-    url: test
+    url: http://localhost:8082

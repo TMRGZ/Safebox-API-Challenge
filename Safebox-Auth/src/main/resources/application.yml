@@ -1,5 +1,5 @@
 server:
-  port: 8080
+  port: 8081
 
 spring:
   application:
@@ -12,8 +12,8 @@ spring:
   rabbitmq:
     host: localhost
     port: 5672
-    username: test
-    password: test
+    username: guest
+    password: guest
   jpa:
     hibernate:
       ddl-auto: update
@@ -31,7 +31,6 @@ spring:
           createdUser-out-0:
             producer:
               queue-name-group-only: true
-              binding-routing-key: ${safebox-holder-messaging-config.routing-key}
 
 appconfig:
   maxTries: 3
