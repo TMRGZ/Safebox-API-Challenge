@@ -1,13 +1,8 @@
 package com.rviewer.skeletons.infrastructure.persistence.dao;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
-import org.hibernate.annotations.GenericGenerator;
-
 
 
 @Getter
@@ -17,8 +12,7 @@ public class ItemDao {
 
     @Id
     @Column(name = "ID")
-    @GeneratedValue(generator = "system-uuid")
-    @GenericGenerator(name = "system-uuid", strategy = "uuid")
+    @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
 
     @Column(name = "DETAIL", nullable = false)

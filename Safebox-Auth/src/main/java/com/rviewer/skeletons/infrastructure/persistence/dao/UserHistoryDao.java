@@ -5,7 +5,6 @@ import com.rviewer.skeletons.domain.model.event.EventTypeEnum;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
-import org.hibernate.annotations.GenericGenerator;
 
 import java.util.Date;
 
@@ -16,8 +15,7 @@ public class UserHistoryDao {
 
     @Id
     @Column(name = "ID")
-    @GeneratedValue(generator = "system-uuid")
-    @GenericGenerator(name = "system-uuid", strategy = "uuid")
+    @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
 
     @Column(name = "EVENT_DATE", nullable = false, updatable = false)
