@@ -1,0 +1,23 @@
+spring:
+  datasource:
+    driver-class-name: org.h2.Driver
+    username: user
+    password: password
+    url: jdbc:h2:mem:testdb
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    database-platform: org.hibernate.dialect.H2Dialect
+    properties:
+      hibernate:
+        enable_lazy_load_no_trans: true
+    defer-datasource-initialization: true
+
+appconfig:
+  maxTries: 3
+  tokenSecret: THIS_IS_JUST_A_SECRET_TO_GENERATE_A_JWT
+  tokenExpirationMinutes: 3
+
+safebox-holder-messaging-config:
+  exchange: SAFEBOX_CREATED_USER.EXCHANGE.TEST
+  queue:  SAFEBOX_CREATED_USER.QUEUE.TEST

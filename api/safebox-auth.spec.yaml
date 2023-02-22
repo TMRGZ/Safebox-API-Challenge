@@ -1,0 +1,146 @@
+openapi: 3.0.0
+
+info:
+  description: |
+    SafeIsh Auth API - The most secure safebox key holder
+  version: 1.0.0
+  title: SafeIsh Auth API
+
+paths:
+  /user:
+    post:
+      tags:
+        - User
+      operationId: post-user
+      summary: Registers a new user
+      description: |
+        Creates a new user based on a non-empty name and a password.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateUser'
+      responses:
+        '201':
+          description: User registered
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RegisteredUser'
+        '400':
+          description: Malformed expected data
+        '409':
+          description: Username already registered
+        '500':
+          description: Unexpected API error
+
+  /login:
+    post:
+      tags:
+        - Login
+      operationId: login-user
+      summary: Login the user
+      description: |
+        Gets a safebox key retrieved by the given ID and with the specified user & password.
+      security:
+        - basicPassword: [ ]
+      responses:
+        '201':
+          description: User correctly logged in
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LoginResponse'
+        '401':
+          description: Authentication header not found
+        '403':
+          description: User and password wrong
+        '423':
+          description: User is locked
+        '500':
+          description: Unexpected API error
+
+  /token/decode:
+    post:
+      tags:
+        - Token
+      operationId: decode-token
+      summary: Decode a token
+      description: |
+        Get the username encoded in the token
+      security:
+        - bearerToken: [ ]
+      responses:
+        '200':
+          description: Token decoded successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '401':
+          description: Authentication header not found
+        '403':
+          description: Bad token
+        '423':
+          description: User is locked
+        '500':
+          description: Unexpected API error
+components:
+  schemas:
+    User:
+      description: 'User'
+      type: object
+      properties:
+        name:
+          description: Username of the user
+          type: string
+      required:
+        - name
+      example:
+        username: Secure user 01
+    CreateUser:
+      description: 'Create user request'
+      type: object
+      properties:
+        name:
+          description: Username of the user
+          type: string
+        password:
+          description: Desired user password
+          type: string
+      required:
+        - name
+        - password
+      example:
+        name: Secure user 01
+        password: extremelySecurePassword
+    RegisteredUser:
+      description: Response for user registration
+      type: object
+      properties:
+        id:
+          description: Generated ID for the user
+          type: string
+      required:
+        - id
+      example:
+        id: f626c808-648c-41fe-865d-c6062f3e0899
+    LoginResponse:
+      description: Response for login operation
+      type: object
+      properties:
+        token:
+          description: Token for future actions over a login
+          type: string
+      required:
+        - token
+      example:
+        token: RkbfZSW5MmcK3b7kcgg
+  securitySchemes:
+    bearerToken:
+      type: http
+      scheme: bearer
+    basicPassword:
+      type: http
+      scheme: basic

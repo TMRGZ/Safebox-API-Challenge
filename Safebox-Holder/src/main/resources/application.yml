@@ -1,0 +1,38 @@
+server:
+  port: 8082
+
+spring:
+  application:
+    name: Safebox Service
+
+  datasource:
+    username: rv_user
+    password: rv_password
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:54320/postgres_rv_database
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: guest
+    password: guest
+  jpa:
+    hibernate:
+      ddl-auto: update
+  cloud:
+    stream:
+      bindings:
+        createdUser-in-0:
+          destination: ${created-user-queue-config.exchange}
+          group: ${created-user-queue-config.queue}
+      rabbit:
+        bindings:
+          createdUser-in-0:
+            consumer:
+              queue-name-group-only: true
+              binding-routing-key: ${created-user-queue-config.routing-key}
+
+
+created-user-queue-config:
+  exchange: SAFEBOX_CREATED_USER.EXCHANGE
+  queue: SAFEBOX_CREATED_USER.QUEUE
+  routing-key: SAFEBOX_CREATED_USER.ROUTINGKEY

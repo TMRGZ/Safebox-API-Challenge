@@ -1,0 +1,218 @@
+openapi: 3.0.0
+
+info:
+  description: |
+    SafeIsh API - The most secure safebox
+  version: 1.0.0
+  title: SafeIsh API
+
+paths:
+  /safebox:
+    post:
+      operationId: post-safebox
+      summary: Creates a new safebox
+      description: |
+        Creates a new safebox based on a non-empty name and a password.
+      tags:
+        - Safebox Controller
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateSafeboxRequest'
+      responses:
+        '201':
+          description: Safebox correctly created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreatedSafebox'
+        '400':
+          description: Malformed expected data
+        '409':
+          description: Safebox already exists
+        '500':
+          description: Unexpected API error
+        '502':
+          description: A subsystem has failed
+
+  /safebox/{id}/open:
+    get:
+      operationId: open-safebox
+      summary: Open a safebox
+      description: |
+        Opens the safebox identified by the given ID and with the specified user & password.
+      tags:
+        - Safebox Controller
+      security:
+        - basicPassword: [ ]
+      parameters:
+        - in: path
+          name: id
+          description: Safebox id
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Safebox correctly opened
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SafeboxKey'
+        '400':
+          description: Malformed expected data
+        '401':
+          description: Authorization failed
+        '403':
+          description: Bad credentials
+        '404':
+          description: Requested safebox does not exist
+        '423':
+          description: Requested safebox is locked
+        '500':
+          description: Unexpected API error
+        '502':
+          description: A subsystem has failed
+
+  /safebox/{id}/items:
+    get:
+      operationId: get-safebox-items
+      summary: Retrieves the content of a safebox
+      description:
+        Retrieves the currently stored contents in the safebox identified by the given ID and with the given opening token.
+      tags:
+        - Safebox Controller
+      security:
+        - bearerToken: [ ]
+      parameters:
+        - in: path
+          name: id
+          description: Safebox Id
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Safebox contents correctly retrieved
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ItemList'
+        '400':
+          description: Malformed expected data
+        '401':
+          description: Authorization error
+        '404':
+          description: Requested safebox does not exist
+        '423':
+          description: Requested safebox is locked
+        '500':
+          description: Unexpected API error
+        '502':
+          description: A subsystem has failed
+
+    put:
+      operationId: put-safebox-items
+      summary: Add an items to a Safebox
+      description: |
+        Inserts new contents in the safebox identified by the given ID and with the given opening token.
+      tags:
+        - Safebox Controller
+      security:
+        - bearerToken: [ ]
+      parameters:
+        - in: path
+          name: id
+          description: Safebox id
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ItemList'
+      responses:
+        '201':
+          description: Content correctly added to the safebox
+        '400':
+          description: Malformed expected data
+        '401':
+          description: Authorization error
+        '404':
+          description: Requested safebox does not exist
+        '423':
+          description: Requested safebox is locked
+        '500':
+          description: Unexpected API error
+        '502':
+          description: A subsystem has failed
+
+
+components:
+  schemas:
+    CreateSafeboxRequest:
+      description: 'Request for safebox creation'
+      type: object
+      properties:
+        name:
+          description: Safebox Name
+          type: string
+        password:
+          description: Safebox Password
+          type: string
+      required:
+        - name
+        - password
+      example:
+        name: Secure safebox 01
+        password: extremelySecurePassword
+    CreatedSafebox:
+      description: Response for user registration
+      type: object
+      properties:
+        id:
+          description: Safebox id
+          type: string
+      required:
+        - id
+      example:
+        id: f626c808-648c-41fe-865d-c6062f3e0899
+    SafeboxKey:
+      description: Response for login operation
+      type: object
+      properties:
+        token:
+          description: Token for future actions over an opening safebox
+          type: string
+      required:
+        - token
+      example:
+        token: RkbfZSW5MmcK3b7kcgg
+    ItemList:
+      description: Safebox items
+      type: object
+      properties:
+        items:
+          description: Safebox items
+          type: array
+          items:
+            type: string
+      required:
+        - items
+      example:
+        items:
+          - Safebox content 03
+          - Safebox content 02
+          - Safebox content 01
+          - New safebox content
+  securitySchemes:
+    bearerToken:
+      type: http
+      scheme: bearer
+    basicPassword:
+      type: http
+      scheme: basic

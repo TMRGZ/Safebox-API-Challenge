@@ -1,0 +1,5 @@
+endpoints:
+  safebox-auth:
+    url: http://localhost:${wiremock.server.port}
+  safebox-service:
+    url: http://localhost:${wiremock.server.port}

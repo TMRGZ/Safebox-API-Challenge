@@ -1,0 +1,27 @@
+import org.openapitools.generator.gradle.plugin.tasks.GenerateTask
+
+group 'com.rviewer.skeletons'
+version '1.0.0'
+
+dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter-jdbc'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation 'org.springframework.cloud:spring-cloud-stream-binder-rabbit:4.0.1'
+    testImplementation 'org.springframework.cloud:spring-cloud-stream-test-binder:4.0.1'
+}
+
+tasks.register('buildHolderServer', GenerateTask) {
+    generatorName = "spring"
+    inputSpec = "$rootDir/api/safebox-holder.spec.yaml"
+    apiPackage = "com.rviewer.skeletons.infrastructure.controller"
+    modelPackage = "com.rviewer.skeletons.application.model"
+    outputDir = "$buildDir/generated/sources".toString()
+    modelNameSuffix = "Dto"
+    configOptions = [
+            interfaceOnly        : "true",
+            performBeanValidation: "true",
+            useSpringBoot3       : "true"
+    ]
+}
+
+tasks.compileJava.dependsOn(buildHolderServer)
